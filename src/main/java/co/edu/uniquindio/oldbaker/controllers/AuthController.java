@@ -80,13 +80,24 @@ public class AuthController {
      *
      */
 
-    @GetMapping("/google/success")
-    public void googleAuthSuccess(
-            @AuthenticationPrincipal OAuth2User oAuth2User,
-            HttpServletResponse response
-    ) throws IOException {
 
-    }
+//    @GetMapping("/google/success")
+//    public void googleAuthSuccess(
+//            @AuthenticationPrincipal OAuth2User oAuth2User,
+//            HttpServletResponse response
+//    ) throws IOException {
+//        System.out.println("Entró a /google/success");
+//        // Procesa el usuario OAuth2 y genera tokens
+//        AuthResponse authResponse = authService.processOAuth2User(oAuth2User);
+//
+//        // Redirige al frontend con los tokens como parámetros
+//        String redirectUrl = String.format(
+//                "https://localhost:3000/auth/google/callback?accessToken=%s&refreshToken=%s",
+//                authResponse.getAccessToken(),
+//                authResponse.getRefreshToken()
+//        );
+//        response.sendRedirect(redirectUrl);
+//    }
 
     @GetMapping("/google/failure")
     public void googleAuthFailure(HttpServletResponse response) throws IOException {

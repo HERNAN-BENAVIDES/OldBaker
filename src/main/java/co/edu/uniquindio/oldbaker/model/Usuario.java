@@ -109,7 +109,7 @@ public class Usuario implements UserDetails {
     }
 
     public enum Rol {
-        CLIENTE, ADMINISTRADOR
+        CLIENTE, ADMINISTRADOR, AUXILIAR
     }
 
     public enum TipoAutenticacion {

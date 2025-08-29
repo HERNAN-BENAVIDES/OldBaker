@@ -1,11 +1,13 @@
 package co.edu.uniquindio.oldbaker.config;
 
+import co.edu.uniquindio.oldbaker.dto.ApiResponse;
 import co.edu.uniquindio.oldbaker.model.Usuario;
 import co.edu.uniquindio.oldbaker.dto.AuthResponse;
 import co.edu.uniquindio.oldbaker.services.AuthService;
 import co.edu.uniquindio.oldbaker.services.JwtService;
 import co.edu.uniquindio.oldbaker.services.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -22,6 +24,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     public OAuth2SuccessHandler(AuthService authService) {
         this.authService = authService;
+        System.out.println("OAuth2SuccessHandler initialized");
     }
 
     @Override
@@ -29,7 +32,17 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             throws IOException, ServletException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
-        var authResponse = authService.processOAuth2User(oAuth2User);
+        if (oAuth2User == null) {
+            System.out.println("OAuth2User is null");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
+            return;
+        }
 
+        var authResponse = authService.processOAuth2User(oAuth2User);
+        ApiResponse<AuthResponse> apiResponse = ApiResponse.success("Inicio de sesión exitoso", authResponse);
+
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_OK);
+        new ObjectMapper().writeValue(response.getWriter(), apiResponse);
     }
 }

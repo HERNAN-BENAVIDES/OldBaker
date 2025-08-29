@@ -120,6 +120,7 @@ public class AuthService {
                     .rol(Usuario.Rol.CLIENTE)
                     .tipoAutenticacion(Usuario.TipoAutenticacion.GOOGLE)
                     .activo(true)
+                    .proveedorAutenticacion("GOOGLE")
                     .build();
             usuarioRepository.save(usuario);
         }

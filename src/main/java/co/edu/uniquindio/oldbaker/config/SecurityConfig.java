@@ -52,6 +52,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
                         // Endpoints para usuarios autenticados
                         .requestMatchers("/api/user/**").hasRole("CLIENTE")
+                        // Endpoints para usuarios con rol AUXILIAR
+                        .requestMatchers("/api/user/**").hasRole("AUXILIAR")
                         // Cualquier otra petición requiere autenticación
                         .anyRequest().authenticated()
                 )
