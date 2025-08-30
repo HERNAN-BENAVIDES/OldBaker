@@ -30,9 +30,6 @@ public class UsuarioService {
         return usuarioRepository.existsByEmail(email);
     }
 
-    public boolean existsByGoogleId(String googleId) {
-        return usuarioRepository.existsByGoogleId(googleId);
-    }
 
     public Usuario findByEmailAndActivoTrue(String userEmail) {
         return usuarioRepository.findByEmailAndActivoTrue(userEmail).orElse(null);

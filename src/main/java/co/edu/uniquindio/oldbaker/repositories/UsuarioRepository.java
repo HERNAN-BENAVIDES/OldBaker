@@ -17,11 +17,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByEmail(String email);
 
-    Optional<Usuario> findByGoogleId(String googleId);
-
     boolean existsByEmail(String email);
-
-    boolean existsByGoogleId(String googleId);
 
     @Query("SELECT u FROM Usuario u WHERE u.activo = true")
     List<Usuario> findAllActivos();

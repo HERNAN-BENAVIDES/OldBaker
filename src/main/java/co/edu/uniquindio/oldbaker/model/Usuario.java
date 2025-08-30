@@ -48,11 +48,8 @@ public class Usuario implements UserDetails {
     @Column(name = "tipo_autenticacion", nullable = false)
     private TipoAutenticacion tipoAutenticacion = TipoAutenticacion.EMAIL;
 
-    @Column(name = "proveedor_autenticacion", nullable = false)
-    private String proveedorAutenticacion;
-
-    @Column(name = "google_id")
-    private String googleId;
+    @Column(name = "verificado", nullable = false)
+    private Boolean verificado = false;
 
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;

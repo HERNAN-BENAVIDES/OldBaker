@@ -46,8 +46,8 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .rol(Usuario.Rol.CLIENTE)
                 .tipoAutenticacion(Usuario.TipoAutenticacion.EMAIL)
-                .proveedorAutenticacion("LOCAL")
                 .activo(true)
+                .verificado(false)
                 .build();
 
         usuarioRepository.save(usuario);
@@ -105,22 +105,15 @@ public class AuthService {
         Usuario usuario;
         if (usuarioExistente.isPresent()) {
             usuario = usuarioExistente.get();
-            // Actualizar información de Google si es necesario
-            if (usuario.getGoogleId() == null) {
-                usuario.setGoogleId(googleId);
-                usuario.setTipoAutenticacion(Usuario.TipoAutenticacion.GOOGLE);
-                usuarioRepository.save(usuario);
-            }
         } else {
             // Crear nuevo usuario
             usuario = Usuario.builder()
                     .email(email)
                     .nombre(nombre)
-                    .googleId(googleId)
+                    .verificado(false)
                     .rol(Usuario.Rol.CLIENTE)
                     .tipoAutenticacion(Usuario.TipoAutenticacion.GOOGLE)
                     .activo(true)
-                    .proveedorAutenticacion("GOOGLE")
                     .build();
             usuarioRepository.save(usuario);
         }
