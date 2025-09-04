@@ -17,19 +17,6 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
 
-    public Optional<Usuario> findByEmail(String email) {
-        return usuarioRepository.findByEmailAndActivoTrue(email);
-    }
-
-    public Usuario findById(Long id) {
-        return usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-    }
-    
-    public boolean existsByEmail(String email) {
-        return usuarioRepository.existsByEmail(email);
-    }
-
 
     public Usuario findByEmailAndActivoTrue(String userEmail) {
         return usuarioRepository.findByEmailAndActivoTrue(userEmail).orElse(null);
@@ -38,9 +25,5 @@ public class UsuarioService {
     public Usuario findByEmailAndActivo(String username) {
         return usuarioRepository.findByEmailAndActivoTrue(username).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
-    }
-
-    public void save(Usuario usuario) {
-        usuarioRepository.save(usuario);
     }
 }

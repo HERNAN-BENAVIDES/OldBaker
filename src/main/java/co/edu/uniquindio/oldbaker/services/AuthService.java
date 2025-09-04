@@ -1,13 +1,14 @@
 package co.edu.uniquindio.oldbaker.services;
 
-import co.edu.uniquindio.oldbaker.dto.LogoutRequest;
+import co.edu.uniquindio.oldbaker.dto.*;
 import co.edu.uniquindio.oldbaker.model.BlackToken;
 import co.edu.uniquindio.oldbaker.model.Usuario;
 import co.edu.uniquindio.oldbaker.repositories.BlackTokenRepository;
 import co.edu.uniquindio.oldbaker.repositories.UsuarioRepository;
-import co.edu.uniquindio.oldbaker.dto.AuthResponse;
-import co.edu.uniquindio.oldbaker.dto.LoginRequest;
-import co.edu.uniquindio.oldbaker.dto.RegisterRequest;
+import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -31,13 +35,23 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final BlackTokenRepository blackTokenRepository;
+    private final MailService mailService;
 
     @Transactional
-    public AuthResponse register(RegisterRequest request) {
+    public ApiResponse<Usuario> register(RegisterRequest request) {
         log.info("Registrando nuevo usuario con email: {}", request.getEmail());
 
         if (usuarioRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
+        }
+
+        String codigo;
+
+        try {
+            codigo = generarCodigoToken();
+            enviarCodigo(request.getEmail(), codigo);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
 
         var usuario = Usuario.builder()
@@ -47,33 +61,62 @@ public class AuthService {
                 .rol(Usuario.Rol.CLIENTE)
                 .tipoAutenticacion(Usuario.TipoAutenticacion.EMAIL)
                 .activo(true)
+                .codigoVerificacion(codigo)
                 .verificado(false)
                 .build();
 
         usuarioRepository.save(usuario);
 
-        var jwtToken = jwtService.generateToken(usuario);
-        var refreshToken = jwtService.generateRefreshToken(usuario);
+
 
         log.info("Usuario registrado exitosamente: {}", usuario.getEmail());
 
-        return AuthResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .tokenType("Bearer")
-                .usuario(mapToUserResponse(usuario))
-                .build();
+
+        return ApiResponse.success("Usuario registrado exitosamente", usuario);
+    }
+
+    private void enviarCodigo(
+            @Email(message = "El formato del email no es válido")
+            @NotBlank(message = "El email es obligatorio")
+            String email,
+            String codigo) throws MessagingException {
+
+        String subject = "Verificación de correo electrónico";
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("codigo", codigo);
+        //String body = "Tu código de verificación es: " + codigo;
+
+        try{
+            mailService.sendEmail(email, subject, variables);
+        }catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+        log.info("Enviando codigo a {}: {}", email, codigo);
+    }
+
+
+    private String generarCodigoToken() {
+        int codigo = (int) (Math.random() * 900000) + 100000;
+        return String.valueOf(codigo);
     }
 
     public AuthResponse authenticate(LoginRequest request) {
         log.info("Autenticando usuario: {}", request.getEmail());
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            log.warn("Intento de autenticación fallido para el usuario: {}", request.getEmail());
+            throw new IllegalArgumentException("Credenciales inválidas");
+        }
+
 
         var usuario = usuarioRepository.findByEmailAndActivoTrue(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
@@ -92,11 +135,10 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse processOAuth2User(OAuth2User oAuth2User) {
+    public ApiResponse<?> processOAuth2User(OAuth2User oAuth2User) {
         // Toda la lógica de autenticación OAuth2 está en OAuth2SuccessHandler.
         String email = oAuth2User.getAttribute("email");
         String nombre = oAuth2User.getAttribute("name");
-        String googleId = oAuth2User.getAttribute("sub");
 
         log.info("Procesando usuario OAuth2: {}", email);
 
@@ -105,7 +147,27 @@ public class AuthService {
         Usuario usuario;
         if (usuarioExistente.isPresent()) {
             usuario = usuarioExistente.get();
+            log.info("Usuario OAuth2 procesado exitosamente: {}", usuario.getEmail());
+
+            var jwtToken = jwtService.generateToken(usuario);
+            var refreshToken = jwtService.generateRefreshToken(usuario);
+
+            return ApiResponse.success("Inicio de sesión exitoso", AuthResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .tokenType("Bearer")
+                    .usuario(mapToUserResponse(usuario))
+                    .build());
         } else {
+            String codigo;
+
+            try {
+                codigo = generarCodigoToken();
+                enviarCodigo(email, codigo);
+            } catch (MessagingException e){
+                throw new RuntimeException(e);
+            }
+
             // Crear nuevo usuario
             usuario = Usuario.builder()
                     .email(email)
@@ -114,20 +176,13 @@ public class AuthService {
                     .rol(Usuario.Rol.CLIENTE)
                     .tipoAutenticacion(Usuario.TipoAutenticacion.GOOGLE)
                     .activo(true)
+                    .codigoVerificacion(codigo)
                     .build();
             usuarioRepository.save(usuario);
+
+            return ApiResponse.success("Usuario registrado exitosamente", usuario);
         }
 
-        var jwtToken = jwtService.generateToken(usuario);
-        var refreshToken = jwtService.generateRefreshToken(usuario);
-
-        log.info("Usuario OAuth2 procesado exitosamente: {}", usuario.getEmail());
-
-        return AuthResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .usuario(mapToUserResponse(usuario))
-                .build();
     }
 
     private AuthResponse.UserResponse mapToUserResponse(Usuario usuario) {
@@ -161,5 +216,33 @@ public class AuthService {
         usuarioRepository.updateUserLastSesionDate(user.get(), LocalDateTime.now(ZoneId.systemDefault()));
 
         return "Cierre de sesión exitoso";
+    }
+
+    public AuthResponse verify(VerificationRequest request) {
+        var usuario = usuarioRepository.findAllById(Collections.singleton(request.getIdUsuario()))
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (!usuario.getCodigoVerificacion().equals(request.getCodigo())) {
+            throw new IllegalArgumentException("Código de verificación inválido");
+        }
+
+        usuario.setVerificado(true);
+        usuario.setCodigoVerificacion("1");
+        usuarioRepository.save(usuario  );
+
+        var jwtToken = jwtService.generateToken(usuario);
+        var refreshToken = jwtService.generateRefreshToken(usuario);
+
+        log.info("Usuario verificado exitosamente: {}", usuario.getEmail());
+
+        return AuthResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .tokenType("Bearer")
+                .usuario(mapToUserResponse(usuario))
+                .build();
+
     }
 }

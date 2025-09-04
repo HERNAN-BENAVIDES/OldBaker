@@ -40,6 +40,9 @@ dependencies {
 	// Oracle Database
 	implementation 'com.oracle.database.jdbc:ojdbc8:23.3.0.23.09'
 
+    // Mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	// Lombok para reducir boilerplate
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -48,7 +51,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-	// Documentation
+    // TThymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // Documentation
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
 	// Environment Variables

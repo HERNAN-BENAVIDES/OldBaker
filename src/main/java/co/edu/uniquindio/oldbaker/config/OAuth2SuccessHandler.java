@@ -1,13 +1,7 @@
 package co.edu.uniquindio.oldbaker.config;
 
-import co.edu.uniquindio.oldbaker.dto.ApiResponse;
-import co.edu.uniquindio.oldbaker.model.Usuario;
-import co.edu.uniquindio.oldbaker.dto.AuthResponse;
 import co.edu.uniquindio.oldbaker.services.AuthService;
-import co.edu.uniquindio.oldbaker.services.JwtService;
-import co.edu.uniquindio.oldbaker.services.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -16,7 +10,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
@@ -39,10 +35,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         }
 
         var authResponse = authService.processOAuth2User(oAuth2User);
-        ApiResponse<AuthResponse> apiResponse = ApiResponse.success("Inicio de sesión exitoso", authResponse);
 
-        response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_OK);
-        new ObjectMapper().writeValue(response.getWriter(), apiResponse);
+        String serializedData = new ObjectMapper().writeValueAsString(authResponse);
+        String redirectUrl = "http://localhost:4200/oauth-callback?data=" + URLEncoder.encode(serializedData, StandardCharsets.UTF_8);
+        response.sendRedirect(redirectUrl);
+
+        //response.setContentType("application/json");
+        //response.setStatus(HttpServletResponse.SC_OK);
+        //new ObjectMapper().writeValue(response.getWriter(), authResponse);
     }
 }

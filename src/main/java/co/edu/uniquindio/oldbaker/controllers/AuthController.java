@@ -1,6 +1,7 @@
 package co.edu.uniquindio.oldbaker.controllers;
 
 import co.edu.uniquindio.oldbaker.dto.*;
+import co.edu.uniquindio.oldbaker.model.Usuario;
 import co.edu.uniquindio.oldbaker.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,20 +20,18 @@ import java.io.IOException;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = {"https://localhost:3000", "https://localhost:4200"})
+@CrossOrigin(origins = {"https://localhost:3000", "https://localhost:4200", "http://localhost:4200"})
 public class AuthController {
 
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<AuthResponse>> register(
+    public ResponseEntity<ApiResponse<Usuario>> register(
             @Valid @RequestBody RegisterRequest request
     ) {
         try {
-            AuthResponse response = authService.register(request);
-            return ResponseEntity.ok(
-                    ApiResponse.success("Usuario registrado exitosamente", response)
-            );
+            var response = authService.register(request);
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.error(e.getMessage()));
@@ -74,6 +73,24 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/verify")
+    public  ResponseEntity<ApiResponse<AuthResponse>> verify(@Valid @RequestBody VerificationRequest request){
+        try {
+            AuthResponse response = authService.verify(request);
+            return ResponseEntity.ok(
+                    ApiResponse.success("Verificación exitosa", response)
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error durante la verificación: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Error interno del servidor"));
+        }
+
+    }
+
     /**
      *
      * Google
@@ -105,22 +122,4 @@ public class AuthController {
         response.sendRedirect("https://localhost:3000/auth/error");
     }
 
-//    @PostMapping("/refresh-token")
-//    public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(
-//            @Valid @RequestBody TokenRefreshRequest request
-//    ) {
-//        try {
-//            AuthResponse response = authService.refreshToken(request);
-//            return ResponseEntity.ok(
-//                    ApiResponse.success("Token renovado exitosamente", response)
-//            );
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body(ApiResponse.error(e.getMessage()));
-//        } catch (Exception e) {
-//            log.error("Error durante la renovación del token: ", e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(ApiResponse.error("Error interno del servidor"));
-//        }
-//    }
 }
