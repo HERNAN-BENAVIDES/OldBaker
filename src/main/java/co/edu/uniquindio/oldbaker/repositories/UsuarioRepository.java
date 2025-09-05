@@ -24,9 +24,4 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("UPDATE Usuario u SET u.fechaUltimaSesion = :lastSesionDate WHERE u = :usuario")
     int updateUserLastSesionDate(Usuario usuario, LocalDateTime lastSesionDate);
 
-    @Modifying
-    @Query("UPDATE Usuario u SET u.verificado = true, u.codigoVerificacion = '1' WHERE u.id = :id")
-    void updateUsuarioVerificado(Long id);
-
-
 }

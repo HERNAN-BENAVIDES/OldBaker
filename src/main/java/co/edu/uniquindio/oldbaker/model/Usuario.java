@@ -63,8 +63,6 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private Boolean activo = true;
 
-    @Column(name = "codigo_verificacion")
-    private String codigoVerificacion;
 
     @PrePersist
     protected void onCreate() {
