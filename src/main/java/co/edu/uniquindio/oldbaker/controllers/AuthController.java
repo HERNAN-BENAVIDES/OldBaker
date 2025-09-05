@@ -26,7 +26,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<Usuario>> register(
+    public ResponseEntity<ApiResponse<?>> register(
             @Valid @RequestBody RegisterRequest request
     ) {
         try {
@@ -90,6 +90,8 @@ public class AuthController {
         }
 
     }
+
+
 
     /**
      *

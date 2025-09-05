@@ -3,10 +3,11 @@ package co.edu.uniquindio.oldbaker.services;
 import co.edu.uniquindio.oldbaker.dto.*;
 import co.edu.uniquindio.oldbaker.model.BlackToken;
 import co.edu.uniquindio.oldbaker.model.Usuario;
+import co.edu.uniquindio.oldbaker.model.VerificationCode;
 import co.edu.uniquindio.oldbaker.repositories.BlackTokenRepository;
 import co.edu.uniquindio.oldbaker.repositories.UsuarioRepository;
+import co.edu.uniquindio.oldbaker.repositories.VerificationCodeRepository;
 import jakarta.mail.MessagingException;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +37,10 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final BlackTokenRepository blackTokenRepository;
     private final MailService mailService;
+    private final VerificationCodeRepository verificationCodeRepository;
 
     @Transactional
-    public ApiResponse<Usuario> register(RegisterRequest request) {
+    public ApiResponse<?> register(RegisterRequest request) {
         log.info("Registrando nuevo usuario con email: {}", request.getEmail());
 
         if (usuarioRepository.existsByEmail(request.getEmail())) {
@@ -61,18 +63,23 @@ public class AuthService {
                 .rol(Usuario.Rol.CLIENTE)
                 .tipoAutenticacion(Usuario.TipoAutenticacion.EMAIL)
                 .activo(true)
-                .codigoVerificacion(codigo)
                 .verificado(false)
                 .build();
 
         usuarioRepository.save(usuario);
 
+        var verificationCode = VerificationCode.builder()
+                .userId(usuario.getId())
+                .code(codigo)
+                .expirationDate(LocalDateTime.now(ZoneId.systemDefault()).plusMinutes(10))
+                .build();
 
+        verificationCodeRepository.save(verificationCode);
 
         log.info("Usuario registrado exitosamente: {}", usuario.getEmail());
 
 
-        return ApiResponse.success("Usuario registrado exitosamente", usuario);
+        return ApiResponse.success("Usuario registrado exitosamente", mapToUserResponse(usuario));
     }
 
     private void enviarCodigo(
@@ -176,9 +183,17 @@ public class AuthService {
                     .rol(Usuario.Rol.CLIENTE)
                     .tipoAutenticacion(Usuario.TipoAutenticacion.GOOGLE)
                     .activo(true)
-                    .codigoVerificacion(codigo)
                     .build();
             usuarioRepository.save(usuario);
+
+            var verificationCode = VerificationCode.builder()
+                    .userId(usuario.getId())
+                    .code(codigo)
+                    .expirationDate(LocalDateTime.now(ZoneId.systemDefault()).plusMinutes(10))
+                    .build();
+
+            verificationCodeRepository.save(verificationCode);
+
 
             return ApiResponse.success("Usuario registrado exitosamente", usuario);
         }
@@ -224,13 +239,16 @@ public class AuthService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        if (!usuario.getCodigoVerificacion().equals(request.getCodigo())) {
+        var codigo = verificationCodeRepository.findByIdUser(request.getIdUsuario())
+                .orElseThrow(() -> new IllegalArgumentException("Código de verificación inválido"));
+
+        if (codigo != request.getCodigo()) {
             throw new IllegalArgumentException("Código de verificación inválido");
         }
 
         usuario.setVerificado(true);
-        usuario.setCodigoVerificacion("1");
-        usuarioRepository.save(usuario  );
+        usuarioRepository.save(usuario);
+        verificationCodeRepository.deleteByIdUser(request.getIdUsuario());
 
         var jwtToken = jwtService.generateToken(usuario);
         var refreshToken = jwtService.generateRefreshToken(usuario);
