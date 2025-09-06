@@ -91,7 +91,20 @@ public class AuthController {
 
     }
 
-
+    @GetMapping("/verify/resend")
+    public ResponseEntity<ApiResponse<String>> resendVerificationCode(@RequestParam String email) {
+        try {
+            String response = authService.resendVerificationCode(email);
+            return ResponseEntity.ok(ApiResponse.success("Código reenviado exitosamente", response));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error durante el reenvío del código de verificación: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Error interno del servidor"));
+        }
+    }
 
     /**
      *

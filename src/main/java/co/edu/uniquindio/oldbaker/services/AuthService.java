@@ -142,7 +142,7 @@ public class AuthService {
     }
 
     @Transactional
-    public ApiResponse<?> processOAuth2User(OAuth2User oAuth2User) {
+    public ApiResponse<AuthResponse> processOAuth2User(OAuth2User oAuth2User) {
         // Toda la lógica de autenticación OAuth2 está en OAuth2SuccessHandler.
         String email = oAuth2User.getAttribute("email");
         String nombre = oAuth2User.getAttribute("name");
@@ -166,15 +166,6 @@ public class AuthService {
                     .usuario(mapToUserResponse(usuario))
                     .build());
         } else {
-            String codigo;
-
-            try {
-                codigo = generarCodigoToken();
-                enviarCodigo(email, codigo);
-            } catch (MessagingException e){
-                throw new RuntimeException(e);
-            }
-
             // Crear nuevo usuario
             usuario = Usuario.builder()
                     .email(email)
@@ -186,16 +177,15 @@ public class AuthService {
                     .build();
             usuarioRepository.save(usuario);
 
-            var verificationCode = VerificationCode.builder()
-                    .userId(usuario.getId())
-                    .code(codigo)
-                    .expirationDate(LocalDateTime.now(ZoneId.systemDefault()).plusMinutes(10))
-                    .build();
+            var jwtToken = jwtService.generateToken(usuario);
+            var refreshToken = jwtService.generateRefreshToken(usuario);
 
-            verificationCodeRepository.save(verificationCode);
-
-
-            return ApiResponse.success("Usuario registrado exitosamente", usuario);
+            return ApiResponse.success("Registro exitoso", AuthResponse.builder()
+                    .accessToken(jwtToken)
+                    .refreshToken(refreshToken)
+                    .tokenType("Bearer")
+                    .usuario(mapToUserResponse(usuario))
+                    .build());
         }
 
     }
@@ -233,16 +223,17 @@ public class AuthService {
         return "Cierre de sesión exitoso";
     }
 
+    @Transactional
     public AuthResponse verify(VerificationRequest request) {
         var usuario = usuarioRepository.findAllById(Collections.singleton(request.getIdUsuario()))
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        var codigo = verificationCodeRepository.findByIdUser(request.getIdUsuario())
+        var codigo = verificationCodeRepository.findByUserId(request.getIdUsuario())
                 .orElseThrow(() -> new IllegalArgumentException("Código de verificación inválido"));
 
-        if (codigo != request.getCodigo()) {
+        if (!codigo.getCode().equals(request.getCodigo())) {
             throw new IllegalArgumentException("Código de verificación inválido");
         }
 
@@ -261,6 +252,43 @@ public class AuthService {
                 .tokenType("Bearer")
                 .usuario(mapToUserResponse(usuario))
                 .build();
+    }
 
+    @Transactional
+    public String resendVerificationCode(String email) {
+        var usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (usuario.getVerificado()) {
+            throw new IllegalArgumentException("El usuario ya está verificado");
+        }
+
+        String codigo;
+
+        try {
+            codigo = generarCodigoToken();
+            enviarCodigo(email, codigo);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+        var existingCode = verificationCodeRepository.findByUserId(usuario.getId());
+        if (existingCode.isPresent()) {
+            var verificationCode = existingCode.get();
+            verificationCode.setCode(codigo);
+            verificationCode.setExpirationDate(LocalDateTime.now(ZoneId.systemDefault()).plusMinutes(10));
+            verificationCodeRepository.save(verificationCode);
+        } else {
+            var verificationCode = VerificationCode.builder()
+                    .userId(usuario.getId())
+                    .code(codigo)
+                    .expirationDate(LocalDateTime.now(ZoneId.systemDefault()).plusMinutes(10))
+                    .build();
+            verificationCodeRepository.save(verificationCode);
+        }
+
+        log.info("Código de verificación reenviado exitosamente a: {}", email);
+
+        return "Código de verificación reenviado exitosamente";
     }
 }

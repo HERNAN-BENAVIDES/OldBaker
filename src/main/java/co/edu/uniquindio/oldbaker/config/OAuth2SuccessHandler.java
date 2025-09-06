@@ -40,8 +40,5 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String redirectUrl = "http://localhost:4200/oauth-callback?data=" + URLEncoder.encode(serializedData, StandardCharsets.UTF_8);
         response.sendRedirect(redirectUrl);
 
-        //response.setContentType("application/json");
-        //response.setStatus(HttpServletResponse.SC_OK);
-        //new ObjectMapper().writeValue(response.getWriter(), authResponse);
     }
 }
