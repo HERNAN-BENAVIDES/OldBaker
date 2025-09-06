@@ -199,6 +199,7 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional
     public String logout(LogoutRequest request) {
         Optional<Usuario> user = usuarioRepository.findByEmail(request.getEmail());
         if (user.isEmpty()) {

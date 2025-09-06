@@ -2,6 +2,8 @@ package co.edu.uniquindio.oldbaker.config;
 
 import co.edu.uniquindio.oldbaker.services.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -16,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(OAuth2SuccessHandler.class);
     private final AuthService authService;
 
     public OAuth2SuccessHandler(AuthService authService) {
@@ -34,6 +37,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
 
+        log.info("OAuth2User attributes: {}", oAuth2User.getAttributes());
         var authResponse = authService.processOAuth2User(oAuth2User);
 
         String serializedData = new ObjectMapper().writeValueAsString(authResponse);

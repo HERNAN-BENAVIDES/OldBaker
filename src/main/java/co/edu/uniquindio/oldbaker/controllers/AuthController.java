@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
 @CrossOrigin(origins = {"https://localhost:3000", "https://localhost:4200", "http://localhost:4200"})
@@ -25,7 +25,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
+    @PostMapping("/auth/register")
     public ResponseEntity<ApiResponse<?>> register(
             @Valid @RequestBody RegisterRequest request
     ) {
@@ -42,7 +42,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<ApiResponse<AuthResponse>> authenticate(
             @Valid @RequestBody LoginRequest request
     ) {
@@ -61,7 +61,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/logout")
+    @PostMapping("/user/logout")
     public ResponseEntity<ApiResponse<String>> logout(@Valid @RequestBody LogoutRequest request) {
 
         try {
@@ -73,7 +73,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/verify")
+    @PostMapping("/auth/verify")
     public  ResponseEntity<ApiResponse<AuthResponse>> verify(@Valid @RequestBody VerificationRequest request){
         try {
             AuthResponse response = authService.verify(request);
