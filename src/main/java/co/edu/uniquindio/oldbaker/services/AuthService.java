@@ -8,6 +8,7 @@ import co.edu.uniquindio.oldbaker.repositories.BlackTokenRepository;
 import co.edu.uniquindio.oldbaker.repositories.UsuarioRepository;
 import co.edu.uniquindio.oldbaker.repositories.VerificationCodeRepository;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -292,5 +293,86 @@ public class AuthService {
         log.info("Código de verificación reenviado exitosamente a: {}", email);
 
         return "Código de verificación reenviado exitosamente";
+    }
+
+    @Transactional
+    public String recoverPassword(@Valid PasswordRecoveryRequest request) {
+        var usuario = usuarioRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (!usuario.getVerificado()) {
+            throw new IllegalArgumentException("El usuario no está verificado");
+        }
+
+        usuario.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        usuarioRepository.save(usuario);
+
+        log.info("Contraseña actualizada exitosamente para el usuario: {}", request.getEmail());
+
+        return "Contraseña actualizada exitosamente";
+    }
+
+    public void initiatePasswordReset(String emailTrim) {
+        var email = emailTrim == null ? "" : emailTrim.trim();
+        var usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (!usuario.getVerificado()) {
+            throw new IllegalArgumentException("El usuario no está verificado");
+        }
+
+        String codigo;
+        try {
+            codigo = generarCodigoToken();
+            enviarCodigo(email, codigo);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+        var existingCode = verificationCodeRepository.findByUserId(usuario.getId());
+        if (existingCode.isPresent()) {
+            var verificationCode = existingCode.get();
+            verificationCode.setCode(codigo);
+            verificationCode.setExpirationDate(LocalDateTime.now(ZoneId.systemDefault()).plusMinutes(10));
+            verificationCodeRepository.save(verificationCode);
+        } else {
+            var verificationCode = VerificationCode.builder()
+                    .userId(usuario.getId())
+                    .code(codigo)
+                    .expirationDate(LocalDateTime.now(ZoneId.systemDefault()).plusMinutes(10))
+                    .build();
+            verificationCodeRepository.save(verificationCode);
+        }
+
+        log.info("Código de recuperación enviado a: {}", email);
+    }
+
+
+    @Transactional
+    public String verifyResetCode(String codeTrim) {
+        var code = codeTrim == null ? "" : codeTrim.trim();
+        var verificationCode = verificationCodeRepository.findByUserId(
+                        verificationCodeRepository.findAll().stream()
+                                .filter(vc -> vc.getCode().equals(code))
+                                .map(VerificationCode::getUserId)
+                                .findFirst()
+                                .orElseThrow(() -> new IllegalArgumentException("Código de verificación inválido"))
+                )
+                .orElseThrow(() -> new IllegalArgumentException("Código de verificación inválido"));
+
+        if (verificationCode.getExpirationDate().isBefore(LocalDateTime.now(ZoneId.systemDefault()))) {
+            throw new IllegalArgumentException("El código de verificación ha expirado");
+        }
+
+        var usuario = usuarioRepository.findById(verificationCode.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        var jwtToken = jwtService.generateToken(usuario);
+
+        log.info("Código de recuperación verificado para el usuario: {}", usuario.getEmail());
+
+        verificationCodeRepository.delete(verificationCode);
+
+        return jwtToken;
     }
 }

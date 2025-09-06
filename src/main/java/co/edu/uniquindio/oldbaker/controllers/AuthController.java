@@ -106,16 +106,62 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/auth/recover-password")
+    @PostMapping("/auth/forgot")
+    public ResponseEntity<ApiResponse<String>> forgotPassword(@Valid @RequestBody String email) {
+        try {
+            String emailTrim = email == null ? "" : email.trim();
+            if (emailTrim.isEmpty() || !emailTrim.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Formato de email inválido"));
+            }
+
+            // Delegar la generación de token, hashing, guardado en BD y envío de email al servicio.
+            // El servicio debe implementar límites y auditoría.
+            authService.initiatePasswordReset(emailTrim);
+
+            // Respuesta genérica para no revelar existencia del email
+            return ResponseEntity.ok(ApiResponse.success("Si el email existe, hemos enviado instrucciones.", ""));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error durante solicitud de recuperación de contraseña: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Error interno del servidor"));
+        }
+    }
+
+    @PostMapping("/auth/reset/verify")
+    public ResponseEntity<ApiResponse<String>> verifyResetCode(@Valid @RequestBody String codigo) {
+        try {
+            String codeTrim = codigo == null ? "" : codigo.trim();
+            if (codeTrim.isEmpty()) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Código inválido"));
+            }
+
+            // Delegar al servicio: valida el código y retorna un JWT asociado al usuario
+            String jwt = authService.verifyResetCode(codeTrim);
+            return ResponseEntity.ok(ApiResponse.success("Código verificado. JWT generado", jwt));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error al verificar código de recuperación: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Error interno del servidor"));
+        }
+    }
+
+    @PostMapping("/auth/reset")
     public ResponseEntity<ApiResponse<String>> recoverPassword(@Valid @RequestBody PasswordRecoveryRequest request) {
         try {
+            if (request == null) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Solicitud inválida"));
+            }
+
             String response = authService.recoverPassword(request);
-            return ResponseEntity.ok(ApiResponse.success("Correo de recuperación enviado", response));
+            return ResponseEntity.ok(ApiResponse.success("Contraseña actualizada exitosamente", response));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest()
-                    .body(ApiResponse.error(e.getMessage()));
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
-            log.error("Error durante la recuperación de contraseña: ", e);
+            log.error("Error al recuperar contraseña: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error("Error interno del servidor"));
         }
