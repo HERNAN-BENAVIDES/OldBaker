@@ -106,6 +106,22 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/auth/recover-password")
+    public ResponseEntity<ApiResponse<String>> recoverPassword(@Valid @RequestBody PasswordRecoveryRequest request) {
+        try {
+            String response = authService.recoverPassword(request);
+            return ResponseEntity.ok(ApiResponse.success("Correo de recuperación enviado", response));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error durante la recuperación de contraseña: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Error interno del servidor"));
+        }
+    }
+
+
     /**
      *
      * Google

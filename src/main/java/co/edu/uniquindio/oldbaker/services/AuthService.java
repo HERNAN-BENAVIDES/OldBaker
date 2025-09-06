@@ -172,6 +172,7 @@ public class AuthService {
                     .nombre(nombre)
                     .verificado(false)
                     .rol(Usuario.Rol.CLIENTE)
+                    .verificado(true)
                     .tipoAutenticacion(Usuario.TipoAutenticacion.GOOGLE)
                     .activo(true)
                     .build();
