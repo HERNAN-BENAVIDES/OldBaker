@@ -20,7 +20,7 @@ import java.io.IOException;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = {"https://localhost:3000", "https://localhost:4200", "http://localhost:4200"})
+@CrossOrigin(origins = {"https://old-baker-front.vercel.app", "https://localhost:4200", "http://localhost:4200"})
 public class AuthController {
 
     private final AuthService authService;
