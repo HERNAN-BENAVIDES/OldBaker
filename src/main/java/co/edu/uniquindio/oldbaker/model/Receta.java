@@ -18,7 +18,8 @@ public class Receta {
     @ManyToOne
     @JoinColumn(name = "id_insumo")
     private Insumo insumo;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_producto")
     private Producto producto;
+
 }

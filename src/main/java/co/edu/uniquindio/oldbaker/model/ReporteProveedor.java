@@ -2,6 +2,8 @@ package co.edu.uniquindio.oldbaker.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -15,7 +17,7 @@ public class ReporteProveedor {
     private Long idDevolucion;
     private String razon;
     private Boolean esDevolucion;
-    private Date fechaDevolucion;
+    private LocalDate fechaDevolucion;
     @ManyToOne
     @JoinColumn(name = "id_detalle")
     private DetalleProveedorPedido detalle;

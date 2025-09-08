@@ -11,4 +11,7 @@ public class InsumoProveedorResponse {
     private String descripcion;
     private Double costoUnitario;
     private LocalDate fechaVencimiento;
+    private Integer cantidadDisponible;
+    private String proveedorNombre;
 }
+

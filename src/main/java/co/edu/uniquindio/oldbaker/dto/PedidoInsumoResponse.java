@@ -16,6 +16,6 @@ public class PedidoInsumoResponse {
     private LocalDate fechaPedido;
     private EstadoPedido estado;
     private PagoProveedor pago;
-    private List<DetallePedidoResponse> detalles;
+    private List<DetalleProveedorPedidoResponse> detalles;
 
 }

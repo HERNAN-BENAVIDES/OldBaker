@@ -1,0 +1,51 @@
+package co.edu.uniquindio.oldbaker.controllers;
+
+import co.edu.uniquindio.oldbaker.dto.PedidoInsumoRequest;
+import co.edu.uniquindio.oldbaker.dto.PedidoInsumoResponse;
+import co.edu.uniquindio.oldbaker.dto.ReporteProveedorRequest;
+import co.edu.uniquindio.oldbaker.dto.ReporteProveedorResponse;
+import co.edu.uniquindio.oldbaker.services.PedidoInsumoService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/aux/pedidos-insumos")
+@RequiredArgsConstructor
+public class PedidoInsumoAuxController {
+
+    private final PedidoInsumoService pedidoInsumoService;
+
+    // 2. Obtener todos los pedidos
+    @GetMapping
+    public ResponseEntity<List<PedidoInsumoResponse>> obtenerPedidos() {
+        return ResponseEntity.ok(pedidoInsumoService.listarPedidos());
+    }
+
+    // 3. Obtener pedido por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<PedidoInsumoResponse> obtenerPedido(@PathVariable Long id) {
+        return ResponseEntity.ok(pedidoInsumoService.buscarPorId(id));
+    }
+
+    // 4. Aprobar pedido (Auxiliar)
+    @PutMapping("/{id}/aprobar")
+    public ResponseEntity<PedidoInsumoResponse> aprobarPedido(@PathVariable Long id) {
+        return ResponseEntity.ok(pedidoInsumoService.aprobarPedido(id));
+    }
+
+    // 5. Devolver insumo (Auxiliar)
+    @PostMapping("/{id}/devoluciones")
+    public ResponseEntity<ReporteProveedorResponse> devolverInsumo(
+            @PathVariable Long id,
+            @RequestBody @Valid ReporteProveedorRequest request) {
+
+        ReporteProveedorResponse response = pedidoInsumoService.devolverInsumo(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+}

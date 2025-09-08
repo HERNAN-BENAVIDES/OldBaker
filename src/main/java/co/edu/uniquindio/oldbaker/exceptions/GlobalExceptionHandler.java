@@ -1,4 +1,4 @@
-package co.edu.uniquindio.oldbaker.config;
+package co.edu.uniquindio.oldbaker.exceptions;
 
 import co.edu.uniquindio.oldbaker.dto.ApiResponse;
 import co.edu.uniquindio.oldbaker.dto.ErrorResponse;
