@@ -5,6 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * DTO para la respuesta de autenticación
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -16,6 +20,10 @@ public class AuthResponse {
     private String tokenType = "Bearer";
     private UserResponse usuario;
 
+
+    /**
+     * DTO anidado para la información del usuario
+     */
     @Data
     @Builder
     @AllArgsConstructor

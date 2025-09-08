@@ -10,11 +10,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+
+/**
+ * Repositorio para la entidad VerificationCode.
+ * Proporciona operaciones CRUD y consultas personalizadas para gestionar códigos de verificación en la base de datos.
+ */
 @Repository
 public interface VerificationCodeRepository extends JpaRepository<VerificationCode,Long> {
 
+    // Consulta personalizada para encontrar un código de verificación por el ID de usuario
     Optional<VerificationCode> findByUserId(@NotNull(message = "El ID de usuario es obligatorio") Long idUsuario);
 
+    // Método para eliminar un código de verificación por el ID de usuario
     @Modifying
     @Query("DELETE FROM VerificationCode v WHERE v.userId = :idUsuario")
     void deleteByIdUser(@Param("idUsuario") Long idUsuario);

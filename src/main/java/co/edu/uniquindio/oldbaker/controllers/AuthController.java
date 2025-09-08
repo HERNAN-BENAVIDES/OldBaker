@@ -1,21 +1,23 @@
 package co.edu.uniquindio.oldbaker.controllers;
 
 import co.edu.uniquindio.oldbaker.dto.*;
-import co.edu.uniquindio.oldbaker.model.Usuario;
 import co.edu.uniquindio.oldbaker.services.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+
+/**
+ * Controlador para la autenticación y gestión de usuarios.
+ * Proporciona endpoints para registro, inicio de sesión, verificación de cuenta,
+ * recuperación de contraseña y autenticación con Google.
+ */
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -25,46 +27,74 @@ public class AuthController {
 
     private final AuthService authService;
 
+
+    /**
+     * Endpoint para registrar un nuevo usuario.
+     *
+     * @param request Datos del usuario a registrar.
+     * @return Respuesta con el resultado del registro.
+     */
     @PostMapping("/auth/register")
     public ResponseEntity<ApiResponse<?>> register(
             @Valid @RequestBody RegisterRequest request
     ) {
         try {
+            // Llamar al servicio para registrar el usuario
             var response = authService.register(request);
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
+            // Manejar errores de validación y otros errores esperados
             return ResponseEntity.badRequest()
                     .body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
+            // Manejar errores inesperados
             log.error("Error durante el registro: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error("Error interno del servidor"));
         }
     }
 
+
+    /**
+     * Endpoint para autenticar a un usuario.
+     *
+     * @param request Datos de inicio de sesión.
+     * @return Respuesta con los tokens de autenticación.
+     */
     @PostMapping("/auth/login")
     public ResponseEntity<ApiResponse<AuthResponse>> authenticate(
             @Valid @RequestBody LoginRequest request
     ) {
         try {
+            // Llamar al servicio para autenticar al usuario
             AuthResponse response = authService.authenticate(request);
             return ResponseEntity.ok(
                     ApiResponse.success("Inicio de sesión exitoso", response)
             );
         } catch (IllegalArgumentException e) {
+            // Manejar errores de autenticación
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponse.error("Credenciales inválidas"));
         } catch (Exception e) {
+            // Manejar errores inesperados
             log.error("Error durante la autenticación: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error("Error interno del servidor"));
         }
     }
 
+
+    /**
+     * Endpoint para cerrar la sesión de un usuario.
+     *
+     * @param request Datos necesarios para cerrar la sesión.
+     * @return Respuesta con el resultado del cierre de sesión.
+     */
     @PostMapping("/user/logout")
     public ResponseEntity<ApiResponse<String>> logout(@Valid @RequestBody LogoutRequest request) {
 
         try {
+            // Llamar al servicio para cerrar la sesión
             String response = authService.logout(request);
             return ResponseEntity.ok(ApiResponse.success("Logout exitoso", response));
         }catch (IllegalArgumentException e) {
@@ -73,6 +103,12 @@ public class AuthController {
         }
     }
 
+    /**
+     * Endpoint para verificar la cuenta de un usuario mediante un código de verificación.
+     *
+     * @param request Datos de verificación.
+     * @return Respuesta con el resultado de la verificación.
+     */
     @PostMapping("/auth/verify")
     public  ResponseEntity<ApiResponse<AuthResponse>> verify(@Valid @RequestBody VerificationRequest request){
         try {
@@ -91,6 +127,13 @@ public class AuthController {
 
     }
 
+
+    /**
+     * Endpoint para reenviar el código de verificación a un usuario.
+     *
+     * @param email Email del usuario que solicita el reenvío del código.
+     * @return Respuesta con el resultado del reenvío.
+     */
     @GetMapping("/verify/resend")
     public ResponseEntity<ApiResponse<String>> resendVerificationCode(@RequestParam String email) {
         try {
@@ -106,6 +149,11 @@ public class AuthController {
         }
     }
 
+    /**
+     *
+     * Recuperación de contraseña
+     *
+     */
     @PostMapping("/auth/forgot")
     public ResponseEntity<ApiResponse<String>> forgotPassword(@Valid @RequestBody String email) {
         try {
@@ -129,6 +177,12 @@ public class AuthController {
         }
     }
 
+
+    /**
+     * Endpoint para verificar el código de recuperación de contraseña.
+     * @param codigo
+     * @return
+     */
     @PostMapping("/auth/reset/verify")
     public ResponseEntity<ApiResponse<String>> verifyResetCode(@Valid @RequestBody String codigo) {
         try {
@@ -149,6 +203,13 @@ public class AuthController {
         }
     }
 
+
+    /**
+     * Endpoint para recuperar la contraseña usando un JWT y una nueva contraseña.
+     *
+     * @param request Datos necesarios para la recuperación de contraseña.
+     * @return Respuesta con el resultado de la recuperación.
+     */
     @PostMapping("/auth/reset")
     public ResponseEntity<ApiResponse<String>> recoverPassword(@Valid @RequestBody PasswordRecoveryRequest request) {
         try {
@@ -165,38 +226,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error("Error interno del servidor"));
         }
-    }
-
-
-    /**
-     *
-     * Google
-     *
-     */
-
-
-//    @GetMapping("/google/success")
-//    public void googleAuthSuccess(
-//            @AuthenticationPrincipal OAuth2User oAuth2User,
-//            HttpServletResponse response
-//    ) throws IOException {
-//        System.out.println("Entró a /google/success");
-//        // Procesa el usuario OAuth2 y genera tokens
-//        AuthResponse authResponse = authService.processOAuth2User(oAuth2User);
-//
-//        // Redirige al frontend con los tokens como parámetros
-//        String redirectUrl = String.format(
-//                "https://localhost:3000/auth/google/callback?accessToken=%s&refreshToken=%s",
-//                authResponse.getAccessToken(),
-//                authResponse.getRefreshToken()
-//        );
-//        response.sendRedirect(redirectUrl);
-//    }
-
-    @GetMapping("/google/failure")
-    public void googleAuthFailure(HttpServletResponse response) throws IOException {
-        System.out.println("Entró a /google/failure");
-        response.sendRedirect("https://localhost:3000/auth/error");
     }
 
 }

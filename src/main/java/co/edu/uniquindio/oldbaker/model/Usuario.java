@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Entidad que representa un usuario en el sistema.
+ * Implementa UserDetails para integración con Spring Security.
+ */
 @Entity
 @Table(name = "usuarios")
 @Data
@@ -106,10 +110,16 @@ public class Usuario implements UserDetails {
         return activo;
     }
 
+    /**
+     * Enum que define los roles de usuario en el sistema.
+     */
     public enum Rol {
         CLIENTE, ADMINISTRADOR, AUXILIAR
     }
 
+    /**
+     * Enum que define los tipos de autenticación disponibles.
+     */
     public enum TipoAutenticacion {
         EMAIL, GOOGLE
     }

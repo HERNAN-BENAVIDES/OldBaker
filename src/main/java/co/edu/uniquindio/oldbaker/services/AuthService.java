@@ -27,6 +27,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+
+/**
+ * Servicio para la autenticación y gestión de usuarios.
+ * Proporciona métodos para registrar, autenticar, verificar, cerrar sesión y recuperar contraseñas de usuarios.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -40,6 +45,13 @@ public class AuthService {
     private final MailService mailService;
     private final VerificationCodeRepository verificationCodeRepository;
 
+
+    /**
+     * Registra un nuevo usuario.
+     *
+     * @param request Datos del usuario a registrar.
+     * @return Respuesta con el resultado del registro.
+     */
     @Transactional
     public ApiResponse<?> register(RegisterRequest request) {
         log.info("Registrando nuevo usuario con email: {}", request.getEmail());
@@ -50,6 +62,7 @@ public class AuthService {
 
         String codigo;
 
+        // Enviar código de verificación
         try {
             codigo = generarCodigoToken();
             enviarCodigo(request.getEmail(), codigo);
@@ -83,6 +96,13 @@ public class AuthService {
         return ApiResponse.success("Usuario registrado exitosamente", mapToUserResponse(usuario));
     }
 
+    /**
+     * Envía un código de verificación al email proporcionado.
+     *
+     * @param email  El email del usuario.
+     * @param codigo El código de verificación a enviar.
+     * @throws MessagingException Si ocurre un error al enviar el email.
+     */
     private void enviarCodigo(
             @Email(message = "El formato del email no es válido")
             @NotBlank(message = "El email es obligatorio")
@@ -105,11 +125,22 @@ public class AuthService {
     }
 
 
+    /**
+     * Genera un código de verificación aleatorio de 6 dígitos.
+     *
+     * @return El código de verificación generado.
+     */
     private String generarCodigoToken() {
         int codigo = (int) (Math.random() * 900000) + 100000;
         return String.valueOf(codigo);
     }
 
+    /**
+     * Autentica a un usuario y genera tokens JWT.
+     *
+     * @param request Datos de autenticación del usuario.
+     * @return Respuesta con los tokens JWT y la información del usuario.
+     */
     public AuthResponse authenticate(LoginRequest request) {
         log.info("Autenticando usuario: {}", request.getEmail());
 
@@ -142,6 +173,13 @@ public class AuthService {
                 .build();
     }
 
+
+    /**
+     * Procesa la autenticación de un usuario a través de OAuth2.
+     *
+     * @param oAuth2User El usuario autenticado a través de OAuth2.
+     * @return Respuesta con los tokens JWT y la información del usuario.
+     */
     @Transactional
     public ApiResponse<AuthResponse> processOAuth2User(OAuth2User oAuth2User) {
         // Toda la lógica de autenticación OAuth2 está en OAuth2SuccessHandler.
@@ -192,6 +230,12 @@ public class AuthService {
 
     }
 
+    /**
+     * Mapea una entidad Usuario a un DTO UserResponse.
+     *
+     * @param usuario La entidad Usuario a mapear.
+     * @return El DTO UserResponse correspondiente.
+     */
     private AuthResponse.UserResponse mapToUserResponse(Usuario usuario) {
         return AuthResponse.UserResponse.builder()
                 .id(usuario.getId())
@@ -201,6 +245,13 @@ public class AuthService {
                 .build();
     }
 
+
+    /**
+     * Cierra la sesión de un usuario invalidando su token JWT.
+     *
+     * @param request Datos de la solicitud de cierre de sesión.
+     * @return Mensaje indicando el resultado del cierre de sesión.
+     */
     @Transactional
     public String logout(LogoutRequest request) {
         Optional<Usuario> user = usuarioRepository.findByEmail(request.getEmail());
@@ -226,6 +277,13 @@ public class AuthService {
         return "Cierre de sesión exitoso";
     }
 
+
+    /**
+     * Verifica la cuenta de un usuario mediante un código de verificación.
+     *
+     * @param request Datos de verificación.
+     * @return Respuesta con los tokens JWT y la información del usuario.
+     */
     @Transactional
     public AuthResponse verify(VerificationRequest request) {
         var usuario = usuarioRepository.findAllById(Collections.singleton(request.getIdUsuario()))
@@ -257,6 +315,12 @@ public class AuthService {
                 .build();
     }
 
+    /**
+     * Reenvía el código de verificación a un usuario no verificado.
+     *
+     * @param email El email del usuario.
+     * @return Mensaje indicando el resultado del reenvío.
+     */
     @Transactional
     public String resendVerificationCode(String email) {
         var usuario = usuarioRepository.findByEmail(email)
@@ -295,6 +359,12 @@ public class AuthService {
         return "Código de verificación reenviado exitosamente";
     }
 
+    /**
+     * Recupera la contraseña de un usuario verificado.
+     *
+     * @param request Datos de recuperación de contraseña.
+     * @return Mensaje indicando el resultado de la recuperación.
+     */
     @Transactional
     public String recoverPassword(@Valid PasswordRecoveryRequest request) {
         var usuario = usuarioRepository.findByEmail(request.getEmail())
@@ -312,6 +382,13 @@ public class AuthService {
         return "Contraseña actualizada exitosamente";
     }
 
+
+    /**
+     * Inicia el proceso de recuperación de contraseña enviando un código al email del usuario.
+     *
+     * @param emailTrim El email del usuario.
+     */
+    @Transactional
     public void initiatePasswordReset(String emailTrim) {
         var email = emailTrim == null ? "" : emailTrim.trim();
         var usuario = usuarioRepository.findByEmail(email)
@@ -348,6 +425,12 @@ public class AuthService {
     }
 
 
+    /**
+     * Verifica el código de recuperación de contraseña y genera un token JWT.
+     *
+     * @param codeTrim El código de verificación proporcionado por el usuario.
+     * @return Un token JWT si el código es válido.
+     */
     @Transactional
     public String verifyResetCode(String codeTrim) {
         var code = codeTrim == null ? "" : codeTrim.trim();
@@ -367,10 +450,9 @@ public class AuthService {
         var usuario = usuarioRepository.findById(verificationCode.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
+
         var jwtToken = jwtService.generateToken(usuario);
-
         log.info("Código de recuperación verificado para el usuario: {}", usuario.getEmail());
-
         verificationCodeRepository.delete(verificationCode);
 
         return jwtToken;

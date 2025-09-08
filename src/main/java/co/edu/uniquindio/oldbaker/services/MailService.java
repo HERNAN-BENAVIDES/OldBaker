@@ -14,19 +14,30 @@ import java.util.Locale;
 import java.util.Map;
 
 
+/**
+ * Servicio para el envío de correos electrónicos utilizando plantillas Thymeleaf.
+ * Proporciona un método asíncrono para enviar correos electrónicos con contenido HTML generado a partir de una plantilla y variables dinámicas.
+ */
 @Service
 public class MailService {
 
     private final JavaMailSender mailSender;
     private  final TemplateEngine templateEngine;
 
-
+    // Constructor para inyectar las dependencias necesarias
     public MailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
     }
 
 
+    /** Envía un correo electrónico de manera asíncrona.
+     *
+     * @param to        La dirección de correo electrónico del destinatario.
+     * @param subject   El asunto del correo electrónico.
+     * @param variables Un mapa de variables que se utilizarán para rellenar la plantilla del correo.
+     * @throws MessagingException Si ocurre un error al crear o enviar el correo electrónico.
+     */
     @Async
     public void sendEmail(String to, String subject, Map<String, Object> variables) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();

@@ -9,6 +9,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * DTO para la solicitud de verificación de código
+ */
 @Data
 @Builder
 @AllArgsConstructor

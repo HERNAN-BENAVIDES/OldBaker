@@ -1,4 +1,4 @@
-package co.edu.uniquindio.oldbaker.config;
+package co.edu.uniquindio.oldbaker.exceptions;
 
 import co.edu.uniquindio.oldbaker.dto.ApiResponse;
 import co.edu.uniquindio.oldbaker.dto.ErrorResponse;
@@ -17,10 +17,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * Manejador global de excepciones para la aplicación.
+ * Captura y maneja diversas excepciones lanzadas durante la ejecución de la aplicación,
+ * proporcionando respuestas HTTP adecuadas y mensajes de error detallados.
+ */
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
+    /**
+     * Maneja las excepciones de validación de argumentos de método.
+     * Recopila los errores de validación y devuelve una respuesta con detalles de los errores.
+     *
+     * @param ex      La excepción lanzada.
+     * @param request La solicitud HTTP que causó la excepción.
+     * @return Una respuesta HTTP con detalles de los errores de validación.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(
             MethodArgumentNotValidException ex,
@@ -42,6 +56,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
+    /**
+     * Maneja las excepciones de argumento ilegal.
+     * Devuelve una respuesta HTTP 400 con el mensaje de error.
+     *
+     * @param ex      La excepción lanzada.
+     * @param request La solicitud HTTP que causó la excepción.
+     * @return Una respuesta HTTP con el mensaje de error.
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(
             IllegalArgumentException ex,
@@ -52,6 +74,14 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(ex.getMessage()));
     }
 
+    /**
+     * Maneja las excepciones de credenciales inválidas.
+     * Devuelve una respuesta HTTP 401 con un mensaje de error genérico.
+     *
+     * @param ex      La excepción lanzada.
+     * @param request La solicitud HTTP que causó la excepción.
+     * @return Una respuesta HTTP con el mensaje de error.
+     */
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(
             BadCredentialsException ex,
@@ -66,6 +96,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
+    /**
+     * Maneja las excepciones de autenticación.
+     * Devuelve una respuesta HTTP 401 con un mensaje de error genérico.
+     *
+     * @param ex      La excepción lanzada.
+     * @param request La solicitud HTTP que causó la excepción.
+     * @return Una respuesta HTTP con el mensaje de error.
+     */
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException(
             AuthenticationException ex,
@@ -80,6 +118,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
+    /**
+     * Maneja las excepciones de acceso denegado.
+     * Devuelve una respuesta HTTP 403 con un mensaje de error genérico.
+     *
+     * @param ex      La excepción lanzada.
+     * @param request La solicitud HTTP que causó la excepción.
+     * @return Una respuesta HTTP con el mensaje de error.
+     */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(
             AccessDeniedException ex,
@@ -94,6 +140,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
+    /**
+     * Maneja las excepciones en tiempo de ejecución.
+     * Devuelve una respuesta HTTP 500 con un mensaje de error genérico.
+     *
+     * @param ex      La excepción lanzada.
+     * @param request La solicitud HTTP que causó la excepción.
+     * @return Una respuesta HTTP con el mensaje de error.
+     */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(
             RuntimeException ex,
@@ -108,6 +162,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
+
+    /**
+     * Maneja las excepciones genéricas.
+     * Devuelve una respuesta HTTP 500 con un mensaje de error genérico.
+     *
+     * @param ex      La excepción lanzada.
+     * @param request La solicitud HTTP que causó la excepción.
+     * @return Una respuesta HTTP con el mensaje de error.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex,

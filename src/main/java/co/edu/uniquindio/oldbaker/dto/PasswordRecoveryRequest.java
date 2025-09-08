@@ -3,6 +3,10 @@ package co.edu.uniquindio.oldbaker.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+
+/**
+ * DTO para la solicitud de recuperación de contraseña
+ */
 @Data
 public class PasswordRecoveryRequest {
     @NotBlank(message = "El email es obligatorio")

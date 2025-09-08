@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+
+/**
+ * Entidad que representa un token inválido (blacklist) para manejar el cierre de sesión y la revocación de tokens JWT.
+ */
 @Entity
 @Table(name = "black_tokens")
 @Data

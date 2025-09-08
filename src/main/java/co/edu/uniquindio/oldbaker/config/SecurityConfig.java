@@ -26,6 +26,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+
+/**
+ * Configuración de seguridad para la aplicación utilizando Spring Security.
+ * Define las reglas de seguridad, los filtros de autenticación y los proveedores de autenticación.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -35,11 +40,23 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UsuarioService usuarioService;
 
+
+    /**
+     * Configura la cadena de filtros de seguridad.
+     *
+     * @param http        El objeto HttpSecurity para configurar la seguridad HTTP.
+     * @param authService El servicio de autenticación para manejar el inicio de sesión OAuth2.
+     * @return La cadena de filtros de seguridad configurada.
+     * @throws Exception Si ocurre un error durante la configuración.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthService authService) throws Exception {
         http
+                // Deshabilitar CSRF para APIs REST
                 .csrf(AbstractHttpConfigurer::disable)
+                // Configurar CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // Configurar las reglas de autorización
                 .authorizeHttpRequests(auth -> auth
                         // Endpoints públicos
                         .requestMatchers(
@@ -57,26 +74,36 @@ public class SecurityConfig {
                         // Endpoints para usuarios autenticados
                         .requestMatchers("/api/user/**").hasRole("CLIENTE")
                         // Endpoints para usuarios con rol AUXILIAR
-                        .requestMatchers("/api/user/**").hasRole("AUXILIAR")
+                        .requestMatchers("/api/aux/**").hasRole("AUXILIAR")
                         // Cualquier otra petición requiere autenticación
                         .anyRequest().authenticated()
                 )
+                // Configurar la gestión de sesiones como sin estado
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                // Configurar el inicio de sesión OAuth2
                 .oauth2Login(oauth2 -> oauth2
+                        // Configurar el manejador de éxito y fracaso en la autenticación OAuth2
                         .successHandler(new OAuth2SuccessHandler(authService))
                         .failureHandler((request, response, exception) -> {
                             System.out.println("OAuth2 login FAILURE: " + exception.getMessage());
                             response.sendRedirect("/api/auth/google/failure");
                         })
                 )
+                // Configurar el proveedor de autenticación
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+
+    /**
+     * Configura la fuente de configuración CORS.
+     *
+     * @return La fuente de configuración CORS.
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -90,11 +117,21 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+     * Configura el servicio de detalles del usuario.
+     *
+     * @return El servicio de detalles del usuario.
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         return usuarioService::findByEmailAndActivo;
     }
 
+    /**
+     * Configura el proveedor de autenticación.
+     *
+     * @return El proveedor de autenticación.
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -103,11 +140,23 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    /**
+     * Configura el gestor de autenticación.
+     *
+     * @param config La configuración de autenticación.
+     * @return El gestor de autenticación.
+     * @throws Exception Si ocurre un error durante la configuración.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Configura el codificador de contraseñas.
+     *
+     * @return El codificador de contraseñas.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

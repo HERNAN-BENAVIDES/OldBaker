@@ -8,7 +8,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// DTO para registro
+/**
+ * DTO para la solicitud de registro de usuario
+ */
 @Data
 @Builder
 @AllArgsConstructor

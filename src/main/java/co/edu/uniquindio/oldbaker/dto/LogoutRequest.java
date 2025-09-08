@@ -4,6 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+
+/**
+ * DTO para la solicitud de cierre de sesión
+ */
 @Data
 public class LogoutRequest {
     @NotBlank(message = "El email es obligatorio")

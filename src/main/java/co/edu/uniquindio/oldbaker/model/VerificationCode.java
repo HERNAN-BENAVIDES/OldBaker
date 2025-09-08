@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
-
+/**
+ * Entidad que representa un código de verificación asociado a un usuario.
+ */
 @Data
 @RequiredArgsConstructor
 @Table(name = "verification_codes")
