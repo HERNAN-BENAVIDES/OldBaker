@@ -4,6 +4,7 @@ import co.edu.uniquindio.oldbaker.services.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -56,7 +57,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         var authResponse = authService.processOAuth2User(oAuth2User);
 
         String serializedData = new ObjectMapper().writeValueAsString(authResponse);
-        String redirectUrl = "http://localhost:4200/oauth-callback?data=" + URLEncoder.encode(serializedData, StandardCharsets.UTF_8);
+        String redirectUrl = "https://old-baker-front.vercel.app/oauth-callback?data="
+                + URLEncoder.encode(serializedData, StandardCharsets.UTF_8);
         response.sendRedirect(redirectUrl);
 
     }

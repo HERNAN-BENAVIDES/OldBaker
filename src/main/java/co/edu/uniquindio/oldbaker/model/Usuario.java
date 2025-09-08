@@ -46,14 +46,14 @@ public class Usuario implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Rol rol = Rol.CLIENTE;
+    private Rol rol;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_autenticacion", nullable = false)
-    private TipoAutenticacion tipoAutenticacion = TipoAutenticacion.EMAIL;
+    private TipoAutenticacion tipoAutenticacion;
 
     @Column(name = "verificado", nullable = false)
-    private Boolean verificado = false;
+    private Boolean verificado;
 
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
@@ -65,7 +65,7 @@ public class Usuario implements UserDetails {
     private LocalDateTime fechaUltimaSesion;
 
     @Column(nullable = false)
-    private Boolean activo = true;
+    private Boolean activo;
 
 
     @PrePersist

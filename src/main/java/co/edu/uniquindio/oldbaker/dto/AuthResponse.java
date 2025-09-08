@@ -17,7 +17,7 @@ public class AuthResponse {
 
     private String accessToken;
     private String refreshToken;
-    private String tokenType = "Bearer";
+    private String tokenType;
     private UserResponse usuario;
 
 

@@ -38,7 +38,8 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
 	// Oracle Database
-	implementation 'com.oracle.database.jdbc:ojdbc8:23.3.0.23.09'
+//	implementation 'com.oracle.database.jdbc:ojdbc8:23.3.0.23.09'
+    implementation 'com.mysql:mysql-connector-j:8.1.0'
 
     // Mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -61,5 +62,11 @@ dependencies {
 	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
+}
+
+processResources {
+    from('.') {
+        include '.env'
+    }
 }
 
