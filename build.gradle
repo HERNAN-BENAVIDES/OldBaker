@@ -64,9 +64,14 @@ dependencies {
 
 }
 
+// groovy
+def envFile = project.hasProperty('env') && project.env == 'development' ? '.env.development' : '.env.production'
+
 processResources {
     from('.') {
-        include '.env'
+        include envFile
     }
 }
+
+
 
