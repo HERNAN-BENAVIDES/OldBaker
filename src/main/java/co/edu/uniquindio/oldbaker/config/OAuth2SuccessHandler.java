@@ -24,6 +24,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private static final Logger log = LoggerFactory.getLogger(OAuth2SuccessHandler.class);
     private final AuthService authService;
 
+    @Value("${FRONTEND_REDIRECT_URL}")
+    private String urlRedirect;
+
     // Constructor que inyecta el servicio de autenticación.
     public OAuth2SuccessHandler(AuthService authService) {
         this.authService = authService;
@@ -57,7 +60,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         var authResponse = authService.processOAuth2User(oAuth2User);
 
         String serializedData = new ObjectMapper().writeValueAsString(authResponse);
-        String redirectUrl = "https://old-baker-front.vercel.app/oauth-callback?data="
+        String redirectUrl = urlRedirect
                 + URLEncoder.encode(serializedData, StandardCharsets.UTF_8);
         response.sendRedirect(redirectUrl);
 
