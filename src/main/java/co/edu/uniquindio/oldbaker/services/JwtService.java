@@ -73,7 +73,7 @@ public class JwtService {
      * @return El token JWT generado.
      */
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        Map<String, Object> claims = enrichClaimsWithUserId(extraClaims, userDetails);
+        Map<String, Object> claims = enrichClaimsWithUserIdAndRole(extraClaims, userDetails);
         return buildToken(claims, userDetails, jwtExpiration);
     }
 
@@ -85,7 +85,7 @@ public class JwtService {
      * @return El token de actualización JWT generado.
      */
     public String generateRefreshToken(UserDetails userDetails) {
-        Map<String, Object> claims = enrichClaimsWithUserId(new HashMap<>(), userDetails);
+        Map<String, Object> claims = enrichClaimsWithUserIdAndRole(new HashMap<>(), userDetails);
         return buildToken(claims, userDetails, jwtExpiration * 7); // 7 días
     }
 
@@ -119,10 +119,14 @@ public class JwtService {
      * @param userDetails Los detalles del usuario para el cual se generará el token.
      * @return Un mapa con las reclamaciones actualizadas.
      */
-    private Map<String, Object> enrichClaimsWithUserId(Map<String, Object> extraClaims, UserDetails userDetails) {
+    private Map<String, Object> enrichClaimsWithUserIdAndRole(Map<String, Object> extraClaims, UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>(extraClaims);
         if (userDetails instanceof Usuario usuario && usuario.getId() != null) {
             claims.put("userId", usuario.getId());
+            // Añadir el rol del usuario como claim -> "role"
+            if (usuario.getRol() != null) {
+                claims.put("role", usuario.getRol().name());
+            }
         }
         return claims;
     }
@@ -168,6 +172,19 @@ public class JwtService {
                 }
             }
             return null;
+        });
+    }
+
+    /**
+     * Extrae el rol del usuario desde el token JWT.
+     *
+     * @param token El token JWT del cual se extraerá el rol.
+     * @return El rol como String si está presente; de lo contrario, null.
+     */
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> {
+            Object role = claims.get("role");
+            return role != null ? role.toString() : null;
         });
     }
 

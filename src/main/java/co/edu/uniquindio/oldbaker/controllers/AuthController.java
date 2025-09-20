@@ -2,7 +2,6 @@ package co.edu.uniquindio.oldbaker.controllers;
 
 import co.edu.uniquindio.oldbaker.dto.*;
 import co.edu.uniquindio.oldbaker.services.AuthService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
