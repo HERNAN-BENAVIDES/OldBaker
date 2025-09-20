@@ -66,6 +66,7 @@ public class SecurityConfig {
                                 "/api/auth/google/**",
                                 "/api/auth/forgot/**",
                                 "/api/auth/reset/**",
+                                "/api/auth/worker/login",
                                 "/login/oauth2/**",
                                 "/oauth2/**"
                         ).permitAll()

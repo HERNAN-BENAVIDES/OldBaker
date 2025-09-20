@@ -240,12 +240,12 @@ public class AuthController {
             // Llamar al servicio para autenticar al usuario
             AuthResponse response = authService.workerAuthenticate(request);
             return ResponseEntity.ok(
-                    ApiResponse.success("Inicio de sesión exitoso", response)
+                    ApiResponse.success(response)
             );
         } catch (IllegalArgumentException e) {
             // Manejar errores de autenticación
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error("Credenciales inválidas"));
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
             // Manejar errores inesperados
             log.error("Error durante la autenticación: ", e);
