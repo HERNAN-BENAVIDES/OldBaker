@@ -1,5 +1,6 @@
 package co.edu.uniquindio.oldbaker.services;
 
+import co.edu.uniquindio.oldbaker.model.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -72,7 +73,8 @@ public class JwtService {
      * @return El token JWT generado.
      */
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+        Map<String, Object> claims = enrichClaimsWithUserId(extraClaims, userDetails);
+        return buildToken(claims, userDetails, jwtExpiration);
     }
 
     /**
@@ -83,7 +85,8 @@ public class JwtService {
      * @return El token de actualización JWT generado.
      */
     public String generateRefreshToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, jwtExpiration * 7); // 7 días
+        Map<String, Object> claims = enrichClaimsWithUserId(new HashMap<>(), userDetails);
+        return buildToken(claims, userDetails, jwtExpiration * 7); // 7 días
     }
 
     /**
@@ -110,6 +113,21 @@ public class JwtService {
     }
 
     /**
+     * Enriquecer las reclamaciones con información adicional del usuario.
+     *
+     * @param extraClaims Reclamaciones adicionales a incluir en el token.
+     * @param userDetails Los detalles del usuario para el cual se generará el token.
+     * @return Un mapa con las reclamaciones actualizadas.
+     */
+    private Map<String, Object> enrichClaimsWithUserId(Map<String, Object> extraClaims, UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>(extraClaims);
+        if (userDetails instanceof Usuario usuario && usuario.getId() != null) {
+            claims.put("userId", usuario.getId());
+        }
+        return claims;
+    }
+
+    /**
      * Valida si el token JWT es válido para el usuario proporcionado.
      *
      * @param token       El token JWT a validar.
@@ -118,7 +136,39 @@ public class JwtService {
      */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        if (!username.equals(userDetails.getUsername()) || isTokenExpired(token)) {
+            return false;
+        }
+
+        if (userDetails instanceof Usuario usuario && usuario.getId() != null) {
+            Long tokenUserId = extractUserId(token);
+            return tokenUserId != null && tokenUserId.equals(usuario.getId());
+        }
+
+        return true;
+    }
+
+    /**
+     * Extrae el identificador del usuario desde el token JWT.
+     *
+     * @param token El token JWT del cual se extraerá el identificador.
+     * @return El identificador del usuario si está presente; de lo contrario, null.
+     */
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> {
+            Object userId = claims.get("userId");
+            if (userId instanceof Number number) {
+                return number.longValue();
+            }
+            if (userId instanceof String string) {
+                try {
+                    return Long.parseLong(string);
+                } catch (NumberFormatException ignored) {
+                    return null;
+                }
+            }
+            return null;
+        });
     }
 
     /**
