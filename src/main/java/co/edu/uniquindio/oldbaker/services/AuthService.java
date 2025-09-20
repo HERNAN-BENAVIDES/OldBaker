@@ -157,6 +157,10 @@ public class AuthService {
         }
 
 
+        return getAuthResponse(request);
+    }
+
+    private AuthResponse getAuthResponse(LoginRequest request) {
         var usuario = usuarioRepository.findByEmailAndActivoTrue(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
@@ -456,5 +460,24 @@ public class AuthService {
         verificationCodeRepository.delete(verificationCode);
 
         return jwtToken;
+    }
+
+    public AuthResponse workerAuthenticate(@Valid LoginRequest request) {
+        log.info("Autenticando usuario trabajador: {}", request.getEmail());
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            log.warn("Intento de autenticación fallido para el usuario trabajador: {}", request.getEmail());
+            throw new IllegalArgumentException("Credenciales inválidas");
+        }
+
+        return getAuthResponse(request);
+
     }
 }

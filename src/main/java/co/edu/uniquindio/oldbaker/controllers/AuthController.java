@@ -227,4 +227,31 @@ public class AuthController {
         }
     }
 
+
+    /*
+        * Autenticación de Administradores y Auxiliares
+     */
+
+    @PostMapping("/auth/worker/login")
+    public ResponseEntity<ApiResponse<AuthResponse>> workerAuthenticate(
+            @Valid @RequestBody LoginRequest request
+    ) {
+        try {
+            // Llamar al servicio para autenticar al usuario
+            AuthResponse response = authService.workerAuthenticate(request);
+            return ResponseEntity.ok(
+                    ApiResponse.success("Inicio de sesión exitoso", response)
+            );
+        } catch (IllegalArgumentException e) {
+            // Manejar errores de autenticación
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("Credenciales inválidas"));
+        } catch (Exception e) {
+            // Manejar errores inesperados
+            log.error("Error durante la autenticación: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.error("Error interno del servidor"));
+        }
+    }
+
 }
