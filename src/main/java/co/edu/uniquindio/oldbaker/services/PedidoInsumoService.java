@@ -6,9 +6,11 @@ import co.edu.uniquindio.oldbaker.repositories.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -36,39 +38,39 @@ public class PedidoInsumoService {
         PedidoInsumo pedido = new PedidoInsumo();
         pedido.setNombre(request.getNombre());
         pedido.setDescripcion(request.getDescripcion());
-        pedido.setFechaPedido(LocalDate.now());
+        pedido.setFechaPedido(request.getFechaPedido() != null ? request.getFechaPedido() : LocalDate.now());
         pedido.setEstado(EstadoPedido.PENDIENTE);
 
-        final double[] total = {0.0};
+        BigDecimal total = BigDecimal.ZERO;
 
         // Procesar cada detalle que viene en el request
         if (request.getDetalles() != null && !request.getDetalles().isEmpty()) {
-            List<DetalleProveedorPedido> detalles = request.getDetalles().stream().map(detReq -> {
-                // Buscar el insumoProveedor por id
+            List<DetalleProveedorPedido> detalles = new ArrayList<>();
+            for (DetalleProveedorPedidoRequest detReq : request.getDetalles()) {
                 InsumoProveedor insumoProveedor = insumoProveedorRepository.findById(detReq.getInsumoProveedorId())
                         .orElseThrow(() -> new RuntimeException("InsumoProveedor no encontrado: " + detReq.getInsumoProveedorId()));
 
-                // Calcular subtotal
-                double subtotal = detReq.getCantidadInsumo() * insumoProveedor.getCostoUnitario();
+                validarPrecioNegociado(detReq, insumoProveedor);
 
-                // Crear el detalle
+                BigDecimal cantidad = BigDecimal.valueOf(detReq.getCantidadInsumo());
+                BigDecimal subtotal = detReq.getPrecioUnitario().multiply(cantidad);
+
                 DetalleProveedorPedido detalle = new DetalleProveedorPedido();
                 detalle.setCantidadInsumo(detReq.getCantidadInsumo());
+                detalle.setPrecioUnitarioNegociado(detReq.getPrecioUnitario());
                 detalle.setCostoSubtotal(subtotal);
                 detalle.setEsDevuelto(false);
                 detalle.setInsumo(insumoProveedor);
                 detalle.setPedido(pedido);
 
-                // Acumular el total
-                total[0] += subtotal;
-
-                return detalle;
-            }).toList();
+                total = total.add(subtotal);
+                detalles.add(detalle);
+            }
 
             pedido.setDetalles(detalles);
         }
 
-        pedido.setCostoTotal(total[0]);
+        pedido.setCostoTotal(total);
 
         PedidoInsumo guardado = pedidoInsumoRepository.save(pedido);
 
@@ -107,10 +109,10 @@ public class PedidoInsumoService {
         reporteProveedorRepository.save(reporte);
 
         // Recalcular el costo total del pedido (sin el detalle devuelto)
-        double nuevoTotal = pedido.getDetalles().stream()
+        BigDecimal nuevoTotal = pedido.getDetalles().stream()
                 .filter(d -> !Boolean.TRUE.equals(d.getEsDevuelto()))
-                .mapToDouble(DetalleProveedorPedido::getCostoSubtotal)
-                .sum();
+                .map(DetalleProveedorPedido::getCostoSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         pedido.setCostoTotal(nuevoTotal);
         pedidoInsumoRepository.save(pedido);
@@ -122,7 +124,8 @@ public class PedidoInsumoService {
         response.setEsDevolucion(reporte.getEsDevolucion());
         response.setFechaDevolucion(reporte.getFechaDevolucion());
         response.setDetalleId(detalle.getIdDetalle());
-        response.setInsumoNombre(detalle.getInsumo().getNombre());
+        response.setInsumoNombre(detalle.getInsumo().getInsumo() != null
+                ? detalle.getInsumo().getInsumo().getNombre() : null);
         response.setCantidadDevuelta(detalle.getCantidadInsumo());
 
         return response;
@@ -159,33 +162,41 @@ public class PedidoInsumoService {
         pedido.setFechaPedido(request.getFechaPedido());
 
         // Primero limpiamos los detalles anteriores (orphanRemoval = true los elimina de BD)
+        if (pedido.getDetalles() == null) {
+            pedido.setDetalles(new ArrayList<>());
+        }
         pedido.getDetalles().clear();
 
-        final double[] total = {0.0};
+        BigDecimal total = BigDecimal.ZERO;
 
         // Ahora agregamos los nuevos detalles desde el request
         if (request.getDetalles() != null && !request.getDetalles().isEmpty()) {
-            List<DetalleProveedorPedido> nuevosDetalles = request.getDetalles().stream().map(detReq -> {
+            List<DetalleProveedorPedido> nuevosDetalles = new ArrayList<>();
+            for (DetalleProveedorPedidoRequest detReq : request.getDetalles()) {
                 InsumoProveedor insumoProveedor = insumoProveedorRepository.findById(detReq.getInsumoProveedorId())
                         .orElseThrow(() -> new RuntimeException("InsumoProveedor no encontrado: " + detReq.getInsumoProveedorId()));
 
-                double subtotal = detReq.getCantidadInsumo() * insumoProveedor.getCostoUnitario();
+                validarPrecioNegociado(detReq, insumoProveedor);
+
+                BigDecimal cantidad = BigDecimal.valueOf(detReq.getCantidadInsumo());
+                BigDecimal subtotal = detReq.getPrecioUnitario().multiply(cantidad);
 
                 DetalleProveedorPedido detalle = new DetalleProveedorPedido();
                 detalle.setCantidadInsumo(detReq.getCantidadInsumo());
+                detalle.setPrecioUnitarioNegociado(detReq.getPrecioUnitario());
                 detalle.setCostoSubtotal(subtotal);
                 detalle.setEsDevuelto(false);
                 detalle.setInsumo(insumoProveedor);
                 detalle.setPedido(pedido);
 
-                total[0] += subtotal;
-                return detalle;
-            }).toList();
+                total = total.add(subtotal);
+                nuevosDetalles.add(detalle);
+            }
 
             pedido.getDetalles().addAll(nuevosDetalles);
         }
 
-        pedido.setCostoTotal(total[0]);
+        pedido.setCostoTotal(total);
 
         PedidoInsumo actualizado = pedidoInsumoRepository.save(pedido);
         return mapToResponse(actualizado);
@@ -210,27 +221,32 @@ public class PedidoInsumoService {
         }
 
         pedido.setEstado(EstadoPedido.APROBADO);
+        pedido.setFechaAprobacion(LocalDateTime.now());
 
         // Mapear insumos del proveedor al inventario de la empresa
         for (DetalleProveedorPedido detalle : pedido.getDetalles()) {
             InsumoProveedor insumoProveedor = detalle.getInsumo();
 
-            Optional<Insumo> existente = insumoRepository.findByInsumoProveedor(insumoProveedor);
+            Insumo insumo = insumoProveedor.getInsumo();
+            if (insumo == null) {
+                throw new RuntimeException("El insumo asociado al proveedor no está configurado correctamente");
+            }
 
-            if (existente.isPresent()) {
-                Insumo insumo = existente.get();
-                insumo.setCantidadActual(insumo.getCantidadActual() + detalle.getCantidadInsumo());
-                insumoRepository.save(insumo);
-            } else {
-                Insumo nuevo = new Insumo();
-                nuevo.setNombre(insumoProveedor.getNombre());
-                nuevo.setDescripcion(insumoProveedor.getDescripcion());
-                nuevo.setCostoUnitario(insumoProveedor.getCostoUnitario());
-                nuevo.setCantidadActual(detalle.getCantidadInsumo());
-                nuevo.setInsumoProveedor(insumoProveedor);
-                insumoRepository.save(nuevo);
+            BigDecimal cantidadActual = insumo.getCantidadActual() != null ? insumo.getCantidadActual() : BigDecimal.ZERO;
+            BigDecimal nuevaCantidad = cantidadActual.add(BigDecimal.valueOf(detalle.getCantidadInsumo()));
+            insumo.setCantidadActual(nuevaCantidad);
+            insumoRepository.save(insumo);
+
+            Integer disponible = insumoProveedor.getCantidadDisponible();
+            if (disponible != null) {
+                int restante = Math.max(0, disponible - detalle.getCantidadInsumo());
+                insumoProveedor.setCantidadDisponible(restante);
+                insumoProveedorRepository.save(insumoProveedor);
             }
         }
+
+        pedido.setFechaRecepcion(LocalDateTime.now());
+        pedido.setEstado(EstadoPedido.RECIBIDO);
 
         PedidoInsumo actualizado = pedidoInsumoRepository.save(pedido);
         return mapToResponse(actualizado);
@@ -241,11 +257,12 @@ public class PedidoInsumoService {
         PedidoInsumo pedido = pedidoInsumoRepository.findById(idPedido)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        if (pedido.getEstado() != EstadoPedido.APROBADO) {
-            throw new RuntimeException("Solo se pueden pagar pedidos en estado APROBADO");
+        if (pedido.getEstado() != EstadoPedido.RECIBIDO) {
+            throw new RuntimeException("Solo se pueden pagar pedidos en estado RECIBIDO");
         }
 
         PagoProveedor pago = new PagoProveedor();
+        pago.setDescripcion("Pago de pedido " + pedido.getNombre());
         pago.setMonto(pedido.getCostoTotal());
         pago.setFechaPago(LocalDate.now());
         pago.setPedido(pedido);
@@ -254,6 +271,7 @@ public class PedidoInsumoService {
 
         pedido.setPago(pago);
         pedido.setEstado(EstadoPedido.PAGADO);
+        pedido.setFechaPago(LocalDateTime.now());
 
         PedidoInsumo actualizado = pedidoInsumoRepository.save(pedido);
         return mapToResponse(actualizado);
@@ -268,6 +286,9 @@ public class PedidoInsumoService {
         response.setCostoTotal(pedido.getCostoTotal());
         response.setFechaPedido(pedido.getFechaPedido());
         response.setEstado(pedido.getEstado());
+        response.setFechaAprobacion(pedido.getFechaAprobacion());
+        response.setFechaRecepcion(pedido.getFechaRecepcion());
+        response.setFechaPago(pedido.getFechaPago());
         response.setPago(pedido.getPago());
 
         if (pedido.getDetalles() != null) {
@@ -276,17 +297,13 @@ public class PedidoInsumoService {
                         DetalleProveedorPedidoResponse detalleResponse = new DetalleProveedorPedidoResponse();
                         detalleResponse.setId(detalle.getIdDetalle());
                         detalleResponse.setCantidadInsumo(detalle.getCantidadInsumo());
+                        detalleResponse.setPrecioUnitarioNegociado(detalle.getPrecioUnitarioNegociado());
                         detalleResponse.setCostoSubtotal(detalle.getCostoSubtotal());
+                        detalleResponse.setEsDevuelto(detalle.getEsDevuelto());
 
                         InsumoProveedor insumoProveedor = detalle.getInsumo();
                         if (insumoProveedor != null) {
-                            InsumoProveedorResponse insumoResp = new InsumoProveedorResponse();
-                            insumoResp.setId(insumoProveedor.getIdInsumo());
-                            insumoResp.setNombre(insumoProveedor.getNombre());
-                            insumoResp.setDescripcion(insumoProveedor.getDescripcion());
-                            insumoResp.setCostoUnitario(insumoProveedor.getCostoUnitario());
-                            insumoResp.setFechaVencimiento(insumoProveedor.getFechaVencimiento());
-                            detalleResponse.setInsumo(insumoResp);
+                            detalleResponse.setInsumo(mapInsumoProveedor(insumoProveedor));
                         }
 
                         return detalleResponse;
@@ -295,5 +312,29 @@ public class PedidoInsumoService {
         }
 
         return response;
+    }
+
+    private void validarPrecioNegociado(DetalleProveedorPedidoRequest detReq, InsumoProveedor insumoProveedor) {
+        if (detReq.getPrecioUnitario().compareTo(insumoProveedor.getCostoUnitario()) < 0) {
+            throw new RuntimeException("El precio negociado no puede ser inferior al costo base del proveedor");
+        }
+    }
+
+    private InsumoProveedorResponse mapInsumoProveedor(InsumoProveedor insumoProveedor) {
+        InsumoProveedorResponse insumoResp = new InsumoProveedorResponse();
+        insumoResp.setId(insumoProveedor.getId());
+        if (insumoProveedor.getInsumo() != null) {
+            insumoResp.setInsumoId(insumoProveedor.getInsumo().getIdInsumo());
+            insumoResp.setInsumoNombre(insumoProveedor.getInsumo().getNombre());
+        }
+        insumoResp.setCostoUnitario(insumoProveedor.getCostoUnitario());
+        insumoResp.setCantidadDisponible(insumoProveedor.getCantidadDisponible());
+        insumoResp.setFechaVigenciaDesde(insumoProveedor.getFechaVigenciaDesde());
+        insumoResp.setFechaVigenciaHasta(insumoProveedor.getFechaVigenciaHasta());
+        if (insumoProveedor.getProveedor() != null) {
+            insumoResp.setProveedorId(insumoProveedor.getProveedor().getIdProveedor());
+            insumoResp.setProveedorNombre(insumoProveedor.getProveedor().getNombre());
+        }
+        return insumoResp;
     }
 }

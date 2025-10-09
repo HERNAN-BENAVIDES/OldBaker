@@ -3,6 +3,8 @@ package co.edu.uniquindio.oldbaker.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class DetalleProveedorPedidoRequest {
 
@@ -14,7 +16,8 @@ public class DetalleProveedorPedidoRequest {
     private Integer cantidadInsumo;
 
     @NotNull(message = "El precio unitario es obligatorio")
-    @Positive(message = "El precio unitario debe ser mayor a 0")
-    private Double precioUnitario;
+    @DecimalMin(value = "0.0", inclusive = false, message = "El precio unitario debe ser mayor a 0")
+    @Digits(integer = 10, fraction = 2)
+    private BigDecimal precioUnitario;
 }
 

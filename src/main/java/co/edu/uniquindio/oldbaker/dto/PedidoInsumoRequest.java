@@ -1,11 +1,7 @@
 package co.edu.uniquindio.oldbaker.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,12 +9,13 @@ import java.util.List;
 @Data
 public class PedidoInsumoRequest {
 
-    @NotNull(message = "El nombre es obligatorio")
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
 
-    @NotNull(message = "La descripción es obligatoria")
+    @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
 
+    @PastOrPresent(message = "La fecha del pedido no puede estar en el futuro")
     private LocalDate fechaPedido;
 
     @NotEmpty(message = "El pedido debe contener al menos un detalle de insumo")

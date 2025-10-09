@@ -34,13 +34,17 @@ public class InsumoProveedorService {
 
     private InsumoProveedorResponse mapToResponse(InsumoProveedor insumo) {
         InsumoProveedorResponse response = new InsumoProveedorResponse();
-        response.setId(insumo.getIdInsumo());
-        response.setNombre(insumo.getNombre());
-        response.setDescripcion(insumo.getDescripcion());
+        response.setId(insumo.getId());
+        response.setInsumoId(insumo.getInsumo() != null ? insumo.getInsumo().getIdInsumo() : null);
+        response.setInsumoNombre(insumo.getInsumo() != null ? insumo.getInsumo().getNombre() : null);
         response.setCostoUnitario(insumo.getCostoUnitario());
-        response.setFechaVencimiento(insumo.getFechaVencimiento());
         response.setCantidadDisponible(insumo.getCantidadDisponible());
-        response.setProveedorNombre(insumo.getProveedor() != null ? insumo.getProveedor().getNombre() : null);
+        response.setFechaVigenciaDesde(insumo.getFechaVigenciaDesde());
+        response.setFechaVigenciaHasta(insumo.getFechaVigenciaHasta());
+        if (insumo.getProveedor() != null) {
+            response.setProveedorId(insumo.getProveedor().getIdProveedor());
+            response.setProveedorNombre(insumo.getProveedor().getNombre());
+        }
         return response;
     }
 }

@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -31,14 +33,15 @@ public class ProductoService {
         Insumo insumo = insumoRepository.findById(request.getInsumoId())
                 .orElseThrow(() -> new RuntimeException("Insumo no encontrado"));
 
-        int insumosNecesarios = request.getCantidadInsumo() * request.getCantidadProductos();
-        if (insumo.getCantidadActual() < insumosNecesarios) {
+        BigDecimal insumosNecesarios = request.getCantidadInsumo()
+                .multiply(BigDecimal.valueOf(request.getCantidadProductos()));
+        if (insumo.getCantidadActual().compareTo(insumosNecesarios) < 0) {
             throw new RuntimeException("No hay insumos suficientes. Disponibles: "
                     + insumo.getCantidadActual() + ", requeridos: " + insumosNecesarios);
         }
 
         // Descontar insumos
-        insumo.setCantidadActual(insumo.getCantidadActual() - insumosNecesarios);
+        insumo.setCantidadActual(insumo.getCantidadActual().subtract(insumosNecesarios));
         insumoRepository.save(insumo);
 
         // Buscar categoría
@@ -52,6 +55,9 @@ public class ProductoService {
         producto.setCostoUnitario(request.getCostoUnitario());
         producto.setFechaVencimiento(request.getFechaVencimiento());
         producto.setCategoria(categoria);
+        producto.setStockActual(request.getStockInicial());
+        producto.setStockMinimo(request.getStockMinimo());
+        producto.setFechaUltimaProduccion(LocalDateTime.now());
         Producto productoGuardado = productoRepository.save(producto);
 
         // Crear receta asociada
@@ -59,6 +65,7 @@ public class ProductoService {
         receta.setNombre("Receta de " + producto.getNombre());
         receta.setDescripcion("Receta automática para " + producto.getNombre());
         receta.setCantidadInsumo(request.getCantidadInsumo());
+        receta.setUnidadesProducidas(request.getCantidadProductos());
         receta.setInsumo(insumo);
         receta.setProducto(productoGuardado);
         recetaRepository.save(receta);
@@ -70,10 +77,15 @@ public class ProductoService {
         response.setDescripcion(productoGuardado.getDescripcion());
         response.setCostoUnitario(productoGuardado.getCostoUnitario());
         response.setFechaVencimiento(productoGuardado.getFechaVencimiento());
+        response.setStockActual(productoGuardado.getStockActual());
+        response.setStockMinimo(productoGuardado.getStockMinimo());
+        response.setUltimaProduccion(productoGuardado.getFechaUltimaProduccion() != null
+                ? productoGuardado.getFechaUltimaProduccion().toLocalDate() : null);
         response.setCategoriaNombre(productoGuardado.getCategoria().getNombre());
         response.setIdReceta(receta.getIdReceta());
         response.setInsumoNombre(insumo.getNombre());
         response.setCantidadInsumo(receta.getCantidadInsumo());
+        response.setUnidadesProducidas(receta.getUnidadesProducidas());
 
         return response;
     }
@@ -103,6 +115,10 @@ public class ProductoService {
         response.setDescripcion(producto.getDescripcion());
         response.setCostoUnitario(producto.getCostoUnitario());
         response.setFechaVencimiento(producto.getFechaVencimiento());
+        response.setStockActual(producto.getStockActual());
+        response.setStockMinimo(producto.getStockMinimo());
+        response.setUltimaProduccion(producto.getFechaUltimaProduccion() != null
+                ? producto.getFechaUltimaProduccion().toLocalDate() : null);
         response.setCategoriaNombre(producto.getCategoria().getNombre());
 
         // Buscar receta por producto
@@ -111,6 +127,7 @@ public class ProductoService {
             response.setIdReceta(receta.getIdReceta());
             response.setInsumoNombre(receta.getInsumo().getNombre());
             response.setCantidadInsumo(receta.getCantidadInsumo());
+            response.setUnidadesProducidas(receta.getUnidadesProducidas());
         }
 
         return response;
