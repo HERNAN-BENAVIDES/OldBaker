@@ -33,4 +33,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Query("UPDATE Usuario u SET u.fechaUltimaSesion = :lastSesionDate WHERE u = :usuario")
     int updateUserLastSesionDate(Usuario usuario, LocalDateTime lastSesionDate);
 
+    // Método para desactivar (dar de baja) un usuario por id
+    @Modifying
+    @Query("UPDATE Usuario u SET u.activo = false WHERE u.id = :id")
+    int deactivateById(@Param("id") Long id);
+
 }

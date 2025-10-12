@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -28,5 +29,21 @@ public class UsuarioService {
     public Usuario findByEmailAndActivo(String username) {
         return usuarioRepository.findByEmailAndActivoTrue(username).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
+    }
+
+    /**
+     * Marca un usuario existente como inactivo (baja) en la base de datos.
+     * Retorna true si se actualizó algún registro, false si no existe el usuario.
+     */
+    @Transactional
+    public boolean deactivateUser(Long id) {
+        int updated = usuarioRepository.deactivateById(id);
+        if (updated > 0) {
+            log.info("Usuario id={} desactivado", id);
+            return true;
+        } else {
+            log.warn("Intento de desactivar usuario id={} pero no se encontró", id);
+            return false;
+        }
     }
 }
