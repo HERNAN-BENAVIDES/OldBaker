@@ -62,6 +62,12 @@ dependencies {
 	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
+    //Mercado Pago
+    implementation('com.mercadopago:sdk-java:2.1.7') {
+        exclude group: 'org.sonatype.sisu', module: 'sisu-guice'
+        exclude group: 'org.apache.maven.plugins', module: 'maven-javadoc-plugin'
+    }
+
 }
 
 // groovy
