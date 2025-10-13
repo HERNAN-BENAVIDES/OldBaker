@@ -1,7 +1,7 @@
 package co.edu.uniquindio.oldbaker.dto;
 
-import co.edu.uniquindio.oldbaker.model.EstadoPedido;
 import co.edu.uniquindio.oldbaker.model.PagoProveedor;
+import co.edu.uniquindio.oldbaker.model.PedidoInsumo;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ public class PedidoInsumoResponse {
     private String descripcion;
     private Double costoTotal;
     private LocalDate fechaPedido;
-    private EstadoPedido estado;
+    private PedidoInsumo.EstadoPedido estado;
     private PagoProveedor pago;
     private List<DetalleProveedorPedidoResponse> detalles;
 

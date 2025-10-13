@@ -14,6 +14,6 @@ public class ProductoResponse {
     // Receta asociada
     private Long idReceta;
     private String insumoNombre;
-    private Integer cantidadInsumo;
+    private Double cantidadInsumo;
 }
 

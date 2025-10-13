@@ -37,7 +37,7 @@ public class PedidoInsumoService {
         pedido.setNombre(request.getNombre());
         pedido.setDescripcion(request.getDescripcion());
         pedido.setFechaPedido(LocalDate.now());
-        pedido.setEstado(EstadoPedido.PENDIENTE);
+        pedido.setEstado(PedidoInsumo.EstadoPedido.PENDIENTE);
 
         final double[] total = {0.0};
 
@@ -80,7 +80,7 @@ public class PedidoInsumoService {
         PedidoInsumo pedido = pedidoInsumoRepository.findById(idPedido)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        if (pedido.getEstado() != EstadoPedido.PENDIENTE) {
+        if (pedido.getEstado() != PedidoInsumo.EstadoPedido.PENDIENTE) {
             throw new RuntimeException("Solo se pueden devolver insumos de pedidos en estado PENDIENTE");
         }
 
@@ -150,7 +150,7 @@ public class PedidoInsumoService {
         PedidoInsumo pedido = pedidoInsumoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        if (pedido.getEstado() != EstadoPedido.PENDIENTE) {
+        if (pedido.getEstado() != PedidoInsumo.EstadoPedido.PENDIENTE) {
             throw new RuntimeException("Solo se pueden actualizar pedidos en estado PENDIENTE");
         }
 
@@ -205,11 +205,11 @@ public class PedidoInsumoService {
         PedidoInsumo pedido = pedidoInsumoRepository.findById(idPedido)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        if (pedido.getEstado() != EstadoPedido.PENDIENTE) {
+        if (pedido.getEstado() != PedidoInsumo.EstadoPedido.PENDIENTE) {
             throw new RuntimeException("Solo se pueden aprobar pedidos en estado PENDIENTE");
         }
 
-        pedido.setEstado(EstadoPedido.APROBADO);
+        pedido.setEstado(PedidoInsumo.EstadoPedido.APROBADO);
 
         // Mapear insumos del proveedor al inventario de la empresa
         for (DetalleProveedorPedido detalle : pedido.getDetalles()) {
@@ -241,7 +241,7 @@ public class PedidoInsumoService {
         PedidoInsumo pedido = pedidoInsumoRepository.findById(idPedido)
                 .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        if (pedido.getEstado() != EstadoPedido.APROBADO) {
+        if (pedido.getEstado() != PedidoInsumo.EstadoPedido.APROBADO) {
             throw new RuntimeException("Solo se pueden pagar pedidos en estado APROBADO");
         }
 
@@ -253,7 +253,7 @@ public class PedidoInsumoService {
         pagoProveedorRepository.save(pago);
 
         pedido.setPago(pago);
-        pedido.setEstado(EstadoPedido.PAGADO);
+        pedido.setEstado(PedidoInsumo.EstadoPedido.PAGADO);
 
         PedidoInsumo actualizado = pedidoInsumoRepository.save(pedido);
         return mapToResponse(actualizado);

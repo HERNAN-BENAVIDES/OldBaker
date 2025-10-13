@@ -1,4 +1,4 @@
-package co.edu.uniquindio.oldbaker.dto;
+package co.edu.uniquindio.oldbaker.dto.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

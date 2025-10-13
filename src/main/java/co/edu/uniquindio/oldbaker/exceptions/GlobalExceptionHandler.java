@@ -1,7 +1,7 @@
 package co.edu.uniquindio.oldbaker.exceptions;
 
-import co.edu.uniquindio.oldbaker.dto.ApiResponse;
-import co.edu.uniquindio.oldbaker.dto.ErrorResponse;
+import co.edu.uniquindio.oldbaker.dto.api.ApiResponse;
+import co.edu.uniquindio.oldbaker.dto.api.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

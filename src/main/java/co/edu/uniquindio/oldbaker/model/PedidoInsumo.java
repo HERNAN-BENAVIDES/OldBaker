@@ -39,7 +39,7 @@ public class PedidoInsumo {
 
     public enum EstadoPedido {
         PENDIENTE,
-        APROVADO,
+        APROBADO,
         RECHAZADO,
         PAGADO
     }

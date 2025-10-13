@@ -1,188 +1,222 @@
-ubuntu@ip-172-31-28-218:~$ rm app.jar
-rm: cannot remove 'app.jar': No such file or directory
-ubuntu@ip-172-31-28-218:~$ cd OldBaker/
-ubuntu@ip-172-31-28-218:~/OldBaker$ rm app.jar
-ubuntu@ip-172-31-28-218:~/OldBaker$ java -jar app.jar
+2025-10-13T14:16:55.783-05:00  INFO 24656 --- [OldBaker] [nio-8443-exec-9] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-13T14:16:55.785-05:00  INFO 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-13T14:16:55.785-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2025-10-13T14:16:55.785-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2025-10-13T14:16:55.785-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2025-10-13T14:16:55.785-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@38485cee
+2025-10-13T14:16:55.785-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@214a7560
+2025-10-13T14:16:55.785-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-10-13T14:16:55.785-05:00  INFO 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-10-13T14:16:55.814-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.html
+2025-10-13T14:16:55.828-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-10-13T14:16:55.836-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.html
+2025-10-13T14:16:55.841-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.html", parameters={}
+2025-10-13T14:16:55.846-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-10-13T14:16:55.886-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-10-13T14:16:55.910-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui.css
+2025-10-13T14:16:55.911-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-10-13T14:16:55.911-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui.css
+2025-10-13T14:16:55.912-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui.css", parameters={}
+2025-10-13T14:16:55.912-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-10-13T14:16:55.935-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-10-13T14:16:55.938-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.css
+2025-10-13T14:16:55.939-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-10-13T14:16:55.939-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.css
+2025-10-13T14:16:55.939-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/index.css", parameters={}
+2025-10-13T14:16:55.940-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-10-13T14:16:55.943-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-10-13T14:16:55.947-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-bundle.js
+2025-10-13T14:16:55.947-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-10-13T14:16:55.948-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-bundle.js
+2025-10-13T14:16:55.948-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2025-10-13T14:16:55.949-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-10-13T14:16:55.963-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-initializer.js
+2025-10-13T14:16:55.964-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-10-13T14:16:55.964-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-initializer.js
+2025-10-13T14:16:55.964-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-5] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-initializer.js", parameters={}
+2025-10-13T14:16:55.965-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-5] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-10-13T14:16:55.986-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2025-10-13T14:16:55.987-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-10-13T14:16:55.988-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2025-10-13T14:16:55.990-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2025-10-13T14:16:55.991-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-2] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-10-13T14:16:56.020-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-5] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-10-13T14:16:56.029-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-10-13T14:16:56.100-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-9] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-10-13T14:16:56.263-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /v3/api-docs/swagger-config
+2025-10-13T14:16:56.263-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-10-13T14:16:56.264-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /v3/api-docs/swagger-config
+2025-10-13T14:16:56.264-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs/swagger-config", parameters={}
+2025-10-13T14:16:56.264-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2025-10-13T14:16:56.281-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Using 'application/json', given [*/*] and supported [application/json]
+2025-10-13T14:16:56.284-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] m.m.a.RequestResponseBodyMethodProcessor : Writing [{configUrl=/v3/api-docs/swagger-config, oauth2RedirectUrl=https://localhost:8443/swagger-ui/oauth2-r (truncated)...]
+2025-10-13T14:16:56.284-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/favicon-32x32.png
+2025-10-13T14:16:56.285-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-10-13T14:16:56.285-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/favicon-32x32.png
+2025-10-13T14:16:56.285-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-8] o.s.web.servlet.DispatcherServlet        : GET "/swagger-ui/favicon-32x32.png", parameters={}
+2025-10-13T14:16:56.285-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-8] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2025-10-13T14:16:56.290-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-8] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-10-13T14:16:56.293-05:00 DEBUG 24656 --- [OldBaker] [io-8443-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2025-10-13T14:16:56.321-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /v3/api-docs
+2025-10-13T14:16:56.322-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-10-13T14:16:56.322-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /v3/api-docs
+2025-10-13T14:16:56.324-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/v3/api-docs", parameters={}
+2025-10-13T14:16:56.324-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2025-10-13T14:16:56.631-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler co.edu.uniquindio.oldbaker.exceptions.GlobalExceptionHandler#handleGenericException(Exception, HttpServletRequest)
+2025-10-13T14:16:56.631-05:00 ERROR 24656 --- [OldBaker] [nio-8443-exec-4] c.e.u.o.e.GlobalExceptionHandler         : Error inesperado en /v3/api-docs:
 
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
+jakarta.servlet.ServletException: Handler dispatch failed: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)'
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1104) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.43.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.43.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter.doFilterInternal(DefaultLogoutPageGeneratingFilter.java:59) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter.doFilter(DefaultLoginPageGeneratingFilter.java:216) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter.doFilter(DefaultLoginPageGeneratingFilter.java:202) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.authentication.ui.DefaultResourcesFilter.doFilter(DefaultResourcesFilter.java:72) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at co.edu.uniquindio.oldbaker.config.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:52) ~[main/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.doFilterInternal(OAuth2AuthorizationRequestRedirectFilter.java:198) ~[spring-security-oauth2-client-6.5.2.jar:6.5.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.2.jar:6.5.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.2.jar:6.5.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.2.jar:6.5.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1769) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
+	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
+Caused by: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)'
+	at org.springdoc.core.service.GenericResponseService.lambda$getGenericMapResponse$8(GenericResponseService.java:700) ~[springdoc-openapi-starter-common-2.2.0.jar:2.2.0]
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:178) ~[na:na]
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:992) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:575) ~[na:na]
+	at java.base/java.util.stream.AbstractPipeline.evaluateToArrayNode(AbstractPipeline.java:260) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:616) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.toArray(ReferencePipeline.java:622) ~[na:na]
+	at java.base/java.util.stream.ReferencePipeline.toList(ReferencePipeline.java:627) ~[na:na]
+	at org.springdoc.core.service.GenericResponseService.getGenericMapResponse(GenericResponseService.java:702) ~[springdoc-openapi-starter-common-2.2.0.jar:2.2.0]
+	at org.springdoc.core.service.GenericResponseService.build(GenericResponseService.java:245) ~[springdoc-openapi-starter-common-2.2.0.jar:2.2.0]
+	at org.springdoc.api.AbstractOpenApiResource.calculatePath(AbstractOpenApiResource.java:496) ~[springdoc-openapi-starter-common-2.2.0.jar:2.2.0]
+	at org.springdoc.api.AbstractOpenApiResource.calculatePath(AbstractOpenApiResource.java:673) ~[springdoc-openapi-starter-common-2.2.0.jar:2.2.0]
+	at org.springdoc.webmvc.api.OpenApiResource.lambda$calculatePath$11(OpenApiResource.java:219) ~[springdoc-openapi-starter-webmvc-api-2.2.0.jar:2.2.0]
+	at java.base/java.util.Optional.ifPresent(Optional.java:178) ~[na:na]
+	at org.springdoc.webmvc.api.OpenApiResource.calculatePath(OpenApiResource.java:200) ~[springdoc-openapi-starter-webmvc-api-2.2.0.jar:2.2.0]
+	at org.springdoc.webmvc.api.OpenApiResource.lambda$getPaths$2(OpenApiResource.java:170) ~[springdoc-openapi-starter-webmvc-api-2.2.0.jar:2.2.0]
+	at java.base/java.util.Optional.ifPresent(Optional.java:178) ~[na:na]
+	at org.springdoc.webmvc.api.OpenApiResource.getPaths(OpenApiResource.java:149) ~[springdoc-openapi-starter-webmvc-api-2.2.0.jar:2.2.0]
+	at org.springdoc.api.AbstractOpenApiResource.getOpenApi(AbstractOpenApiResource.java:350) ~[springdoc-openapi-starter-common-2.2.0.jar:2.2.0]
+	at org.springdoc.webmvc.api.OpenApiResource.openapiJson(OpenApiResource.java:124) ~[springdoc-openapi-starter-webmvc-api-2.2.0.jar:2.2.0]
+	at org.springdoc.webmvc.api.OpenApiWebMvcResource.openapiJson(OpenApiWebMvcResource.java:111) ~[springdoc-openapi-starter-webmvc-api-2.2.0.jar:2.2.0]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.9.jar:6.2.9]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.9.jar:6.2.9]
+	... 112 common frames omitted
 
- :: Spring Boot ::                (v3.5.4)
-
-2025-09-08T08:11:04.419Z  INFO 16286 --- [OldBaker] [           main] c.e.u.oldbaker.OldBakerApplication       : Starting OldBakerApplication v0.0.1-SNAPSHOT using Java 17.0.16 with PID 16286 (/home/ubuntu/OldBaker/app.jar started by ubuntu in /home/ubuntu/OldBaker)
-2025-09-08T08:11:04.429Z  INFO 16286 --- [OldBaker] [           main] c.e.u.oldbaker.OldBakerApplication       : No active profile set, falling back to 1 default profile: "default"
-2025-09-08T08:11:07.218Z  INFO 16286 --- [OldBaker] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-09-08T08:11:07.390Z  INFO 16286 --- [OldBaker] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 138 ms. Found 3 JPA repository interfaces.
-2025-09-08T08:11:09.971Z  INFO 16286 --- [OldBaker] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8443 (https)
-2025-09-08T08:11:10.017Z  INFO 16286 --- [OldBaker] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-09-08T08:11:10.018Z  INFO 16286 --- [OldBaker] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.43]
-2025-09-08T08:11:10.221Z  INFO 16286 --- [OldBaker] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-09-08T08:11:10.224Z  INFO 16286 --- [OldBaker] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5646 ms
-2025-09-08T08:11:10.683Z  INFO 16286 --- [OldBaker] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-09-08T08:11:10.844Z  INFO 16286 --- [OldBaker] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.22.Final
-2025-09-08T08:11:10.941Z  INFO 16286 --- [OldBaker] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-09-08T08:11:11.916Z  INFO 16286 --- [OldBaker] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-09-08T08:11:12.001Z  INFO 16286 --- [OldBaker] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-09-08T08:11:12.378Z  INFO 16286 --- [OldBaker] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2d3b0978
-2025-09-08T08:11:12.384Z  INFO 16286 --- [OldBaker] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-09-08T08:11:12.493Z  WARN 16286 --- [OldBaker] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-09-08T08:11:12.500Z  WARN 16286 --- [OldBaker] [           main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
-2025-09-08T08:11:12.562Z  INFO 16286 --- [OldBaker] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-        Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-        Database driver: undefined/unknown
-        Database version: 8.0
-        Autocommit mode: undefined/unknown
-        Isolation level: undefined/unknown
-        Minimum pool size: undefined/unknown
-        Maximum pool size: undefined/unknown
-2025-09-08T08:11:12.583Z DEBUG 16286 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(12, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@45f241df) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@f36f34d)
-2025-09-08T08:11:12.588Z DEBUG 16286 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-9, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@72e36677) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@6b86826a)
-2025-09-08T08:11:12.590Z DEBUG 16286 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-3, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@3c2dda7c) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@4b9fa2f)
-2025-09-08T08:11:12.590Z DEBUG 16286 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4003, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@6d80e411) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@32caae19)
-2025-09-08T08:11:12.592Z DEBUG 16286 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4001, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@60e67c06) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@2bc59ab7)
-2025-09-08T08:11:12.593Z DEBUG 16286 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4002, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@410f53b2) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@265287ec)
-2025-09-08T08:11:12.593Z DEBUG 16286 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2004, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@7507d96c) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@7210f559)
-2025-09-08T08:11:12.594Z DEBUG 16286 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2005, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@49b9ba6a) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@7be62956)
-2025-09-08T08:11:12.596Z DEBUG 16286 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2011, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@30e143ff) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@452ec287)
-2025-09-08T08:11:15.856Z  INFO 16286 --- [OldBaker] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-09-08T08:11:15.980Z  INFO 16286 --- [OldBaker] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-09-08T08:11:16.613Z  INFO 16286 --- [OldBaker] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-09-08T08:11:18.492Z  INFO 16286 --- [OldBaker] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2025-09-08T08:11:18.495Z  WARN 16286 --- [OldBaker] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2025-09-08T08:11:19.425Z  WARN 16286 --- [OldBaker] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-09-08T08:11:19.745Z DEBUG 16286 --- [OldBaker] [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : 14 mappings in 'requestMappingHandlerMapping'
-2025-09-08T08:11:20.040Z DEBUG 16286 --- [OldBaker] [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
-OAuth2SuccessHandler initialized
-2025-09-08T08:11:20.493Z DEBUG 16286 --- [OldBaker] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, OAuth2AuthorizationRequestRedirectFilter, OAuth2LoginAuthenticationFilter, JwtAuthenticationFilter, DefaultResourcesFilter, DefaultLoginPageGeneratingFilter, DefaultLogoutPageGeneratingFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2025-09-08T08:11:20.803Z DEBUG 16286 --- [OldBaker] [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
-2025-09-08T08:11:20.940Z DEBUG 16286 --- [OldBaker] [           main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
-2025-09-08T08:11:22.149Z  INFO 16286 --- [OldBaker] [           main] o.a.t.util.net.NioEndpoint.certificate   : Connector [https-jsse-nio-8443], TLS virtual host [_default_], certificate type [UNDEFINED] configured from keystore [/home/ubuntu/.keystore] using alias [oldbaker] with trust store [null]
-2025-09-08T08:11:22.177Z  INFO 16286 --- [OldBaker] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8443 (https) with context path '/'
-2025-09-08T08:11:22.224Z  INFO 16286 --- [OldBaker] [           main] c.e.u.oldbaker.OldBakerApplication       : Started OldBakerApplication in 19.359 seconds (process running for 20.819)
-2025-09-08T08:11:34.736Z  INFO 16286 --- [OldBaker] [nio-8443-exec-4] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-09-08T08:11:34.738Z  INFO 16286 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-09-08T08:11:34.739Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
-2025-09-08T08:11:34.740Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
-2025-09-08T08:11:34.741Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
-2025-09-08T08:11:34.743Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@7ec9780b
-2025-09-08T08:11:34.745Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@65f913fd
-2025-09-08T08:11:34.745Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
-2025-09-08T08:11:34.745Z  INFO 16286 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
-2025-09-08T08:11:34.812Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /oauth2/authorization/google
-2025-09-08T08:11:34.882Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.s.web.DefaultRedirectStrategy        : Redirecting to https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=900353329777-uv8ofd5deilhtvb1ok23fk3t3tusk4gc.apps.googleusercontent.com&scope=profile%20email&state=zBowwnS7-iFFy-p2OXi4dKUiBw-APaHSHr7MB8VE1UY%3D&redirect_uri=https://oldbaker.store/login/oauth2/code/google
-2025-09-08T08:11:38.058Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /login/oauth2/code/google?state=zBowwnS7-iFFy-p2OXi4dKUiBw-APaHSHr7MB8VE1UY%3D&code=4%2F0AVMBsJgqkdLjSPoS1G2-b2UR3MOROl9DhjlwDnLHzwE3UxO1S7hIhsQ0O-ZXlqeRdsdcJQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=none
-2025-09-08T08:11:38.097Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.client.RestTemplate              : HTTP POST https://oauth2.googleapis.com/token
-2025-09-08T08:11:38.113Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
-2025-09-08T08:11:38.114Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.client.RestTemplate              : Writing [{grant_type=[authorization_code], code=[4/0AVMBsJgqkdLjSPoS1G2-b2UR3MOROl9DhjlwDnLHzwE3UxO1S7hIhsQ0O-ZXlqeRdsdcJQ], redirect_uri=[https://oldbaker.store/login/oauth2/code/google]}] as "application/x-www-form-urlencoded;charset=UTF-8"
-2025-09-08T08:11:38.432Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.client.RestTemplate              : Response 200 OK
-2025-09-08T08:11:38.436Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.client.RestTemplate              : Reading to [org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse] as "application/json;charset=utf-8"
-2025-09-08T08:11:38.556Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.client.RestTemplate              : HTTP GET https://www.googleapis.com/oauth2/v2/userinfo
-2025-09-08T08:11:38.566Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.client.RestTemplate              : Accept=[application/json, application/yaml, application/*+json]
-2025-09-08T08:11:38.697Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.client.RestTemplate              : Response 200 OK
-2025-09-08T08:11:38.700Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
-2025-09-08T08:11:38.713Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] .s.ChangeSessionIdAuthenticationStrategy : Changed session id from F4E2C0BB0C4EA5CC2149417FF994DEA4
-2025-09-08T08:11:38.715Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] .s.o.c.w.OAuth2LoginAuthenticationFilter : Set SecurityContextHolder to OAuth2AuthenticationToken [Principal=Name: [dariobenavides42@gmail.com], Granted Authorities: [[OAUTH2_USER, SCOPE_https://www.googleapis.com/auth/userinfo.email, SCOPE_https://www.googleapis.com/auth/userinfo.profile, SCOPE_openid]], User Attributes: [{id=101017892127879914251, email=dariobenavides42@gmail.com, verified_email=true, name=Dario Benavides, given_name=Dario, family_name=Benavides, picture=https://lh3.googleusercontent.com/a/ACg8ocK9md064QmBYycK9U_nNjasy--FnF-b4BsGaWhOtb-1mZnE7So=s96-c}], Credentials=[PROTECTED], Authenticated=true, Details=WebAuthenticationDetails [RemoteIpAddress=127.0.0.1, SessionId=F4E2C0BB0C4EA5CC2149417FF994DEA4], Granted Authorities=[OAUTH2_USER, SCOPE_https://www.googleapis.com/auth/userinfo.email, SCOPE_https://www.googleapis.com/auth/userinfo.profile, SCOPE_openid]]
-2025-09-08T08:11:38.717Z  INFO 16286 --- [OldBaker] [io-8443-exec-10] c.e.u.o.config.OAuth2SuccessHandler      : OAuth2User attributes: {id=101017892127879914251, email=dariobenavides42@gmail.com, verified_email=true, name=Dario Benavides, given_name=Dario, family_name=Benavides, picture=https://lh3.googleusercontent.com/a/ACg8ocK9md064QmBYycK9U_nNjasy--FnF-b4BsGaWhOtb-1mZnE7So=s96-c}
-2025-09-08T08:11:38.737Z  INFO 16286 --- [OldBaker] [io-8443-exec-10] c.e.u.oldbaker.services.AuthService      : Procesando usuario OAuth2: dariobenavides42@gmail.com
-2025-09-08T08:11:38.883Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] org.hibernate.SQL                        : select u1_0.id,u1_0.activo,u1_0.email,u1_0.fecha_actualizacion,u1_0.fecha_creacion,u1_0.fecha_ultima_sesion,u1_0.nombre,u1_0.password,u1_0.rol,u1_0.tipo_autenticacion,u1_0.verificado from usuarios u1_0 where u1_0.email=?
-Hibernate: select u1_0.id,u1_0.activo,u1_0.email,u1_0.fecha_actualizacion,u1_0.fecha_creacion,u1_0.fecha_ultima_sesion,u1_0.nombre,u1_0.password,u1_0.rol,u1_0.tipo_autenticacion,u1_0.verificado from usuarios u1_0 where u1_0.email=?
-2025-09-08T08:11:38.963Z  INFO 16286 --- [OldBaker] [io-8443-exec-10] c.e.u.oldbaker.services.AuthService      : Usuario OAuth2 procesado exitosamente: dariobenavides42@gmail.com
-2025-09-08T08:11:39.367Z ERROR 16286 --- [OldBaker] [io-8443-exec-10] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
-
-java.lang.IllegalStateException: Cannot call sendRedirect() after the response has been committed
-        at org.apache.catalina.connector.ResponseFacade.checkCommitted(ResponseFacade.java:517) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.connector.ResponseFacade.sendRedirect(ResponseFacade.java:377) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at jakarta.servlet.http.HttpServletResponseWrapper.sendRedirect(HttpServletResponseWrapper.java:105) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.springframework.security.web.firewall.FirewalledResponse.sendRedirect(FirewalledResponse.java:48) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at jakarta.servlet.http.HttpServletResponseWrapper.sendRedirect(HttpServletResponseWrapper.java:105) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at jakarta.servlet.http.HttpServletResponseWrapper.sendRedirect(HttpServletResponseWrapper.java:105) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.springframework.security.web.util.OnCommittedResponseWrapper.sendRedirect(OnCommittedResponseWrapper.java:136) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at co.edu.uniquindio.oldbaker.config.OAuth2SuccessHandler.onAuthenticationSuccess(OAuth2SuccessHandler.java:62) ~[!/:0.0.1-SNAPSHOT]
-        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.successfulAuthentication(AbstractAuthenticationProcessingFilter.java:355) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:253) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.doFilterInternal(OAuth2AuthorizationRequestRedirectFilter.java:198) ~[spring-security-oauth2-client-6.5.2.jar!/:6.5.2]
-        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.2.jar!/:6.5.2]
-        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.2.jar!/:6.5.2]
-        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.2.jar!/:6.5.2]
-        at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar!/:6.2.9]
-        at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1769) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.43.jar!/:na]
-        at java.base/java.lang.Thread.run(Thread.java:840) ~[na:na]
-
-2025-09-08T08:11:39.403Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /error?state=zBowwnS7-iFFy-p2OXi4dKUiBw-APaHSHr7MB8VE1UY%3D&code=4%2F0AVMBsJgqkdLjSPoS1G2-b2UR3MOROl9DhjlwDnLHzwE3UxO1S7hIhsQ0O-ZXlqeRdsdcJQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=none
-2025-09-08T08:11:39.407Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] .s.ChangeSessionIdAuthenticationStrategy : Changed session id from C90B16AD50929055438D16AF82D26025
-2025-09-08T08:11:39.414Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /error?state=zBowwnS7-iFFy-p2OXi4dKUiBw-APaHSHr7MB8VE1UY%3D&code=4%2F0AVMBsJgqkdLjSPoS1G2-b2UR3MOROl9DhjlwDnLHzwE3UxO1S7hIhsQ0O-ZXlqeRdsdcJQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=none
-2025-09-08T08:11:39.419Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/error?state=zBowwnS7-iFFy-p2OXi4dKUiBw-APaHSHr7MB8VE1UY%3D&code=4%2F0AVMBsJgqkdLjSPoS1G2-b2UR3MOROl9DhjlwDnLHzwE3UxO1S7hIhsQ0O-ZXlqeRdsdcJQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=none", parameters={masked}
-2025-09-08T08:11:39.421Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#errorHtml(HttpServletRequest, HttpServletResponse)
-2025-09-08T08:11:39.491Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.w.s.v.ContentNegotiatingViewResolver : Selected 'text/html' given [text/html, text/html;q=0.8]
-2025-09-08T08:11:39.506Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 500
-2025-09-08T08:11:39.879Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /favicon.ico
-2025-09-08T08:11:39.881Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2025-09-08T08:11:39.896Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] s.w.a.DelegatingAuthenticationEntryPoint : Trying to match using And [Not [RequestHeaderRequestMatcher [expectedHeaderName=X-Requested-With, expectedHeaderValue=XMLHttpRequest]], Not [And [Or [Ant [pattern='/login'], Ant [pattern='/favicon.ico']], And [Not [RequestHeaderRequestMatcher [expectedHeaderName=X-Requested-With, expectedHeaderValue=XMLHttpRequest]], MediaTypeRequestMatcher [contentNegotiationStrategy=org.springframework.web.accept.ContentNegotiationManager@4631a6a9, matchingMediaTypes=[application/xhtml+xml, image/*, text/html, text/plain], useEquals=false, ignoredMediaTypes=[*/*]]]]], org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer$$Lambda$1712/0x00007d3169ab0000@2ba0948f]
-2025-09-08T08:11:39.896Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] s.w.a.DelegatingAuthenticationEntryPoint : No match found. Using default entry point org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint@63f2979d
-2025-09-08T08:11:39.899Z DEBUG 16286 --- [OldBaker] [nio-8443-exec-4] o.s.s.web.DefaultRedirectStrategy        : Redirecting to https://oldbaker.store/login
-2025-09-08T08:11:40.022Z DEBUG 16286 --- [OldBaker] [io-8443-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /login
+2025-10-13T14:16:56.648-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json, */*] and supported [application/json, application/*+json, application/yaml]
+2025-10-13T14:16:56.648-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [ErrorResponse(mensaje=Error inesperado, detalle=Ha ocurrido un error inesperado, timestamp=176038301 (truncated)...]
+2025-10-13T14:16:56.654-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [jakarta.servlet.ServletException: Handler dispatch failed: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)']
+2025-10-13T14:16:56.654-05:00 DEBUG 24656 --- [OldBaker] [nio-8443-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 500 INTERNAL_SERVER_ERROR

@@ -1,6 +1,7 @@
 package co.edu.uniquindio.oldbaker.services;
 
-import co.edu.uniquindio.oldbaker.dto.*;
+import co.edu.uniquindio.oldbaker.dto.api.ApiResponse;
+import co.edu.uniquindio.oldbaker.dto.auth.*;
 import co.edu.uniquindio.oldbaker.model.BlackToken;
 import co.edu.uniquindio.oldbaker.model.Usuario;
 import co.edu.uniquindio.oldbaker.model.VerificationCode;
