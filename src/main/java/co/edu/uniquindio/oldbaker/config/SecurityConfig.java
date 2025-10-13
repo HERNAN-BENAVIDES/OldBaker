@@ -68,12 +68,18 @@ public class SecurityConfig {
                                 "/api/auth/reset/**",
                                 "/api/auth/worker/login",
                                 "/login/oauth2/**",
-                                "/oauth2/**"
+                                "/api/mercadopago/**",
+                                "/oauth2/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
                         ).permitAll()
                         // Endpoints para administradores
                         .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
                         // Endpoints para usuarios autenticados
                         .requestMatchers("/api/user/**").hasRole("CLIENTE")
+                        .requestMatchers("/api/orders/**").hasRole("CLIENTE")
+                        .requestMatchers("/api/cart/**").hasRole("CLIENTE")
                         // Endpoints para usuarios con rol AUXILIAR
                         .requestMatchers("/api/aux/**").hasRole("AUXILIAR")
                         // Cualquier otra petición requiere autenticación
