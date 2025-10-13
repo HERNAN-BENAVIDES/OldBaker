@@ -1,6 +1,5 @@
 package co.edu.uniquindio.oldbaker.model;
 
-import co.edu.uniquindio.oldbaker.model.InsumoProveedor;
 import jakarta.persistence.*;
 import lombok.*;
 

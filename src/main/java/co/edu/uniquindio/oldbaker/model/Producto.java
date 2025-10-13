@@ -20,5 +20,4 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "categoria")
     private Categoria categoria;
-
 }
