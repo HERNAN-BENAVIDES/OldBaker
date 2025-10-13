@@ -5,6 +5,7 @@ import co.edu.uniquindio.oldbaker.dto.payment.CheckoutRequestDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutResponseDTO;
 import co.edu.uniquindio.oldbaker.model.Producto;
 import co.edu.uniquindio.oldbaker.repositories.ProductRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,8 @@ public class MercadoPagoService {
 
     @Value("${app.base-url:}")
     private String appBaseUrl;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Crea una preferencia con:
@@ -234,6 +237,93 @@ public class MercadoPagoService {
             return ok;
         } catch (Exception e) {
             logger.error("Error verificando firma de webhook", e);
+            return false;
+        }
+    }
+
+    /**
+     * Método que valida la firma (si aplica), parsea el body del webhook buscando ids de pago
+     * y dispara el procesamiento asíncrono para cada paymentId encontrado.
+     *
+     * Retorna true si el webhook fue aceptado/procesado (o si no se pudo validar pero se decidió no fallar),
+     * false si la firma inválida o payload irreconocible.
+     */
+    public boolean handleWebhook(String signatureHeader, String requestId, String rawBody) {
+        try {
+            logger.info("Recibido webhook MP requestId={} signaturePresent={} bodyLen={}",
+                    requestId, signatureHeader != null && !signatureHeader.isBlank(),
+                    rawBody != null ? rawBody.length() : 0);
+
+            // validar firma (si está configurado)
+            boolean valid = verifyWebhookSignature(signatureHeader, requestId, rawBody);
+            if (!valid) {
+                logger.warn("Webhook rechazado por firma inválida requestId={}", requestId);
+                return false;
+            }
+
+            if (rawBody == null || rawBody.isBlank()) {
+                logger.warn("Webhook con body vacío requestId={}", requestId);
+                return false;
+            }
+
+            // Intentar parsear como Map
+            List<String> paymentIds = new ArrayList<>();
+
+            try {
+                Object parsed = objectMapper.readValue(rawBody, Object.class);
+
+                if (parsed instanceof Map<?, ?> map) {
+                    // casos comunes: {"type":"payment","data":{"id":"12345"}} o {"data":{"id":"12345"}}
+                    Object data = map.get("data");
+                    if (data instanceof Map<?, ?> dataMap) {
+                        Object idVal = dataMap.get("id");
+                        if (idVal != null) paymentIds.add(String.valueOf(idVal));
+                    }
+                    // también verificar si hay id en top-level
+                    if (map.get("id") != null) paymentIds.add(String.valueOf(map.get("id")));
+
+                    // algunos webhooks usan "topic" o "type" y un campo "resource" o similar
+                    if (paymentIds.isEmpty()) {
+                        // buscar cualquier key que parezca id de pago
+                        for (String key : List.of("payment_id", "paymentId", "payment", "id")) {
+                            Object v = map.get(key);
+                            if (v != null) paymentIds.add(String.valueOf(v));
+                        }
+                    }
+                } else if (parsed instanceof List<?> list) {
+                    // si viene un array de eventos
+                    for (Object el : list) {
+                        if (el instanceof Map<?, ?> m) {
+                            Object data = m.get("data");
+                            if (data instanceof Map<?, ?> dm && dm.get("id") != null) {
+                                paymentIds.add(String.valueOf(dm.get("id")));
+                            } else if (m.get("id") != null) {
+                                paymentIds.add(String.valueOf(m.get("id")));
+                            }
+                        }
+                    }
+                } else {
+                    logger.debug("Webhook payload tipo inesperado: {}", parsed.getClass());
+                }
+            } catch (Exception e) {
+                logger.warn("No se pudo parsear JSON del webhook, rawBody={}", rawBody, e);
+                return false;
+            }
+
+            if (paymentIds.isEmpty()) {
+                logger.warn("No se encontraron paymentId en webhook requestId={}", requestId);
+                return false;
+            }
+
+            // Disparar procesamiento asíncrono para cada paymentId encontrado
+            for (String pid : paymentIds) {
+                logger.info("Desencadenando procesamiento asíncrono para paymentId={}", pid);
+                processPaymentAsync(pid);
+            }
+
+            return true;
+        } catch (Exception e) {
+            logger.error("Error manejando webhook MP", e);
             return false;
         }
     }

@@ -67,7 +67,11 @@ public class SecurityConfig {
                                 "/api/auth/forgot/**",
                                 "/api/auth/reset/**",
                                 "/login/oauth2/**",
-                                "/oauth2/**"
+                                "/api/mercadopago/**",
+                                "/oauth2/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
                         ).permitAll()
                         // Endpoints para administradores
                         .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
