@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"https://old-baker-front.vercel.app", "https://localhost:4200", "http://localhost:4200", "https://www.oldbaker.shop"})
 public class UsuarioController {
 
     private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
@@ -37,7 +38,7 @@ public class UsuarioController {
      * @param request Datos necesarios para cerrar la sesión.
      * @return Respuesta con el resultado del cierre de sesión.
      */
-    @PostMapping("/ logout")
+    @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(@Valid @RequestBody LogoutRequest request) {
 
         try {

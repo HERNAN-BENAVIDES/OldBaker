@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"https://old-baker-front.vercel.app", "https://localhost:4200", "http://localhost:4200", "https://www.oldbaker.shop"})
 public class OrdenCompraController {
     private static final Logger logger = LoggerFactory.getLogger(OrdenCompraController.class);
 

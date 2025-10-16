@@ -1,6 +1,6 @@
 package co.edu.uniquindio.oldbaker.controllers;
 
-import co.edu.uniquindio.oldbaker.dto.ProductoHomeResponse;
+
 import co.edu.uniquindio.oldbaker.dto.ProductoRequest;
 import co.edu.uniquindio.oldbaker.dto.ProductoResponse;
 import co.edu.uniquindio.oldbaker.services.ProductoService;
@@ -13,17 +13,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/productos")
+@RequestMapping("/api/admin/productos")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"https://old-baker-front.vercel.app", "https://localhost:4200", "http://localhost:4200", "https://www.oldbaker.shop"})
-public class ProductoController {
+public class AdminController {
 
     private final ProductoService productoService;
 
+    // Crear producto con receta (Admin)
+    @PostMapping
+    public ResponseEntity<ProductoResponse> crearProductoConReceta(
+            @RequestBody @Valid ProductoRequest request) {
+
+        ProductoResponse response = productoService.crearProductoConReceta(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
     // Listar productos
     @GetMapping
-    public ResponseEntity<List<ProductoHomeResponse>> listarProductos() {
-        List<ProductoHomeResponse> productos = productoService.listarProductosHome();
+    public ResponseEntity<List<ProductoResponse>> listarProductos() {
+        List<ProductoResponse> productos = productoService.listarProductos();
         return ResponseEntity.ok(productos);
     }
 
@@ -33,4 +41,12 @@ public class ProductoController {
         ProductoResponse response = productoService.obtenerProductoPorId(id);
         return ResponseEntity.ok(response);
     }
+
+    // Eliminar producto
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
+        productoService.eliminarProducto(id);
+        return ResponseEntity.noContent().build();
+    }
 }
+

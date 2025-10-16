@@ -3,8 +3,10 @@ package co.edu.uniquindio.oldbaker.config;
 import co.edu.uniquindio.oldbaker.services.AuthService;
 import co.edu.uniquindio.oldbaker.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,7 +26,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
+
+import static co.edu.uniquindio.oldbaker.config.OAuth2SuccessHandler.log;
 
 
 /**
@@ -72,7 +77,8 @@ public class SecurityConfig {
                                 "/oauth2/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/api/productos/**"
                         ).permitAll()
                         // Endpoints para administradores
                         .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
@@ -168,4 +174,16 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
+    @Bean
+    CommandLineRunner logProps(Environment env) {
+        return args -> {
+            log.info("Active profiles: {}", Arrays.toString(env.getActiveProfiles()));
+            log.info("spring.datasource.url = {}", env.getProperty("spring.datasource.url"));
+            log.info("DB_URL (raw)          = {}", env.getProperty("DB_URL"));
+        };
+    }
+
+
 }

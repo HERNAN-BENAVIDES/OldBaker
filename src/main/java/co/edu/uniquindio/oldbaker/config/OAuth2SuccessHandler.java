@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(OAuth2SuccessHandler.class);
+    static final Logger log = LoggerFactory.getLogger(OAuth2SuccessHandler.class);
     private final AuthService authService;
 
     @Value("${FRONTEND_REDIRECT_URL}")

@@ -7,7 +7,7 @@ public class ProductoRequest {
     private String nombre;
     private String descripcion;
     private Double costoUnitario;
-    private String fechaVencimiento;
+    private int diasVidaUtil;
     private Long categoriaId;
 
     // Receta

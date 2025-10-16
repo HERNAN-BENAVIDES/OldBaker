@@ -1,7 +1,9 @@
 package co.edu.uniquindio.oldbaker.services;
 
+import co.edu.uniquindio.oldbaker.dto.ProductoHomeResponse;
 import co.edu.uniquindio.oldbaker.dto.ProductoRequest;
 import co.edu.uniquindio.oldbaker.dto.ProductoResponse;
+import co.edu.uniquindio.oldbaker.dto.RecetaDTO;
 import co.edu.uniquindio.oldbaker.model.Categoria;
 import co.edu.uniquindio.oldbaker.model.Insumo;
 import co.edu.uniquindio.oldbaker.model.Producto;
@@ -50,7 +52,7 @@ public class ProductoService {
         producto.setNombre(request.getNombre());
         producto.setDescripcion(request.getDescripcion());
         producto.setCostoUnitario(request.getCostoUnitario());
-        producto.setFechaVencimiento(request.getFechaVencimiento());
+        producto.setVidaUtilDias(request.getDiasVidaUtil());
         producto.setCategoria(categoria);
         Producto productoGuardado = productoRepository.save(producto);
 
@@ -69,17 +71,22 @@ public class ProductoService {
         response.setNombre(productoGuardado.getNombre());
         response.setDescripcion(productoGuardado.getDescripcion());
         response.setCostoUnitario(productoGuardado.getCostoUnitario());
-        response.setFechaVencimiento(productoGuardado.getFechaVencimiento());
+        response.setVidaUtilDias(productoGuardado.getVidaUtilDias());
         response.setCategoriaNombre(productoGuardado.getCategoria().getNombre());
-        response.setIdReceta(receta.getIdReceta());
-        response.setInsumoNombre(insumo.getNombre());
-        response.setCantidadInsumo(receta.getCantidadInsumo());
+        response.setReceta(null);
+        //response.setIdReceta(receta.getIdReceta());
+        //response.setInsumoNombre(insumo.getNombre());
+        //response.setCantidadInsumo(receta.getCantidadInsumo());
 
         return response;
     }
 
     public List<ProductoResponse> listarProductos() {
         return productoRepository.findAll().stream().map(this::mapToResponse).toList();
+    }
+
+    public List<ProductoHomeResponse> listarProductosHome() {
+        return productoRepository.findProductos();
     }
 
     public ProductoResponse obtenerProductoPorId(Long id) {
@@ -102,15 +109,20 @@ public class ProductoService {
         response.setNombre(producto.getNombre());
         response.setDescripcion(producto.getDescripcion());
         response.setCostoUnitario(producto.getCostoUnitario());
-        response.setFechaVencimiento(producto.getFechaVencimiento());
+        response.setVidaUtilDias(producto.getVidaUtilDias());
         response.setCategoriaNombre(producto.getCategoria().getNombre());
 
         // Buscar receta por producto
-        Receta receta = recetaRepository.findByProducto(producto);
-        if (receta != null) {
-            response.setIdReceta(receta.getIdReceta());
-            response.setInsumoNombre(receta.getInsumo().getNombre());
-            response.setCantidadInsumo(receta.getCantidadInsumo());
+        List<Receta> recetas = recetaRepository.findByProducto(producto);
+        if (recetas != null) {
+
+            response.setReceta(recetas.stream().map(r -> {;
+                RecetaDTO dto = new RecetaDTO();
+                dto.setIdReceta(r.getIdReceta());
+                dto.setCantidadInsumo(r.getCantidadInsumo());
+                dto.setInsumoNombre(r.getInsumo().getNombre());
+                return dto;
+            }).toList());
         }
 
         return response;
