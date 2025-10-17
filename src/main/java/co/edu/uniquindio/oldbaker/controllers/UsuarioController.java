@@ -1,5 +1,6 @@
 package co.edu.uniquindio.oldbaker.controllers;
 
+import co.edu.uniquindio.oldbaker.dto.DireccionResponseDTO;
 import co.edu.uniquindio.oldbaker.dto.api.ApiResponse;
 import co.edu.uniquindio.oldbaker.dto.auth.LogoutRequest;
 import co.edu.uniquindio.oldbaker.services.AuthService;
@@ -49,6 +50,11 @@ public class UsuarioController {
             return  ResponseEntity.badRequest()
                     .body(ApiResponse.error(e.getMessage()));
         }
+    }
+
+    @GetMapping("direccion")
+    public ResponseEntity<DireccionResponseDTO> obtenerDireccionUsuario(@RequestParam Long idUsuario) {
+        return ResponseEntity.ok(usuarioService.obtenerDireccionUsuario(idUsuario));
     }
 }
 

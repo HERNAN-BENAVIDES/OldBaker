@@ -11,6 +11,7 @@ public class ProductoResponse {
     private String descripcion;
     private Double costoUnitario;
     private int vidaUtilDias;
+    private int pedidoMinimo;
     private String categoriaNombre;
 
 

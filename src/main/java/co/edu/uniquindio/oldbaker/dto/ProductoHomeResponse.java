@@ -13,4 +13,5 @@ public class ProductoHomeResponse {
     private int diasVidaUtil;
     private String categoriaNombre;
     private String url;
+    private int pedidoMinimo;
 }

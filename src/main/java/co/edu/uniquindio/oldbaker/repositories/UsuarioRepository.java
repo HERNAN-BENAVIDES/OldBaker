@@ -1,5 +1,6 @@
 package co.edu.uniquindio.oldbaker.repositories;
 
+import co.edu.uniquindio.oldbaker.model.Direccion;
 import co.edu.uniquindio.oldbaker.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -37,5 +38,4 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Modifying
     @Query("UPDATE Usuario u SET u.activo = false WHERE u.id = :id")
     int deactivateById(@Param("id") Long id);
-
 }

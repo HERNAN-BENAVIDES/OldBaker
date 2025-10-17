@@ -9,6 +9,7 @@ public class ProductoRequest {
     private Double costoUnitario;
     private int diasVidaUtil;
     private Long categoriaId;
+    private int pedidoMinimo;
 
     // Receta
     private Long insumoId;

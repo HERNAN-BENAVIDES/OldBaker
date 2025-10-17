@@ -17,6 +17,7 @@ public class Producto {
     private String descripcion;
     private Double costoUnitario;
     private int vidaUtilDias;
+    private int pedidoMinimo;
     @ManyToOne
     @JoinColumn(name = "categoria")
     private Categoria categoria;

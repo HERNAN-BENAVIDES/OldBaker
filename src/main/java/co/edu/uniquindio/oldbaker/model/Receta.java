@@ -16,11 +16,22 @@ public class Receta {
     private String nombre;
     private String descripcion;
     private double cantidadInsumo;
+    private UnidadMedida unidadMedida;
     @ManyToOne
     @JoinColumn(name = "id_insumo")
     private Insumo insumo;
     @ManyToOne
     @JoinColumn(name = "id_producto")
     private Producto producto;
+
+
+    public enum UnidadMedida {
+        GRAMOS,
+        KILOGRAMOS,
+        LITROS,
+        MILILITROS,
+        UNIDADES
+    }
+
 
 }

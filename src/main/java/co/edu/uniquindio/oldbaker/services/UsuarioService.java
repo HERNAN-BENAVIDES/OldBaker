@@ -1,12 +1,17 @@
 package co.edu.uniquindio.oldbaker.services;
 
+import co.edu.uniquindio.oldbaker.dto.DireccionResponseDTO;
+import co.edu.uniquindio.oldbaker.model.Direccion;
 import co.edu.uniquindio.oldbaker.model.Usuario;
+import co.edu.uniquindio.oldbaker.repositories.DireccionRepository;
 import co.edu.uniquindio.oldbaker.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 
 /**
@@ -19,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final DireccionRepository direccionRepository;
 
     // Método para encontrar un usuario activo por su email
     public Usuario findByEmailAndActivoTrue(String userEmail) {
@@ -45,5 +51,31 @@ public class UsuarioService {
             log.warn("Intento de desactivar usuario id={} pero no se encontró", id);
             return false;
         }
+    }
+
+    public DireccionResponseDTO obtenerDireccionUsuario(Long idUsuario) {
+
+        var usuarioOpt = usuarioRepository.findById(idUsuario);
+
+        if (usuarioOpt.isEmpty()){
+            return null;
+        }
+        Direccion dir = direccionRepository.obtenerDireccionUsuario(usuarioOpt.get());
+
+        return parseDireccion(dir);
+    }
+
+    private DireccionResponseDTO parseDireccion(Direccion dir) {
+        DireccionResponseDTO direccionResponseDTO = new DireccionResponseDTO();
+        if (dir != null) {
+            direccionResponseDTO.setId(dir.getId());
+            direccionResponseDTO.setCiudad(dir.getCiudad());
+            direccionResponseDTO.setCalle(dir.getCalle());
+            direccionResponseDTO.setCarrera(dir.getCarrera());
+            direccionResponseDTO.setNumero(dir.getNumero());
+            direccionResponseDTO.setBarrio(dir.getBarrio());
+            direccionResponseDTO.setNumeroTelefono(dir.getNumeroTelefono());
+        }
+        return direccionResponseDTO;
     }
 }

@@ -13,8 +13,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class ReporteProveedor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idDevolucion;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reporte_proverdor_seq")
+    @SequenceGenerator(name = "reporte_proverdor_seq", sequenceName = "REPORTE_PROVEDOR_SEQ", allocationSize = 1)    private Long idDevolucion;
     private String razon;
     private Boolean esDevolucion;
     private LocalDate fechaDevolucion;

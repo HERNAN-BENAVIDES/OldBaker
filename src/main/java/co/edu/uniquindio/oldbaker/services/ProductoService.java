@@ -53,6 +53,7 @@ public class ProductoService {
         producto.setDescripcion(request.getDescripcion());
         producto.setCostoUnitario(request.getCostoUnitario());
         producto.setVidaUtilDias(request.getDiasVidaUtil());
+        producto.setPedidoMinimo(request.getPedidoMinimo());
         producto.setCategoria(categoria);
         Producto productoGuardado = productoRepository.save(producto);
 
@@ -110,6 +111,7 @@ public class ProductoService {
         response.setDescripcion(producto.getDescripcion());
         response.setCostoUnitario(producto.getCostoUnitario());
         response.setVidaUtilDias(producto.getVidaUtilDias());
+        response.setPedidoMinimo(producto.getPedidoMinimo());
         response.setCategoriaNombre(producto.getCategoria().getNombre());
 
         // Buscar receta por producto
@@ -121,6 +123,7 @@ public class ProductoService {
                 dto.setIdReceta(r.getIdReceta());
                 dto.setCantidadInsumo(r.getCantidadInsumo());
                 dto.setInsumoNombre(r.getInsumo().getNombre());
+                dto.setUnidadMedida(r.getUnidadMedida());
                 return dto;
             }).toList());
         }

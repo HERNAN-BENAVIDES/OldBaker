@@ -19,7 +19,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
             p.costoUnitario,
             p.vidaUtilDias,
             c.nombre,
-            ip.url
+            ip.url,
+            p.pedidoMinimo
         )
         FROM Producto p
         LEFT JOIN Categoria c ON p.categoria.idCategoria = c.idCategoria
