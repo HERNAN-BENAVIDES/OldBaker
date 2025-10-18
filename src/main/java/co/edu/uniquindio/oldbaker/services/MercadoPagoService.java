@@ -3,8 +3,11 @@ package co.edu.uniquindio.oldbaker.services;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutItemDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutRequestDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutResponseDTO;
+import co.edu.uniquindio.oldbaker.model.OrdenCompra;
 import co.edu.uniquindio.oldbaker.model.Producto;
+import co.edu.uniquindio.oldbaker.model.WebhookLog;
 import co.edu.uniquindio.oldbaker.repositories.ProductRepository;
+import co.edu.uniquindio.oldbaker.repositories.WebhookLogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -13,12 +16,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -29,9 +35,8 @@ public class MercadoPagoService {
 
     private final RestTemplate restTemplate;
     private final ProductRepository productRepository;
-
-    // Si tienes un OrderService, inyéctalo aquí para actualizar órdenes por external_reference:
-    // private final OrderService orderService;
+    private final OrdenCompraService ordenCompraService;
+    private final WebhookLogRepository webhookLogRepository;
 
     @Value("${mercadopago.access-token}")
     private String accessToken;
@@ -39,7 +44,7 @@ public class MercadoPagoService {
     @Value("${mercadopago.notification-url:}")
     private String explicitNotificationUrl;
 
-    @Value("${mercadopago.webhook-secret:}")     // secreto para HMAC; si está vacío, no se valida firma
+    @Value("${mercadopago.webhook-secret:}")
     private String webhookSecret;
 
     @Value("${app.base-url:}")
@@ -48,38 +53,32 @@ public class MercadoPagoService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * Crea una preferencia con:
-     * - items provenientes de la BD (precio confiable)
-     * - notification_url para recibir webhooks
-     * - external_reference para enlazar con tu orden local
+     * Crea una preferencia usando el external_reference de una orden previamente creada.
      */
-    public CheckoutResponseDTO createPreference(CheckoutRequestDTO request) {
+    public CheckoutResponseDTO createPreference(OrdenCompra orden) {
         String url = "https://api.mercadopago.com/checkout/preferences";
 
         Map<String, Object> payload = new HashMap<>();
         List<Map<String, Object>> items = new ArrayList<>();
 
-        for (CheckoutItemDTO it : request.getItems()) {
-            Producto prod = productRepository.findById(it.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + it.getProductId()));
-
-            Map<String, Object> item = new HashMap<>();
-            item.put("title", prod.getNombre());
-            item.put("quantity", it.getQuantity());
-            item.put("unit_price", prod.getCostoUnitario().doubleValue()); // precio confiable desde BD
-            item.put("currency_id", "COP");
-            items.add(item);
+        for (var item : orden.getItems()) {
+            Map<String, Object> mpItem = new HashMap<>();
+            mpItem.put("title", item.getProducto().getNombre());
+            mpItem.put("quantity", item.getCantidad());
+            mpItem.put("unit_price", item.getPrecioUnitario().doubleValue());
+            mpItem.put("currency_id", "COP");
+            items.add(mpItem);
         }
         payload.put("items", items);
 
-        // Payer (opcional)
-        if (request.getPayerEmail() != null && !request.getPayerEmail().isBlank()) {
+        // Payer
+        if (orden.getPayerEmail() != null && !orden.getPayerEmail().isBlank()) {
             Map<String, Object> payer = new HashMap<>();
-            payer.put("email", request.getPayerEmail());
+            payer.put("email", orden.getPayerEmail());
             payload.put("payer", payer);
         }
 
-        // back_urls + auto_return (para redirecciones de la UI)
+        // back_urls + auto_return
         if (appBaseUrl != null && !appBaseUrl.isBlank()) {
             Map<String, String> backUrls = new HashMap<>();
             backUrls.put("success", appBaseUrl + "/payment/success");
@@ -89,7 +88,7 @@ public class MercadoPagoService {
             payload.put("auto_return", "approved");
         }
 
-        // notification_url (prioriza mercadopago.notification-url; si no, app.base-url + /webhook)
+        // notification_url
         String notificationUrl = explicitNotificationUrl;
         if (notificationUrl == null || notificationUrl.isBlank()) {
             if (appBaseUrl != null && !appBaseUrl.isBlank()) {
@@ -100,12 +99,11 @@ public class MercadoPagoService {
             payload.put("notification_url", notificationUrl);
         }
 
-        // external_reference: ID de la orden local (aquí usamos un UUID como placeholder)
-        // En producción: crea la Order en PENDING y usa su id aquí
-        String externalReference = UUID.randomUUID().toString();
-        payload.put("external_reference", externalReference);
+        // external_reference: usar el de la orden ya creada
+        payload.put("external_reference", orden.getExternalReference());
 
-        logger.info("Creando preferencia MP con external_reference={} notification_url={}", externalReference, notificationUrl);
+        logger.info("Creando preferencia MP con external_reference={} notification_url={}",
+                orden.getExternalReference(), notificationUrl);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -121,8 +119,6 @@ public class MercadoPagoService {
         Map body = resp.getBody();
         String initPoint = body != null && body.get("init_point") != null ? body.get("init_point").toString() : null;
         String preferenceId = body != null && body.get("id") != null ? body.get("id").toString() : null;
-
-        // Aquí podrías persistir externalReference ↔ preferenceId ↔ estado inicial de la orden
 
         return new CheckoutResponseDTO(initPoint, preferenceId);
     }
@@ -154,8 +150,7 @@ public class MercadoPagoService {
      * Procesamiento asíncrono del pago:
      * - Consulta el pago por ID
      * - Lee status y external_reference
-     * - Actualiza orden local según estado
-     * Requiere @EnableAsync en la config de Spring.
+     * - Actualiza orden local según estado usando OrdenCompraService
      */
     @Async
     public void processPaymentAsync(String paymentId) {
@@ -166,7 +161,7 @@ public class MercadoPagoService {
                 return;
             }
 
-            String status = Objects.toString(payment.get("status"), null); // approved, rejected, pending, in_process...
+            String status = Objects.toString(payment.get("status"), null);
             String externalRef = Objects.toString(payment.get("external_reference"), null);
 
             if (externalRef == null) {
@@ -179,20 +174,118 @@ public class MercadoPagoService {
             logger.info("Pago {} status={} external_reference={}", paymentId, status, externalRef);
 
             if (externalRef != null) {
-                // Long orderId = Long.valueOf(externalRef); // si usas IDs numéricos
-                // switch (status) {
-                //     case "approved" -> orderService.markAsPaid(orderId, paymentId);
-                //     case "rejected" -> orderService.markAsFailed(orderId, paymentId);
-                //     case "pending", "in_process" -> orderService.markAsPending(orderId, paymentId);
-                //     default -> logger.info("Estado no manejado: {}", status);
-                // }
-                // Por ahora solo log:
-                logger.info("Actualizar orden local con external_reference={} según status={}", externalRef, status);
+                try {
+                    switch (status) {
+                        case "approved" -> ordenCompraService.marcarComoPagada(externalRef, paymentId);
+                        case "rejected", "cancelled" -> ordenCompraService.marcarComoFallida(externalRef, paymentId);
+                        case "pending", "in_process", "in_mediation" -> ordenCompraService.marcarComoEnProceso(externalRef, paymentId);
+                        default -> logger.info("Estado no manejado: {}", status);
+                    }
+                } catch (Exception e) {
+                    logger.error("Error actualizando orden con external_reference={}", externalRef, e);
+                }
             } else {
                 logger.warn("external_reference ausente en el pago {}", paymentId);
             }
 
         } catch (Exception e) {
+            logger.error("Error procesando pago {}", paymentId, e);
+        }
+    }
+
+    /**
+     * Paso 5: Procesamiento asíncrono del pago con idempotencia mejorada.
+     * - Registra el webhook en la BD para detectar duplicados
+     * - Consulta el pago por ID
+     * - Lee status y external_reference
+     * - Actualiza orden local según estado usando OrdenCompraService
+     */
+    @Async
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void processPaymentAsync(String paymentId, String requestId, String rawBody) {
+        WebhookLog webhookLog = null;
+        try {
+            // Paso 5: Verificar idempotencia - ¿ya procesamos este webhook?
+            if (webhookLogRepository.existsByPaymentIdAndProcessedTrue(paymentId)) {
+                logger.info("Webhook ya procesado previamente para paymentId={}, ignorando duplicado", paymentId);
+                return;
+            }
+
+            // Crear registro de webhook
+            webhookLog = WebhookLog.builder()
+                    .paymentId(paymentId)
+                    .requestId(requestId)
+                    .rawBody(rawBody != null && rawBody.length() > 5000 ? rawBody.substring(0, 5000) : rawBody)
+                    .processed(false)
+                    .build();
+            webhookLog = webhookLogRepository.save(webhookLog);
+
+            Map payment = getPayment(paymentId);
+            if (payment == null) {
+                webhookLog.setErrorMessage("No se encontró pago en MercadoPago API");
+                webhookLog.setFechaProcesamiento(LocalDateTime.now());
+                webhookLogRepository.save(webhookLog);
+                logger.warn("No se encontró pago para id={}", paymentId);
+                return;
+            }
+
+            String status = Objects.toString(payment.get("status"), null);
+            String externalRef = Objects.toString(payment.get("external_reference"), null);
+
+            if (externalRef == null) {
+                Object order = payment.get("order");
+                if (order instanceof Map<?, ?> map) {
+                    externalRef = Objects.toString(map.get("external_reference"), null);
+                }
+            }
+
+            // Actualizar log con datos del pago
+            webhookLog.setPaymentStatus(status);
+            webhookLog.setExternalReference(externalRef);
+            webhookLog.setTopic("payment");
+
+            logger.info("Pago {} status={} external_reference={}", paymentId, status, externalRef);
+
+            if (externalRef != null) {
+                try {
+                    // Paso 5: Actualizar orden (con transaccionalidad y validaciones)
+                    switch (status) {
+                        case "approved" -> ordenCompraService.marcarComoPagada(externalRef, paymentId);
+                        case "rejected", "cancelled" -> ordenCompraService.marcarComoFallida(externalRef, paymentId);
+                        case "pending", "in_process", "in_mediation" -> ordenCompraService.marcarComoEnProceso(externalRef, paymentId);
+                        default -> logger.info("Estado no manejado: {}", status);
+                    }
+
+                    // Marcar webhook como procesado exitosamente
+                    webhookLog.setProcessed(true);
+                    webhookLog.setFechaProcesamiento(LocalDateTime.now());
+                    webhookLogRepository.save(webhookLog);
+
+                } catch (IllegalStateException e) {
+                    // Transición de estado inválida (ej: intentar marcar como PAID una orden cancelada)
+                    webhookLog.setErrorMessage("Transición de estado inválida: " + e.getMessage());
+                    webhookLog.setFechaProcesamiento(LocalDateTime.now());
+                    webhookLogRepository.save(webhookLog);
+                    logger.error("Error de transición de estado para external_reference={}", externalRef, e);
+                } catch (Exception e) {
+                    webhookLog.setErrorMessage("Error procesando: " + e.getMessage());
+                    webhookLog.setFechaProcesamiento(LocalDateTime.now());
+                    webhookLogRepository.save(webhookLog);
+                    logger.error("Error actualizando orden con external_reference={}", externalRef, e);
+                }
+            } else {
+                webhookLog.setErrorMessage("external_reference ausente en el pago");
+                webhookLog.setFechaProcesamiento(LocalDateTime.now());
+                webhookLogRepository.save(webhookLog);
+                logger.warn("external_reference ausente en el pago {}", paymentId);
+            }
+
+        } catch (Exception e) {
+            if (webhookLog != null) {
+                webhookLog.setErrorMessage("Error general: " + e.getMessage());
+                webhookLog.setFechaProcesamiento(LocalDateTime.now());
+                webhookLogRepository.save(webhookLog);
+            }
             logger.error("Error procesando pago {}", paymentId, e);
         }
     }

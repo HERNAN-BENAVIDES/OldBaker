@@ -2,12 +2,16 @@ package co.edu.uniquindio.oldbaker.controllers;
 
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutRequestDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutResponseDTO;
+import co.edu.uniquindio.oldbaker.model.OrdenCompra;
+import co.edu.uniquindio.oldbaker.model.Usuario;
 import co.edu.uniquindio.oldbaker.services.MercadoPagoService;
+import co.edu.uniquindio.oldbaker.services.OrdenCompraService;
 import co.edu.uniquindio.oldbaker.services.StockValidationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,18 +27,50 @@ public class OrdenCompraController {
     private static final Logger logger = LoggerFactory.getLogger(OrdenCompraController.class);
 
     private final MercadoPagoService mercadoPagoService;
+    private final OrdenCompraService ordenCompraService;
     private final StockValidationService stockValidationService;
 
+    /**
+     * Paso 3: Crear orden ANTES de redirigir a MercadoPago
+     * 1. Valida stock disponible
+     * 2. Crea orden en BD con estado PENDING
+     * 3. Crea preferencia en MercadoPago usando external_reference de la orden
+     * 4. Retorna init_point para redirigir al usuario
+     */
     @PostMapping("/checkout")
-    public ResponseEntity<?> checkout(@RequestBody CheckoutRequestDTO request) {
+    public ResponseEntity<?> checkout(
+            @RequestBody CheckoutRequestDTO request,
+            @AuthenticationPrincipal Usuario usuario) {
+
+        // Validar que el usuario esté autenticado
+        if (usuario == null) {
+            logger.warn("Intento de checkout sin autenticación");
+            return ResponseEntity.status(401).body(Map.of("error", "Usuario no autenticado"));
+        }
+
+        // Validar disponibilidad de stock
         var check = stockValidationService.checkAvailability(request);
         if (!check.isValid()) {
-            logger.warn("Stock insuficiente: {}", check.getMessage());
+            logger.warn("Stock insuficiente para usuario {}: {}", usuario.getId(), check.getMessage());
             return ResponseEntity.badRequest().body(Map.of("error", check.getMessage()));
         }
 
-        CheckoutResponseDTO resp = mercadoPagoService.createPreference(request);
-        return ResponseEntity.ok(resp);
+        try {
+            // Paso 3: Crear orden en estado PENDING
+            OrdenCompra orden = ordenCompraService.crearOrden(request, usuario.getId());
+
+            // Crear preferencia en MercadoPago usando la orden creada
+            CheckoutResponseDTO resp = mercadoPagoService.createPreference(orden);
+
+            logger.info("Checkout exitoso: ordenId={} usuario={} initPoint={}",
+                    orden.getId(), usuario.getId(), resp.getInitPoint());
+
+            return ResponseEntity.ok(resp);
+
+        } catch (Exception e) {
+            logger.error("Error en checkout para usuario {}", usuario.getId(), e);
+            return ResponseEntity.status(500).body(Map.of("error", "Error procesando checkout: " + e.getMessage()));
+        }
     }
 
     /**
@@ -43,6 +79,7 @@ public class OrdenCompraController {
      * - Valida firma (HMAC) si hay secreto configurado
      * - Normaliza topic/type e id (query o body)
      * - Lanza proceso asíncrono para consultar pago y actualizar orden
+     * - Paso 5: Registra webhook en BD para idempotencia mejorada
      */
     @PostMapping("/webhook")
     public ResponseEntity<Void> webhook(
@@ -55,7 +92,7 @@ public class OrdenCompraController {
             @RequestBody(required = false) Map<String, Object> body
     ) {
         try {
-            // Leer raw body (necesario para verificar HMAC correctamente)
+            // Leer raw body (necesario para verificar HMAC correctamente y registrar webhook)
             String rawBody = "";
             if (httpRequest.getInputStream() != null) {
                 rawBody = StreamUtils.copyToString(httpRequest.getInputStream(), StandardCharsets.UTF_8);
@@ -96,7 +133,8 @@ public class OrdenCompraController {
 
             // Responder rápido y procesar asíncrono
             if ("payment".equalsIgnoreCase(normalizedTopic) && normalizedId != null) {
-                mercadoPagoService.processPaymentAsync(normalizedId);
+                // Paso 5: Llamar a la versión mejorada con registro de webhook
+                mercadoPagoService.processPaymentAsync(normalizedId, requestId, rawBody);
             } else {
                 logger.warn("Webhook no manejado o id ausente: topic={} id={}", normalizedTopic, normalizedId);
             }
