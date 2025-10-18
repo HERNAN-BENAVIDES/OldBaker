@@ -1,10 +1,7 @@
 package co.edu.uniquindio.oldbaker.services;
 
-import co.edu.uniquindio.oldbaker.dto.payment.CheckoutItemDTO;
-import co.edu.uniquindio.oldbaker.dto.payment.CheckoutRequestDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutResponseDTO;
 import co.edu.uniquindio.oldbaker.model.OrdenCompra;
-import co.edu.uniquindio.oldbaker.model.Producto;
 import co.edu.uniquindio.oldbaker.model.WebhookLog;
 import co.edu.uniquindio.oldbaker.repositories.ProductRepository;
 import co.edu.uniquindio.oldbaker.repositories.WebhookLogRepository;
@@ -54,6 +51,7 @@ public class MercadoPagoService {
 
     /**
      * Crea una preferencia usando el external_reference de una orden previamente creada.
+     * Configura back_urls para redirigir al usuario después del pago.
      */
     public CheckoutResponseDTO createPreference(OrdenCompra orden) {
         String url = "https://api.mercadopago.com/checkout/preferences";
@@ -78,17 +76,26 @@ public class MercadoPagoService {
             payload.put("payer", payer);
         }
 
-        // back_urls + auto_return
+        // back_urls: URLs del frontend para redirigir después del pago
+        // MercadoPago redirige automáticamente a estas URLs con parámetros en query string
+
         if (appBaseUrl != null && !appBaseUrl.isBlank()) {
             Map<String, String> backUrls = new HashMap<>();
-            backUrls.put("success", appBaseUrl + "/payment/success");
-            backUrls.put("failure", appBaseUrl + "/payment/failure");
-            backUrls.put("pending", appBaseUrl + "/payment/pending");
+            // Incluir external_reference en la URL para que el frontend identifique la orden
+            backUrls.put("success", appBaseUrl + "/payment/success?external_reference=" + orden.getExternalReference());
+            backUrls.put("failure", appBaseUrl + "/payment/failure?external_reference=" + orden.getExternalReference());
+            backUrls.put("pending", appBaseUrl + "/payment/pending?external_reference=" + orden.getExternalReference());
             payload.put("back_urls", backUrls);
-            payload.put("auto_return", "approved");
+            // auto_return: sólo agregar si la URL success es HTTPS (MercadoPago exige https para auto_return)
+            String successUrl = backUrls.get("success");
+            if (successUrl != null && successUrl.toLowerCase().startsWith("https://")) {
+                payload.put("auto_return", "approved");
+            } else {
+                logger.debug("No se añadió auto_return porque successUrl no es HTTPS: {}", successUrl);
+            }
         }
 
-        // notification_url
+        // notification_url: webhook del backend para recibir notificaciones
         String notificationUrl = explicitNotificationUrl;
         if (notificationUrl == null || notificationUrl.isBlank()) {
             if (appBaseUrl != null && !appBaseUrl.isBlank()) {
@@ -102,18 +109,41 @@ public class MercadoPagoService {
         // external_reference: usar el de la orden ya creada
         payload.put("external_reference", orden.getExternalReference());
 
-        logger.info("Creando preferencia MP con external_reference={} notification_url={}",
-                orden.getExternalReference(), notificationUrl);
+        logger.info("Creando preferencia MP: externalRef={} backUrls={} notificationUrl={}",
+                orden.getExternalReference(), appBaseUrl, notificationUrl);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(accessToken);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload, headers);
-        ResponseEntity<Map> resp = restTemplate.postForEntity(url, entity, Map.class);
 
-        if (resp.getStatusCode() != HttpStatus.CREATED && resp.getStatusCode() != HttpStatus.OK) {
-            throw new RuntimeException("MercadoPago error: " + resp.getStatusCode());
+        ResponseEntity<Map> resp = null;
+        try {
+            resp = restTemplate.postForEntity(url, entity, Map.class);
+        } catch (HttpClientErrorException ex) {
+            // Loguear detalle de la respuesta de error para diagnóstico
+            String respBody = ex.getResponseBodyAsString();
+            logger.error("Error creando preferencia MP: status={} body={}", ex.getStatusCode(), respBody);
+
+            // Si la causa es auto_return invalid, intentar crear preferencia sin auto_return como fallback
+            if (payload.containsKey("auto_return") && respBody != null && respBody.contains("auto_return invalid")) {
+                logger.warn("MercadoPago rechazó auto_return; reintentando crear preferencia sin auto_return");
+                payload.remove("auto_return");
+                entity = new HttpEntity<>(payload, headers);
+                try {
+                    resp = restTemplate.postForEntity(url, entity, Map.class);
+                } catch (HttpClientErrorException ex2) {
+                    logger.error("Segundo intento crear preferencia MP falló: status={} body={}", ex2.getStatusCode(), ex2.getResponseBodyAsString());
+                    throw new RuntimeException("Error MercadoPago: " + ex2.getResponseBodyAsString(), ex2);
+                }
+            } else {
+                throw new RuntimeException("Error MercadoPago: " + respBody, ex);
+            }
+        }
+
+        if (resp == null || (resp.getStatusCode() != HttpStatus.CREATED && resp.getStatusCode() != HttpStatus.OK)) {
+            throw new RuntimeException("MercadoPago error: " + (resp != null ? resp.getStatusCode() : "no response"));
         }
 
         Map body = resp.getBody();

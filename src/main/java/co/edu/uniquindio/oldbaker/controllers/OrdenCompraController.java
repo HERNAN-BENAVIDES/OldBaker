@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -48,6 +50,30 @@ public class OrdenCompraController {
             return ResponseEntity.status(401).body(Map.of("error", "Usuario no autenticado"));
         }
 
+        // Validaciones preventivas del request para evitar fallos en el servicio
+        if (request == null) {
+            logger.warn("Checkout request nulo para usuario {}", usuario.getId());
+            return ResponseEntity.badRequest().body(Map.of("error", "Request vacío"));
+        }
+
+        if (request.getItems() == null || request.getItems().isEmpty()) {
+            logger.warn("Checkout con items vacíos para usuario {}", usuario.getId());
+            return ResponseEntity.badRequest().body(Map.of("error", "Lista de items vacía"));
+        }
+
+        for (var it : request.getItems()) {
+            if (it == null || it.getProductId() == null) {
+                logger.warn("Item sin productId en checkout por usuario {}: item={}", usuario.getId(), it);
+                return ResponseEntity.badRequest().body(Map.of("error", "Cada item debe incluir productId"));
+            }
+            if (it.getQuantity() == null || it.getQuantity() <= 0) {
+                logger.warn("Item con quantity inválida en checkout por usuario {}: item={}", usuario.getId(), it);
+                return ResponseEntity.badRequest().body(Map.of("error", "Cada item debe incluir quantity mayor a 0"));
+            }
+        }
+
+        // payerEmail es opcional en algunos flows, pero si viene vacío lo aceptamos; si es requerido cambia la validación
+
         // Validar disponibilidad de stock
         var check = stockValidationService.checkAvailability(request);
         if (!check.isValid()) {
@@ -70,6 +96,42 @@ public class OrdenCompraController {
         } catch (Exception e) {
             logger.error("Error en checkout para usuario {}", usuario.getId(), e);
             return ResponseEntity.status(500).body(Map.of("error", "Error procesando checkout: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Consultar el estado de una orden por external_reference.
+     * El frontend llama a este endpoint después de la redirección de MercadoPago.
+     */
+    @GetMapping("/status")
+    public ResponseEntity<?> getOrderStatus(@RequestParam String externalReference) {
+        try {
+            OrdenCompra orden = ordenCompraService.obtenerPorExternalReference(externalReference);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("orderId", orden.getId());
+            response.put("status", orden.getStatus().name());
+            response.put("total", orden.getTotal());
+            response.put("paymentId", orden.getPaymentId());
+            response.put("fechaCreacion", orden.getFechaCreacion());
+
+            // Lista simplificada de items
+            ArrayList<Map<String, Object>> items = new ArrayList<>();
+            for (var item : orden.getItems()) {
+                Map<String, Object> itemData = new HashMap<>();
+                itemData.put("producto", item.getProducto().getNombre());
+                itemData.put("cantidad", item.getCantidad());
+                itemData.put("precioUnitario", item.getPrecioUnitario());
+                itemData.put("subtotal", item.getSubtotal());
+                items.add(itemData);
+            }
+            response.put("items", items);
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            logger.warn("Orden no encontrada: {}", externalReference);
+            return ResponseEntity.status(404).body(Map.of("error", "Orden no encontrada"));
         }
     }
 
