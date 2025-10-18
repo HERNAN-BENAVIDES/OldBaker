@@ -81,10 +81,10 @@ public class MercadoPagoService {
 
         if (appBaseUrl != null && !appBaseUrl.isBlank()) {
             Map<String, String> backUrls = new HashMap<>();
-            // Incluir external_reference en la URL para que el frontend identifique la orden
-            backUrls.put("success", appBaseUrl + "/payment/success?external_reference=" + orden.getExternalReference());
-            backUrls.put("failure", appBaseUrl + "/payment/failure?external_reference=" + orden.getExternalReference());
-            backUrls.put("pending", appBaseUrl + "/payment/pending?external_reference=" + orden.getExternalReference());
+            // Redirigir todas las URLs a /mis-pedidos con un parámetro status (approved/failed/pending)
+            backUrls.put("success", appBaseUrl + "/mis-pedidos?status=approved&external_reference=" + orden.getExternalReference());
+            backUrls.put("failure", appBaseUrl + "/mis-pedidos?status=failed&external_reference=" + orden.getExternalReference());
+            backUrls.put("pending", appBaseUrl + "/mis-pedidos?status=pending&external_reference=" + orden.getExternalReference());
             payload.put("back_urls", backUrls);
             // auto_return: sólo agregar si la URL success es HTTPS (MercadoPago exige https para auto_return)
             String successUrl = backUrls.get("success");
