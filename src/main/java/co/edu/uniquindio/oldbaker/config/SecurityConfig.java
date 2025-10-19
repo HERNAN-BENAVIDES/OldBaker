@@ -74,6 +74,7 @@ public class SecurityConfig {
                                 "/api/auth/worker/login",
                                 "/login/oauth2/**",
                                 "/api/mercadopago/**",
+                                "/api/payments/**",
                                 "/oauth2/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
