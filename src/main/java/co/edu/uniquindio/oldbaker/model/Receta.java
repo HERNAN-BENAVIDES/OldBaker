@@ -16,6 +16,7 @@ public class Receta {
     private String nombre;
     private String descripcion;
     private double cantidadInsumo;
+    @Enumerated(EnumType.STRING)
     private UnidadMedida unidadMedida;
     @ManyToOne
     @JoinColumn(name = "id_insumo")
