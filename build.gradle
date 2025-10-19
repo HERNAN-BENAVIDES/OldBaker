@@ -18,6 +18,9 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	all {
+		exclude group: 'commons-logging', module: 'commons-logging'
+	}
 }
 
 repositories {
@@ -47,6 +50,9 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	// H2 Database para pruebas
+	testImplementation 'com.h2database:h2'
+
 	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
@@ -69,14 +75,15 @@ dependencies {
 
 }
 
+test {
+	useJUnitPlatform()
+}
+
 // groovy
 def envFile = project.hasProperty('env') && project.env == 'development' ? '.env.development' : '.env.production'
 
 processResources {
-    from('.') {
-        include envFile
-    }
+	from('.') {
+		include envFile
+	}
 }
-
-
-

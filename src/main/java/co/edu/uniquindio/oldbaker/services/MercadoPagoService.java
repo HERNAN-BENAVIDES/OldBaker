@@ -98,9 +98,7 @@ public class MercadoPagoService {
         // notification_url: webhook del backend para recibir notificaciones
         String notificationUrl = explicitNotificationUrl;
         if (notificationUrl == null || notificationUrl.isBlank()) {
-            if (appBaseUrl != null && !appBaseUrl.isBlank()) {
-                notificationUrl = appBaseUrl + "/api/payments/webhook";
-            }
+            notificationUrl =  "https://api.oldbaker.shop/api/mercadopago/webhook";
         }
         if (notificationUrl != null && !notificationUrl.isBlank()) {
             payload.put("notification_url", notificationUrl);
