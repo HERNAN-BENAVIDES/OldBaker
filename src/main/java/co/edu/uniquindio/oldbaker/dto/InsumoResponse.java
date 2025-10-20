@@ -1,24 +1,18 @@
 package co.edu.uniquindio.oldbaker.dto;
 
-import co.edu.uniquindio.oldbaker.model.Proveedor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InsumoProveedorResponse {
-    private Long id;
+public class InsumoResponse {
+    private Long idInsumo;
     private String nombre;
     private String descripcion;
     private Double costoUnitario;
-    private LocalDate fechaVencimiento;
-    private Integer cantidadDisponible;
-    private Long idProveedor;
+    private Integer cantidadActual;
 }
-
