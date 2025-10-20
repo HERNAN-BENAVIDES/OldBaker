@@ -30,6 +30,10 @@ public class PedidoInsumoService {
         this.reporteProveedorRepository = reporteProveedorRepository;
     }
 
+    public Long obtenerProveedorPorPedido(Long idPedido) {
+        return pedidoInsumoRepository.findProveedorByPedidoId(idPedido);
+    }
+
     // Crear un nuevo pedido (Admin)
     @Transactional
     public PedidoInsumoResponse crearPedido(PedidoInsumoRequest request) {

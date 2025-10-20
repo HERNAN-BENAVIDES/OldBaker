@@ -8,6 +8,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Insumo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "insumo_seq")

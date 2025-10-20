@@ -28,6 +28,11 @@ public class PedidoInsumoAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping("/{id}/proveedor")
+    public ResponseEntity<Long> obtenerProveedorPorPedido(@PathVariable Long id) {
+        return ResponseEntity.ok(pedidoInsumoService.obtenerProveedorPorPedido(id));
+    }
+
     // 2. Obtener todos los pedidos
     @GetMapping
     public ResponseEntity<List<PedidoInsumoResponse>> obtenerPedidos() {

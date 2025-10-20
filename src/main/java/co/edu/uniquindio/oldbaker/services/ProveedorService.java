@@ -1,6 +1,7 @@
 package co.edu.uniquindio.oldbaker.services;
 
 import co.edu.uniquindio.oldbaker.dto.ProveedorRequest;
+import co.edu.uniquindio.oldbaker.dto.ProveedorResponse;
 import co.edu.uniquindio.oldbaker.model.Proveedor;
 import co.edu.uniquindio.oldbaker.repositories.ProveedorRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,6 @@ public class ProveedorService {
     // Convertir DTO a entidad
     private Proveedor toEntity(ProveedorRequest dto) {
         Proveedor proveedor = new Proveedor();
-        proveedor.setIdProveedor(dto.getIdProveedor());
         proveedor.setNombre(dto.getNombre());
         proveedor.setTelefono(dto.getTelefono());
         proveedor.setEmail(dto.getEmail());
@@ -32,8 +32,8 @@ public class ProveedorService {
     }
 
     // Convertir entidad a DTO
-    private ProveedorRequest toDTO(Proveedor proveedor) {
-        ProveedorRequest dto = new ProveedorRequest();
+    private ProveedorResponse toDTO(Proveedor proveedor) {
+        ProveedorResponse dto = new ProveedorResponse();
         dto.setIdProveedor(proveedor.getIdProveedor());
         dto.setNombre(proveedor.getNombre());
         dto.setTelefono(proveedor.getTelefono());
@@ -43,13 +43,13 @@ public class ProveedorService {
     }
 
     // Crear un nuevo proveedor
-    public ProveedorRequest crearProveedor(ProveedorRequest dto) {
+    public ProveedorResponse crearProveedor(ProveedorRequest dto) {
         Proveedor proveedor = toEntity(dto);
         return toDTO(proveedorRepository.save(proveedor));
     }
 
     // Listar todos los proveedores
-    public List<ProveedorRequest> listarProveedores() {
+    public List<ProveedorResponse> listarProveedores() {
         return proveedorRepository.findAll()
                 .stream()
                 .map(this::toDTO)
@@ -57,12 +57,12 @@ public class ProveedorService {
     }
 
     // Buscar proveedor por ID
-    public Optional<ProveedorRequest> buscarPorId(Long id) {
+    public Optional<ProveedorResponse> buscarPorId(Long id) {
         return proveedorRepository.findById(id).map(this::toDTO);
     }
 
     // Actualizar proveedor
-    public ProveedorRequest actualizarProveedor(Long id, ProveedorRequest dto) {
+    public ProveedorResponse actualizarProveedor(Long id, ProveedorRequest dto) {
         return proveedorRepository.findById(id).map(proveedor -> {
             proveedor.setNombre(dto.getNombre());
             proveedor.setTelefono(dto.getTelefono());

@@ -1,6 +1,7 @@
 package co.edu.uniquindio.oldbaker.controllers;
 
 import co.edu.uniquindio.oldbaker.dto.ProveedorRequest;
+import co.edu.uniquindio.oldbaker.dto.ProveedorResponse;
 import co.edu.uniquindio.oldbaker.services.ProveedorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,24 +20,24 @@ public class ProveedorController {
     }
 
     @PostMapping
-    public ResponseEntity<ProveedorRequest> crearProveedor(@Validated @RequestBody ProveedorRequest dto) {
+    public ResponseEntity<ProveedorResponse> crearProveedor(@Validated @RequestBody ProveedorRequest dto) {
         return ResponseEntity.ok(proveedorService.crearProveedor(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<ProveedorRequest>> listarProveedores() {
+    public ResponseEntity<List<ProveedorResponse>> listarProveedores() {
         return ResponseEntity.ok(proveedorService.listarProveedores());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProveedorRequest> obtenerProveedor(@PathVariable Long id) {
+    public ResponseEntity<ProveedorResponse> obtenerProveedor(@PathVariable Long id) {
         return proveedorService.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProveedorRequest> actualizarProveedor(@PathVariable Long id,
+    public ResponseEntity<ProveedorResponse> actualizarProveedor(@PathVariable Long id,
                                                                 @Validated @RequestBody ProveedorRequest dto) {
         return ResponseEntity.ok(proveedorService.actualizarProveedor(id, dto));
     }
