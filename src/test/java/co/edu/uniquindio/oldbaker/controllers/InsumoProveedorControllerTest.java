@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
@@ -26,8 +25,6 @@ import static org.mockito.Mockito.*;
  * Estas pruebas verifican el comportamiento de los endpoints del controlador de insumos de proveedores
  * que gestionan la consulta de insumos disponibles y sus detalles. Se utiliza Mockito para simular
  * el servicio de insumos de proveedores y validar que el controlador maneja correctamente las respuestas HTTP.
- *
- * @author OldBaker Team
  */
 @ExtendWith(MockitoExtension.class)
 class InsumoProveedorControllerTest {
@@ -51,28 +48,21 @@ class InsumoProveedorControllerTest {
         insumoProveedorResponse1.setId(1L);
         insumoProveedorResponse1.setNombre("Harina de Trigo");
         insumoProveedorResponse1.setDescripcion("Harina integral de alta calidad");
-        insumoProveedorResponse1.setProveedorNombre("Distribuidora La Esperanza");
         insumoProveedorResponse1.setCostoUnitario(2500.0);
         insumoProveedorResponse1.setCantidadDisponible(1000);
+        insumoProveedorResponse1.setIdProveedor(10L);
 
         insumoProveedorResponse2 = new InsumoProveedorResponse();
         insumoProveedorResponse2.setId(2L);
         insumoProveedorResponse2.setNombre("Azúcar");
         insumoProveedorResponse2.setDescripcion("Azúcar refinada");
-        insumoProveedorResponse2.setProveedorNombre("Distribuidora La Esperanza");
         insumoProveedorResponse2.setCostoUnitario(3000.0);
         insumoProveedorResponse2.setCantidadDisponible(500);
+        insumoProveedorResponse2.setIdProveedor(10L);
     }
 
     /**
      * Verifica que el endpoint de listado de insumos funcione correctamente.
-     *
-     * Este test valida que:
-     * - El controlador obtiene la lista completa de insumos del servicio
-     * - Retorna un código HTTP 200 (OK)
-     * - La lista contiene el número correcto de insumos
-     * - Los datos de los insumos son correctos
-     * - El servicio es invocado exactamente una vez
      */
     @Test
     @DisplayName("Test listar insumos de proveedores")
@@ -96,12 +86,6 @@ class InsumoProveedorControllerTest {
 
     /**
      * Verifica que el endpoint de listado retorne una lista vacía cuando no hay insumos.
-     *
-     * Este test valida que:
-     * - El controlador maneja correctamente el caso de lista vacía
-     * - Retorna un código HTTP 200 (OK)
-     * - La lista está vacía
-     * - El servicio es invocado exactamente una vez
      */
     @Test
     @DisplayName("Test listar insumos cuando no hay registros")
@@ -122,12 +106,6 @@ class InsumoProveedorControllerTest {
 
     /**
      * Verifica que el endpoint de consulta de insumo por ID funcione correctamente.
-     *
-     * Este test valida que:
-     * - El controlador consulta el insumo usando el ID proporcionado
-     * - Retorna un código HTTP 200 (OK)
-     * - El insumo retornado contiene los datos esperados
-     * - El servicio es llamado con el ID correcto exactamente una vez
      */
     @Test
     @DisplayName("Test obtener insumo por ID")
@@ -145,17 +123,13 @@ class InsumoProveedorControllerTest {
         assertNotNull(response.getBody());
         assertEquals(1L, response.getBody().getId());
         assertEquals("Harina de Trigo", response.getBody().getNombre());
-        assertEquals("Distribuidora La Esperanza", response.getBody().getProveedorNombre());
         assertEquals(2500.0, response.getBody().getCostoUnitario());
+        assertEquals(10L, response.getBody().getIdProveedor());
         verify(insumoProveedorService, times(1)).obtenerInsumoPorId(insumoId);
     }
 
     /**
      * Verifica que el endpoint maneje correctamente cuando se busca un insumo que no existe.
-     *
-     * Este test valida que:
-     * - El controlador propaga la excepción del servicio cuando el insumo no existe
-     * - El servicio es invocado exactamente una vez con el ID correcto
      */
     @Test
     @DisplayName("Test obtener insumo por ID cuando no existe")
@@ -166,9 +140,7 @@ class InsumoProveedorControllerTest {
                 .thenThrow(new IllegalArgumentException("Insumo de proveedor no encontrado"));
 
         // When & Then
-        assertThrows(IllegalArgumentException.class, () -> {
-            insumoProveedorController.obtenerInsumoPorId(insumoId);
-        });
+        assertThrows(IllegalArgumentException.class, () -> insumoProveedorController.obtenerInsumoPorId(insumoId));
         verify(insumoProveedorService, times(1)).obtenerInsumoPorId(insumoId);
     }
 }

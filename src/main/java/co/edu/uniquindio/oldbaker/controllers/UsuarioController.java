@@ -98,7 +98,7 @@ public class UsuarioController {
     }
 
     @GetMapping("direccion")
-    public ResponseEntity<DireccionResponseDTO> obtenerDireccionUsuario(@RequestParam Long idUsuario) {
+    public ResponseEntity<List<DireccionResponseDTO>> obtenerDireccionUsuario(@RequestParam Long idUsuario) {
         return ResponseEntity.ok(usuarioService.obtenerDireccionUsuario(idUsuario));
     }
 }

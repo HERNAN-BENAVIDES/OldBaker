@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -53,28 +55,33 @@ public class UsuarioService {
         }
     }
 
-    public DireccionResponseDTO obtenerDireccionUsuario(Long idUsuario) {
+    public List<DireccionResponseDTO> obtenerDireccionUsuario(Long idUsuario) {
 
         var usuarioOpt = usuarioRepository.findById(idUsuario);
 
         if (usuarioOpt.isEmpty()){
             return null;
         }
-        Direccion dir = direccionRepository.obtenerDireccionUsuario(usuarioOpt.get());
+        List<Direccion> dir = direccionRepository.obtenerDireccionUsuario(usuarioOpt.get());
 
         return parseDireccion(dir);
     }
 
-    private DireccionResponseDTO parseDireccion(Direccion dir) {
-        DireccionResponseDTO direccionResponseDTO = new DireccionResponseDTO();
-        if (dir != null) {
-            direccionResponseDTO.setId(dir.getId());
-            direccionResponseDTO.setCiudad(dir.getCiudad());
-            direccionResponseDTO.setCalle(dir.getCalle());
-            direccionResponseDTO.setCarrera(dir.getCarrera());
-            direccionResponseDTO.setNumero(dir.getNumero());
-            direccionResponseDTO.setBarrio(dir.getBarrio());
-            direccionResponseDTO.setNumeroTelefono(dir.getNumeroTelefono());
+    private List<DireccionResponseDTO> parseDireccion(List<Direccion> dir) {
+        List<DireccionResponseDTO> direccionResponseDTO = new ArrayList<>();
+        if (!dir.isEmpty()) {
+
+            dir.forEach(d -> {
+                DireccionResponseDTO direccionDTO = new DireccionResponseDTO();
+                direccionDTO.setId(d.getId());
+                direccionDTO.setCiudad(d.getCiudad());
+                direccionDTO.setCalle(d.getCalle());
+                direccionDTO.setCarrera(d.getCarrera());
+                direccionDTO.setNumero(d.getNumero());
+                direccionDTO.setBarrio(d.getBarrio());
+                direccionDTO.setNumeroTelefono(d.getNumeroTelefono());
+                direccionResponseDTO.add(direccionDTO);
+            });
         }
         return direccionResponseDTO;
     }

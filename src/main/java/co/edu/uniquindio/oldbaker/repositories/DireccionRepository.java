@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,5 +15,5 @@ public interface DireccionRepository extends JpaRepository<Direccion, Long> {
         SELECT d FROM Direccion d
         WHERE d.idCliente = :idCliente
     """)
-    Direccion obtenerDireccionUsuario(Usuario idCliente);
+    List<Direccion> obtenerDireccionUsuario(Usuario idCliente);
 }

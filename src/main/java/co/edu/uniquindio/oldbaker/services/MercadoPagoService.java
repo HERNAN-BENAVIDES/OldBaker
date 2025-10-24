@@ -134,8 +134,33 @@ public class MercadoPagoService {
         // external_reference: usar el de la orden ya creada
         payload.put("external_reference", orden.getExternalReference());
 
+        // Opcional: descriptor del extracto del pago (máx 22 chars) para que el cliente identifique el comercio
+        try {
+            payload.put("statement_descriptor", "OLD BAKER");
+        } catch (Exception ignore) {
+            // No fallar si MP rechaza el descriptor
+        }
+
+        // Metadata para trazabilidad adicional en MP y webhooks
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("external_reference", orden.getExternalReference());
+        if (orden.getId() != null) metadata.put("order_id", orden.getId());
+        if (orden.getUsuario() != null && orden.getUsuario().getId() != null) metadata.put("user_id", orden.getUsuario().getId());
+        metadata.put("items_count", items.size());
+        // Añadir títulos de los productos (truncados) para tener contexto en MP
+        try {
+            List<String> itemTitles = new ArrayList<>();
+            for (Map<String, Object> it : items) {
+                Object t = it.get("title");
+                if (t != null) itemTitles.add(t.toString());
+            }
+            if (!itemTitles.isEmpty()) metadata.put("item_titles", String.join(", ", itemTitles).substring(0, Math.min(200, String.join(", ", itemTitles).length())));
+        } catch (Exception ignore) {}
+        payload.put("metadata", metadata);
+
         logger.info("Creando preferencia MP: externalRef={} backUrls={} notificationUrl={}",
                 orden.getExternalReference(), appBaseUrl, notificationUrl);
+        logger.debug("MP items enviados ({}): {}", items.size(), items.stream().map(i -> i.get("title")).toList());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

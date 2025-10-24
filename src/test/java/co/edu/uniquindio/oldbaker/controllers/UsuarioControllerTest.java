@@ -22,13 +22,11 @@ import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
@@ -161,8 +159,7 @@ class UsuarioControllerTest {
     void testObtenerOrdenesPorUsuarioSuccess() {
         // Given
         Long userId = 1L;
-        List<OrdenCompra> ordenes = List.of(ordenCompra);
-        when(ordenCompraService.listarOrdenesPorUsuario(userId)).thenReturn(ordenes);
+        when(ordenCompraService.listarOrdenesPorUsuario(userId)).thenReturn(List.of(ordenCompra));
 
         // When
         ResponseEntity<?> response = usuarioController.obtenerOrdenesPorUsuario(userId);
@@ -287,7 +284,7 @@ class UsuarioControllerTest {
     }
 
     /**
-     * Verifica que el endpoint de obtención de dirección funcione correctamente.
+     * Verifica que el endpoint de obtención de direcciones funcione correctamente.
      *
      * Este test valida que:
      * - El controlador obtiene la dirección del usuario del servicio
@@ -296,40 +293,38 @@ class UsuarioControllerTest {
      * - El servicio es invocado exactamente una vez
      */
     @Test
-    @DisplayName("Test obtener dirección de usuario exitoso")
+    @DisplayName("Test obtener direcciones de usuario exitoso")
     void testObtenerDireccionUsuarioSuccess() {
         // Given
         Long userId = 1L;
-        when(usuarioService.obtenerDireccionUsuario(userId)).thenReturn(direccionResponseDTO);
+        when(usuarioService.obtenerDireccionUsuario(userId)).thenReturn(List.of(direccionResponseDTO));
 
         // When
-        ResponseEntity<DireccionResponseDTO> response = usuarioController.obtenerDireccionUsuario(userId);
+        ResponseEntity<List<DireccionResponseDTO>> response = usuarioController.obtenerDireccionUsuario(userId);
 
         // Then
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1L, response.getBody().getId());
-        assertEquals("Calle 123", response.getBody().getCalle());
-        assertEquals("Armenia", response.getBody().getCiudad());
-        assertEquals("Centro", response.getBody().getBarrio());
+        assertEquals(1, response.getBody().size());
+        assertEquals("Calle 123", response.getBody().get(0).getCalle());
+        assertEquals("Armenia", response.getBody().get(0).getCiudad());
         verify(usuarioService, times(1)).obtenerDireccionUsuario(userId);
     }
 
     /**
-     * Verifica que el endpoint de dirección maneje errores cuando el usuario no existe.
+     * Verifica que el endpoint de direcciones maneje errores cuando el usuario no existe.
      *
      * Este test valida que:
      * - El controlador propaga excepciones del servicio
      * - El servicio es invocado con el ID correcto
      */
     @Test
-    @DisplayName("Test obtener dirección cuando el usuario no existe")
+    @DisplayName("Test obtener direcciones cuando el usuario no existe")
     void testObtenerDireccionUsuarioNoExiste() {
         // Given
         Long userId = 999L;
-        when(usuarioService.obtenerDireccionUsuario(userId))
-                .thenThrow(new IllegalArgumentException("Usuario no encontrado"));
+        when(usuarioService.obtenerDireccionUsuario(userId)).thenThrow(new IllegalArgumentException("Usuario no encontrado"));
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () ->
