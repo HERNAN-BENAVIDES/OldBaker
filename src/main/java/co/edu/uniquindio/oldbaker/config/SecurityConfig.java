@@ -44,6 +44,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UsuarioService usuarioService;
+    private final Environment env;
 
 
     /**
@@ -56,6 +57,7 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthService authService) throws Exception {
+        String frontendRedirect = env.getProperty("FRONTEND_REDIRECT_URL");
         http
                 // Deshabilitar CSRF para APIs REST
                 .csrf(AbstractHttpConfigurer::disable)
@@ -99,7 +101,7 @@ public class SecurityConfig {
                 // Configurar el inicio de sesión OAuth2
                 .oauth2Login(oauth2 -> oauth2
                         // Configurar el manejador de éxito y fracaso en la autenticación OAuth2
-                        .successHandler(new OAuth2SuccessHandler(authService))
+                        .successHandler(new OAuth2SuccessHandler(authService, frontendRedirect))
                         .failureHandler((request, response, exception) -> {
                             System.out.println("OAuth2 login FAILURE: " + exception.getMessage());
                             response.sendRedirect("/api/auth/google/failure");

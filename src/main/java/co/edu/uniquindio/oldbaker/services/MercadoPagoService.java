@@ -2,6 +2,7 @@ package co.edu.uniquindio.oldbaker.services;
 
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutResponseDTO;
 import co.edu.uniquindio.oldbaker.model.OrdenCompra;
+import co.edu.uniquindio.oldbaker.model.Producto;
 import co.edu.uniquindio.oldbaker.model.WebhookLog;
 import co.edu.uniquindio.oldbaker.repositories.ProductRepository;
 import co.edu.uniquindio.oldbaker.repositories.WebhookLogRepository;
@@ -61,10 +62,36 @@ public class MercadoPagoService {
 
         for (var item : orden.getItems()) {
             Map<String, Object> mpItem = new HashMap<>();
+
+            // Agregar id del producto para mejorar la tasa de aprobación según recomendaciones de MercadoPago
+            if (item.getProducto().getIdProducto() != null) {
+                mpItem.put("id", item.getProducto().getIdProducto().toString());
+            }
+
             mpItem.put("title", item.getProducto().getNombre());
             mpItem.put("quantity", item.getCantidad());
             mpItem.put("unit_price", item.getPrecioUnitario().doubleValue());
             mpItem.put("currency_id", "COP");
+
+            // Agregar description para mejorar la tasa de aprobación según recomendaciones de MercadoPago
+            String description = item.getProducto().getDescripcion();
+            if (description != null && !description.isBlank()) {
+                // Mercado Pago tiene un límite de 256 caracteres para la descripción
+                if (description.length() > 256) {
+                    description = description.substring(0, 253) + "...";
+                }
+                mpItem.put("description", description);
+            } else {
+                // Si no hay descripción, usar el nombre del producto como fallback
+                mpItem.put("description", item.getProducto().getNombre());
+            }
+
+            // Agregar category_id para mejorar la tasa de aprobación según recomendaciones de MercadoPago
+            String categoryId = getCategoryIdForProduct(item.getProducto());
+            if (categoryId != null && !categoryId.isBlank()) {
+                mpItem.put("category_id", categoryId);
+            }
+
             items.add(mpItem);
         }
         payload.put("items", items);
@@ -480,5 +507,59 @@ public class MercadoPagoService {
         int r = 0;
         for (int i = 0; i < a.length(); i++) r |= a.charAt(i) ^ b.charAt(i);
         return r == 0;
+    }
+
+    /**
+     * Mapea las categorías de productos de la aplicación a los category_ids oficiales de MercadoPago.
+     * Esto mejora la tasa de aprobación según las recomendaciones de MercadoPago.
+     *
+     * Categorías oficiales de MercadoPago disponibles:
+     * - MLM1012: Alimentos y Bebidas (general)
+     * - MLM1013: Alimentos
+     * - MLM5725: Alimentos y Bebidas > Panadería
+     * - MLM1039: Alimentos y Bebidas > Repostería
+     *
+     * @param producto El producto para el cual se necesita obtener el category_id
+     * @return El category_id de MercadoPago correspondiente, o un valor por defecto
+     */
+    private String getCategoryIdForProduct(Producto producto) {
+        if (producto == null || producto.getCategoria() == null) {
+            // Categoría por defecto para alimentos
+            return "MLM1013";
+        }
+
+        String categoriaNombre = producto.getCategoria().getNombre();
+        if (categoriaNombre == null) {
+            return "MLM1013";
+        }
+
+        // Mapeo de categorías locales a categorías de MercadoPago
+        categoriaNombre = categoriaNombre.toLowerCase().trim();
+
+        // Categorías de panadería
+        if (categoriaNombre.contains("pan") ||
+            categoriaNombre.contains("panadería") ||
+            categoriaNombre.contains("panaderia") ||
+            categoriaNombre.contains("hogaza") ||
+            categoriaNombre.contains("baguette") ||
+            categoriaNombre.contains("croissant")) {
+            return "MLM5725"; // Panadería
+        }
+
+        // Categorías de repostería/dulces
+        if (categoriaNombre.contains("postre") ||
+            categoriaNombre.contains("torta") ||
+            categoriaNombre.contains("pastel") ||
+            categoriaNombre.contains("galleta") ||
+            categoriaNombre.contains("cookie") ||
+            categoriaNombre.contains("repostería") ||
+            categoriaNombre.contains("reposteria") ||
+            categoriaNombre.contains("dulce") ||
+            categoriaNombre.contains("cake")) {
+            return "MLM1039"; // Repostería
+        }
+
+        // Categoría por defecto: Alimentos
+        return "MLM1013";
     }
 }
