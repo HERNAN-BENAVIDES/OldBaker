@@ -9,6 +9,8 @@ import co.edu.uniquindio.oldbaker.services.OrdenCompraService;
 import co.edu.uniquindio.oldbaker.model.OrdenCompra;
 import co.edu.uniquindio.oldbaker.dto.order.OrdenCompraDTO;
 import co.edu.uniquindio.oldbaker.dto.order.ItemOrdenDTO;
+import co.edu.uniquindio.oldbaker.dto.cart.CartDTO;
+import co.edu.uniquindio.oldbaker.services.CartService;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,6 +32,7 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final AuthService authService;
     private final OrdenCompraService ordenCompraService;
+    private final CartService cartService;
 
     @PostMapping("/{id}/deactivate")
     public ResponseEntity<?> deactivateUser(@PathVariable("id") Long id) {
@@ -38,6 +41,39 @@ public class UsuarioController {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Obtener el carrito del usuario
+     */
+    @GetMapping("/{idUsuario}/cart")
+    public ResponseEntity<?> obtenerCart(@PathVariable Long idUsuario) {
+        try {
+            CartDTO cart = cartService.obtenerCart(idUsuario);
+            if (cart == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(cart);
+        } catch (Exception e) {
+            logger.warn("Error obteniendo cart para usuario {}: {}", idUsuario, e.getMessage());
+            return ResponseEntity.status(500).body(Map.of("error", "No se pudo obtener el carrito"));
+        }
+    }
+
+    /**
+     * Reemplaza los items del carrito del usuario con los enviados
+     */
+    @PutMapping("/{idUsuario}/cart")
+    public ResponseEntity<?> actualizarCart(@PathVariable Long idUsuario, @RequestBody CartDTO request) {
+        try {
+            CartDTO actualizado = cartService.actualizarCart(idUsuario, request);
+            return ResponseEntity.ok(actualizado);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
+        } catch (Exception e) {
+            logger.warn("Error actualizando cart para usuario {}: {}", idUsuario, e.getMessage());
+            return ResponseEntity.status(500).body(Map.of("error", "No se pudo actualizar el carrito"));
         }
     }
 

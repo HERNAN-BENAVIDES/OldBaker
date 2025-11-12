@@ -13,8 +13,9 @@ public class DotenvEnvironmentPostProcessor implements EnvironmentPostProcessor 
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication application) {
-        String profile = env.getProperty("spring.profiles.active", "production");
-        String filename = "production".equalsIgnoreCase(profile) ? ".env.production" : ".env.development";
+        String active = env.getProperty("spring.profiles.active");
+        String effectiveProfile = (active == null || active.isBlank()) ? "development" : active;
+        String filename = "production".equalsIgnoreCase(effectiveProfile) ? ".env.production" : ".env.development";
 
         Dotenv dotenv = Dotenv.configure()
                 .filename(filename)
@@ -23,6 +24,11 @@ public class DotenvEnvironmentPostProcessor implements EnvironmentPostProcessor 
 
         Map<String, Object> map = new HashMap<>();
         dotenv.entries().forEach(e -> map.put(e.getKey(), e.getValue()));
+
+        // Si no hay perfil activo explícito, fuerza 'development' para que Spring cargue application-development.properties
+        if (active == null || active.isBlank()) {
+            map.put("spring.profiles.active", "development");
+        }
 
         env.getPropertySources().addFirst(new MapPropertySource("dotenvProperties", map));
     }
