@@ -1,5 +1,7 @@
 package co.edu.uniquindio.oldbaker.controllers;
 
+import co.edu.uniquindio.oldbaker.dto.order.OrderStatusUpdateRequest;
+import co.edu.uniquindio.oldbaker.dto.order.OrderTrackingDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutItemDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutRequestDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutResponseDTO;
@@ -57,6 +59,7 @@ class OrdenCompraControllerTest {
     private OrdenCompraController ordenCompraController;
 
     private Usuario usuario;
+    private Usuario adminUsuario;
     private CheckoutRequestDTO checkoutRequest;
     private OrdenCompra ordenCompra;
     private CheckoutResponseDTO checkoutResponse;
@@ -72,6 +75,13 @@ class OrdenCompraControllerTest {
         usuario.setId(1L);
         usuario.setEmail("cliente@test.com");
         usuario.setNombre("Cliente Test");
+        usuario.setRol(Usuario.Rol.CLIENTE);
+
+        adminUsuario = new Usuario();
+        adminUsuario.setId(2L);
+        adminUsuario.setEmail("admin@test.com");
+        adminUsuario.setNombre("Admin Test");
+        adminUsuario.setRol(Usuario.Rol.ADMINISTRADOR);
 
         CheckoutItemDTO item = new CheckoutItemDTO();
         item.setProductId(1L);
@@ -99,6 +109,7 @@ class OrdenCompraControllerTest {
         ordenCompra.setStatus(OrdenCompra.EstadoOrden.PENDING);
         ordenCompra.setItems(List.of(itemOrden));
         ordenCompra.setFechaCreacion(LocalDateTime.now());
+        ordenCompra.setUsuario(usuario);
 
         checkoutResponse = new CheckoutResponseDTO();
         checkoutResponse.setInitPoint("https://mercadopago.com/checkout/123");
@@ -370,5 +381,108 @@ class OrdenCompraControllerTest {
         assertNotNull(response);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         verify(stockValidationService, never()).checkAvailability(any());
+    }
+
+    @Test
+    @DisplayName("Actualizar estado postpago por personal autorizado")
+    void testActualizarEstadoOrdenAutorizado() {
+        OrderStatusUpdateRequest request = new OrderStatusUpdateRequest();
+        request.setEstado(OrdenCompra.EstadoOrden.PREPARING);
+        request.setComentario("Iniciando preparación");
+        request.setTrackingCode("TRACK-001");
+        LocalDateTime fechaEstimada = LocalDateTime.now().plusDays(1);
+        request.setFechaEntregaEstimada(fechaEstimada);
+
+        OrderTrackingDTO trackingDTO = OrderTrackingDTO.builder()
+                .estado(OrdenCompra.EstadoOrden.PREPARING)
+                .comentario("Iniciando preparación")
+                .timestamp(LocalDateTime.now())
+                .trackingCode("TRACK-001")
+                .fechaEntregaEstimada(fechaEstimada)
+                .build();
+
+        List<OrderTrackingDTO> timeline = List.of(trackingDTO);
+
+        OrdenCompra ordenActualizada = new OrdenCompra();
+        ordenActualizada.setId(1L);
+        ordenActualizada.setStatus(OrdenCompra.EstadoOrden.PREPARING);
+        ordenActualizada.setTrackingCode("TRACK-001");
+        ordenActualizada.setFechaEntregaEstimada(fechaEstimada);
+
+        when(ordenCompraService.registrarCambioEstadoPostPago(eq(1L), eq(OrdenCompra.EstadoOrden.PREPARING), any(), any(), any()))
+                .thenReturn(timeline);
+        when(ordenCompraService.obtenerPorId(1L)).thenReturn(ordenActualizada);
+
+        ResponseEntity<?> response = ordenCompraController.actualizarEstadoOrden(1L, request, adminUsuario);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody() instanceof Map);
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
+        assertEquals("PREPARING", body.get("status"));
+        assertEquals("TRACK-001", body.get("trackingCode"));
+        assertEquals(timeline, body.get("timeline"));
+
+        verify(ordenCompraService, times(1)).registrarCambioEstadoPostPago(eq(1L), eq(OrdenCompra.EstadoOrden.PREPARING), any(), any(), any());
+        verify(ordenCompraService, times(1)).obtenerPorId(1L);
+    }
+
+    @Test
+    @DisplayName("Actualizar estado postpago rechazado para cliente")
+    void testActualizarEstadoOrdenNoAutorizado() {
+        OrderStatusUpdateRequest request = new OrderStatusUpdateRequest();
+        request.setEstado(OrdenCompra.EstadoOrden.PREPARING);
+
+        ResponseEntity<?> response = ordenCompraController.actualizarEstadoOrden(1L, request, usuario);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(ordenCompraService, never()).registrarCambioEstadoPostPago(anyLong(), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("Seguimiento disponible para cliente propietario")
+    void testObtenerSeguimientoOrdenCliente() {
+        ordenCompra.setStatus(OrdenCompra.EstadoOrden.PREPARING);
+
+        OrderTrackingDTO trackingDTO = OrderTrackingDTO.builder()
+                .estado(OrdenCompra.EstadoOrden.PREPARING)
+                .comentario("Pedido en preparación")
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        List<OrderTrackingDTO> timeline = List.of(trackingDTO);
+
+        when(ordenCompraService.obtenerPorId(1L)).thenReturn(ordenCompra);
+        when(ordenCompraService.obtenerSeguimientoOrden(1L)).thenReturn(timeline);
+
+        ResponseEntity<?> response = ordenCompraController.obtenerSeguimientoOrden(1L, usuario);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody() instanceof Map);
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
+        assertEquals("PREPARING", body.get("status"));
+        assertEquals(timeline, body.get("timeline"));
+
+        verify(ordenCompraService, times(1)).obtenerPorId(1L);
+        verify(ordenCompraService, times(1)).obtenerSeguimientoOrden(1L);
+    }
+
+    @Test
+    @DisplayName("Seguimiento prohibido para cliente no propietario")
+    void testObtenerSeguimientoOrdenNoAutorizado() {
+        Usuario otroCliente = new Usuario();
+        otroCliente.setId(99L);
+        otroCliente.setRol(Usuario.Rol.CLIENTE);
+
+        when(ordenCompraService.obtenerPorId(1L)).thenReturn(ordenCompra);
+
+        ResponseEntity<?> response = ordenCompraController.obtenerSeguimientoOrden(1L, otroCliente);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(ordenCompraService, times(1)).obtenerPorId(1L);
+        verify(ordenCompraService, never()).obtenerSeguimientoOrden(anyLong());
     }
 }

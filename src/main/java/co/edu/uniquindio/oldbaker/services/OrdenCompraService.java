@@ -1,9 +1,15 @@
 package co.edu.uniquindio.oldbaker.services;
 
+import co.edu.uniquindio.oldbaker.dto.order.OrderTrackingDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutItemDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutRequestDTO;
 import co.edu.uniquindio.oldbaker.model.*;
-import co.edu.uniquindio.oldbaker.repositories.*;
+import co.edu.uniquindio.oldbaker.repositories.InsumoRepository;
+import co.edu.uniquindio.oldbaker.repositories.OrdenCompraRepository;
+import co.edu.uniquindio.oldbaker.repositories.ProductRepository;
+import co.edu.uniquindio.oldbaker.repositories.RecetaRepository;
+import co.edu.uniquindio.oldbaker.repositories.SeguimientoPedidoRepository;
+import co.edu.uniquindio.oldbaker.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +18,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +33,26 @@ public class OrdenCompraService {
     private final UsuarioRepository usuarioRepository;
     private final InsumoRepository insumoRepository;
     private final RecetaRepository recetaRepository;
+    private final SeguimientoPedidoRepository seguimientoPedidoRepository;
+
+    private static final Map<OrdenCompra.EstadoOrden, List<OrdenCompra.EstadoOrden>> TRANSICIONES_POSTPAGO = Map.of(
+            OrdenCompra.EstadoOrden.PAID, List.of(
+                    OrdenCompra.EstadoOrden.PREPARING,
+                    OrdenCompra.EstadoOrden.READY_FOR_PICKUP,
+                    OrdenCompra.EstadoOrden.SHIPPED,
+                    OrdenCompra.EstadoOrden.DELIVERED
+            ),
+            OrdenCompra.EstadoOrden.PREPARING, List.of(
+                    OrdenCompra.EstadoOrden.READY_FOR_PICKUP,
+                    OrdenCompra.EstadoOrden.SHIPPED,
+                    OrdenCompra.EstadoOrden.DELIVERED
+            ),
+            OrdenCompra.EstadoOrden.READY_FOR_PICKUP, List.of(
+                    OrdenCompra.EstadoOrden.SHIPPED,
+                    OrdenCompra.EstadoOrden.DELIVERED
+            ),
+            OrdenCompra.EstadoOrden.SHIPPED, List.of(OrdenCompra.EstadoOrden.DELIVERED)
+    );
 
     /**
      * Crea una orden en estado PENDING antes de redirigir a MercadoPago.
@@ -184,6 +211,60 @@ public class OrdenCompraService {
         logger.info("Orden {} marcada como IN_PROCESS, paymentId={}", orden.getId(), paymentId);
     }
 
+    @Transactional
+    public List<OrderTrackingDTO> registrarCambioEstadoPostPago(Long ordenId,
+                                                                OrdenCompra.EstadoOrden nuevoEstado,
+                                                                String comentario,
+                                                                String trackingCode,
+                                                                LocalDateTime fechaEntregaEstimada) {
+        OrdenCompra orden = obtenerOrdenPorIdInterno(ordenId);
+
+        if (!esEstadoPostPago(nuevoEstado)) {
+            throw new IllegalArgumentException("El estado " + nuevoEstado + " no es válido para seguimiento postpago");
+        }
+
+        validarTransicionPostPago(orden, nuevoEstado);
+
+        if (trackingCode != null && !trackingCode.isBlank()) {
+            orden.setTrackingCode(trackingCode.trim());
+        }
+
+        if (fechaEntregaEstimada != null) {
+            orden.setFechaEntregaEstimada(fechaEntregaEstimada);
+        }
+
+        if (orden.getStatus() != nuevoEstado) {
+            orden.setStatus(nuevoEstado);
+        }
+
+        ordenCompraRepository.save(orden);
+
+        SeguimientoPedido seguimiento = SeguimientoPedido.builder()
+                .orden(orden)
+                .estado(nuevoEstado)
+                .comentario(comentario)
+                .timestamp(LocalDateTime.now())
+                .build();
+        seguimientoPedidoRepository.save(seguimiento);
+
+        return construirTimelineSeguimiento(orden);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderTrackingDTO> obtenerSeguimientoOrden(Long ordenId) {
+        OrdenCompra orden = obtenerOrdenPorIdInterno(ordenId);
+        return construirTimelineSeguimiento(orden);
+    }
+
+    @Transactional(readOnly = true)
+    public OrdenCompra obtenerPorId(Long ordenId) {
+        OrdenCompra orden = obtenerOrdenPorIdInterno(ordenId);
+        if (orden.getUsuario() != null) {
+            orden.getUsuario().getId();
+        }
+        return orden;
+    }
+
     /**
      * Descuenta el stock de insumos necesarios para preparar los productos de la orden.
      * Utiliza las recetas para calcular las cantidades exactas.
@@ -238,5 +319,51 @@ public class OrdenCompraService {
      */
     public List<OrdenCompra> listarOrdenesPorUsuario(Long usuarioId) {
         return ordenCompraRepository.findByUsuario_IdOrderByFechaCreacionDesc(usuarioId);
+    }
+
+    private void validarTransicionPostPago(OrdenCompra orden, OrdenCompra.EstadoOrden nuevoEstado) {
+        OrdenCompra.EstadoOrden estadoActual = orden.getStatus();
+
+        if (estadoActual == OrdenCompra.EstadoOrden.CANCELLED || estadoActual == OrdenCompra.EstadoOrden.FAILED) {
+            throw new IllegalStateException("No es posible actualizar una orden cancelada o fallida");
+        }
+
+        if (estadoActual == OrdenCompra.EstadoOrden.DELIVERED) {
+            throw new IllegalStateException("La orden ya fue entregada");
+        }
+
+        if (estadoActual == nuevoEstado) {
+            return;
+        }
+
+        List<OrdenCompra.EstadoOrden> permitidos = TRANSICIONES_POSTPAGO.getOrDefault(estadoActual, List.of());
+        if (!permitidos.contains(nuevoEstado)) {
+            throw new IllegalStateException("Transición de " + estadoActual + " a " + nuevoEstado + " no permitida");
+        }
+    }
+
+    private boolean esEstadoPostPago(OrdenCompra.EstadoOrden estado) {
+        return estado == OrdenCompra.EstadoOrden.PREPARING
+                || estado == OrdenCompra.EstadoOrden.READY_FOR_PICKUP
+                || estado == OrdenCompra.EstadoOrden.SHIPPED
+                || estado == OrdenCompra.EstadoOrden.DELIVERED;
+    }
+
+    private OrdenCompra obtenerOrdenPorIdInterno(Long ordenId) {
+        return ordenCompraRepository.findById(ordenId)
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada: " + ordenId));
+    }
+
+    private List<OrderTrackingDTO> construirTimelineSeguimiento(OrdenCompra orden) {
+        return seguimientoPedidoRepository.findByOrden_IdOrderByTimestampAsc(orden.getId())
+                .stream()
+                .map(evento -> OrderTrackingDTO.builder()
+                        .estado(evento.getEstado())
+                        .comentario(evento.getComentario())
+                        .timestamp(evento.getTimestamp())
+                        .trackingCode(orden.getTrackingCode())
+                        .fechaEntregaEstimada(orden.getFechaEntregaEstimada())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

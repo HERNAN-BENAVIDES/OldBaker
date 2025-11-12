@@ -53,6 +53,12 @@ public class OrdenCompra {
     @Column(name = "payer_email")
     private String payerEmail;
 
+    @Column(name = "tracking_code")
+    private String trackingCode;
+
+    @Column(name = "fecha_entrega_estimada")
+    private LocalDateTime fechaEntregaEstimada;
+
     @PrePersist
     protected void onCreate() {
         fechaCreacion = LocalDateTime.now();
@@ -80,8 +86,12 @@ public class OrdenCompra {
     public enum EstadoOrden {
         PENDING,      // Orden creada, esperando pago
         PAID,         // Pago confirmado
-        FAILED,       // Pago rechazado
-        CANCELLED,    // Orden cancelada
-        IN_PROCESS    // Pago en proceso
+        FAILED,             // Pago rechazado
+        CANCELLED,          // Orden cancelada
+        IN_PROCESS,         // Pago en proceso
+        PREPARING,          // Pedido en preparación
+        READY_FOR_PICKUP,   // Listo para ser recogido
+        SHIPPED,            // Enviado al cliente
+        DELIVERED           // Entregado al cliente
     }
 }
