@@ -58,13 +58,5 @@ public class PedidoInsumoAdminController {
         return ResponseEntity.ok(pedidoInsumoService.pagarPedido(id));
     }
 
-    @PostMapping("/{id}/devoluciones")
-    public ResponseEntity<ReporteProveedorResponse> devolverInsumo(
-            @PathVariable Long id,
-            @RequestBody @Valid ReporteProveedorRequest request) {
-
-        ReporteProveedorResponse response = pedidoInsumoService.devolverInsumo(id, request);
-        return ResponseEntity.ok(response);
-    }
 
 }

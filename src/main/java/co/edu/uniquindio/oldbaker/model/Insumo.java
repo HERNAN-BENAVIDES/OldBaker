@@ -1,5 +1,6 @@
 package co.edu.uniquindio.oldbaker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class Insumo {
     private Double costoUnitario;
     private Integer cantidadActual;
     @OneToOne
-    @JoinColumn(name = "id_insumo_proveedor", nullable = true, unique = true)
+    @JoinColumn(name = "id_insumo_proveedor", unique = true)
+    @JsonIgnoreProperties({"insumo", "detalles", "proveedor"})
     private InsumoProveedor insumoProveedor;
 }

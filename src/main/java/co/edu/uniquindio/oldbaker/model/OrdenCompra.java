@@ -1,5 +1,7 @@
 package co.edu.uniquindio.oldbaker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +37,7 @@ public class OrdenCompra {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
+    @JsonIgnoreProperties({"ordenes", "password", "direcciones"})
     private Usuario usuario;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -47,6 +50,7 @@ public class OrdenCompra {
     private LocalDateTime fechaActualizacion;
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     @Builder.Default
     private List<ItemOrden> items = new ArrayList<>();
 

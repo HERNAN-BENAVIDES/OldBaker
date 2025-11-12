@@ -1,5 +1,6 @@
 package co.edu.uniquindio.oldbaker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class Direccion {
     private String numero;
     private String numeroTelefono;
     @ManyToOne
+    @JsonIgnoreProperties({"direcciones", "password", "ordenes"})
     private Usuario idCliente;
 
 }

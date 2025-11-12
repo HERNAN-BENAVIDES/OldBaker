@@ -1,5 +1,7 @@
 package co.edu.uniquindio.oldbaker.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,10 +25,12 @@ public class ItemOrden {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_orden", nullable = false)
+    @JsonBackReference
     private OrdenCompra orden;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_producto", nullable = false)
+    @JsonIgnoreProperties({"receta", "items"})
     private Producto producto;
 
     @Column(nullable = false)

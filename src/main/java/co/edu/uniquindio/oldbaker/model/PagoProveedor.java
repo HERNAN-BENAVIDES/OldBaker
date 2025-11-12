@@ -1,5 +1,6 @@
 package co.edu.uniquindio.oldbaker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ public class PagoProveedor {
     private Double monto;
     private LocalDate fechaPago;
     @OneToOne(mappedBy = "pago")
+    @JsonIgnoreProperties({"pago", "detalles"})
     private PedidoInsumo pedido;
 
 }

@@ -107,14 +107,19 @@ public class PedidoInsumoService {
         reporte.setEsDevolucion(true);
         reporte.setFechaDevolucion(LocalDate.now());
         reporte.setDetalle(detalle);
+        reporte.setIdProveedor(request.getIdProveedor());
 
         reporteProveedorRepository.save(reporte);
 
         // Recalcular el costo total del pedido (sin el detalle devuelto)
-        double nuevoTotal = pedido.getDetalles().stream()
-                .filter(d -> !Boolean.TRUE.equals(d.getEsDevuelto()))
-                .mapToDouble(DetalleProveedorPedido::getCostoSubtotal)
-                .sum();
+        // Restar el costo del detalle devuelto del total actual
+        double costoDetalleDevuelto = detalle.getCostoSubtotal();
+        double nuevoTotal = pedido.getCostoTotal() - costoDetalleDevuelto;
+
+        // Asegurar que no sea negativo
+        if (nuevoTotal < 0) {
+            nuevoTotal = 0;
+        }
 
         pedido.setCostoTotal(nuevoTotal);
         pedidoInsumoRepository.save(pedido);
@@ -125,6 +130,7 @@ public class PedidoInsumoService {
         response.setRazon(reporte.getRazon());
         response.setEsDevolucion(reporte.getEsDevolucion());
         response.setFechaDevolucion(reporte.getFechaDevolucion());
+        response.setIdProveedor(reporte.getIdProveedor());
         response.setDetalleId(detalle.getIdDetalle());
         response.setInsumoNombre(detalle.getInsumo().getNombre());
         response.setCantidadDevuelta(detalle.getCantidadInsumo());

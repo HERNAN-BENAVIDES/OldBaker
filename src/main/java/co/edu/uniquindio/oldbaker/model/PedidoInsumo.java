@@ -1,11 +1,12 @@
 package co.edu.uniquindio.oldbaker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,10 +31,12 @@ public class PedidoInsumo {
 
     @OneToOne
     @JoinColumn(name = "id_pago")
+    @JsonIgnoreProperties({"pedido"})
     private PagoProveedor pago;
 
     // Relación con detalle (un pedido tiene muchos detalles)
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<DetalleProveedorPedido> detalles = new ArrayList<>();
 
 

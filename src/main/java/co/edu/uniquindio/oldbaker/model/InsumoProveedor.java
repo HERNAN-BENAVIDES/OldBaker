@@ -1,5 +1,6 @@
 package co.edu.uniquindio.oldbaker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,12 +29,15 @@ public class InsumoProveedor {
 
     @ManyToOne
     @JoinColumn(name = "id_proveedor")
+    @JsonIgnoreProperties({"insumos", "pedidos"})
     private Proveedor proveedor;
 
     @OneToOne(mappedBy = "insumoProveedor")
+    @JsonIgnoreProperties({"insumoProveedor"})
     private Insumo insumo;
 
     // Relación con detalle (un insumo puede estar en muchos detalles)
     @OneToMany(mappedBy = "insumo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"insumo", "pedido"})
     private List<DetalleProveedorPedido> detalles = new ArrayList<>();
 }

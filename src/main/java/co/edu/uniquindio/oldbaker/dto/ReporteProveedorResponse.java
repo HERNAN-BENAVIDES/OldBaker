@@ -11,6 +11,7 @@ public class ReporteProveedorResponse {
     private String razon;
     private Boolean esDevolucion;
     private LocalDate fechaDevolucion;
+    private Long idProveedor;
 
     private Long detalleId;
     private String insumoNombre;

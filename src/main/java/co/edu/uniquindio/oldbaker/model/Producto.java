@@ -1,5 +1,6 @@
 package co.edu.uniquindio.oldbaker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,5 +21,6 @@ public class Producto {
     private int pedidoMinimo;
     @ManyToOne
     @JoinColumn(name = "categoria")
+    @JsonIgnoreProperties({"productos"})
     private Categoria categoria;
 }

@@ -1,5 +1,7 @@
 package co.edu.uniquindio.oldbaker.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,10 +24,12 @@ public class DetalleProveedorPedido {
     // Relación con PedidoInsumo
     @ManyToOne
     @JoinColumn(name = "id_pedido")
+    @JsonBackReference
     private PedidoInsumo pedido;
 
     // Relación con InsumoProveedor
     @ManyToOne
     @JoinColumn(name = "id_insumo")
+    @JsonIgnoreProperties({"detalles", "insumo"})
     private InsumoProveedor insumo;
 }
