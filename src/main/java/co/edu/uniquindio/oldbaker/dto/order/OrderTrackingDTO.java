@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class OrderTrackingDTO {
 
-    private OrdenCompra.EstadoOrden estado;
+    private OrdenCompra.DeliveryStatus estado;
     private String comentario;
     private LocalDateTime timestamp;
     private String trackingCode;

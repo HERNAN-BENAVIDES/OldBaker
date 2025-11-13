@@ -27,6 +27,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
 
@@ -87,9 +88,11 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/api/productos/**"
                         ).permitAll()
+                        // Endpoints de repartidor: más específicos primero
+                        .requestMatchers("/api/user/deliveries/**").hasRole("DELIVERY")
                         // Endpoints para administradores
                         .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
-                        // Endpoints para usuarios autenticados
+                        // Endpoints para usuarios autenticados (clientes)
                         .requestMatchers("/api/user/**").hasRole("CLIENTE")
                         .requestMatchers("/api/orders/**").hasRole("CLIENTE")
                         .requestMatchers("/api/cart/**").hasRole("CLIENTE")
@@ -102,6 +105,12 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                // Importante: para APIs REST devolver 401 en vez de redirigir a OAuth2 login
+                .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\":\"Unauthorized\"}");
+                }))
                 // Configurar el inicio de sesión OAuth2
                 .oauth2Login(oauth2 -> oauth2
                         // Configurar el manejador de éxito y fracaso en la autenticación OAuth2
@@ -130,8 +139,11 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:4200",
-                        "https://www.oldbaker.shop"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                        "https://localhost:4200",
+                        "https://www.oldbaker.shop",
+                        "https://old-baker-front.vercel.app"
+                ));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

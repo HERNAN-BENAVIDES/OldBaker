@@ -77,7 +77,6 @@ class UsuarioControllerTest {
         ordenCompra = new OrdenCompra();
         ordenCompra.setId(1L);
         ordenCompra.setExternalReference("ORDER-123456");
-        ordenCompra.setStatus(OrdenCompra.EstadoOrden.PAID);
         ordenCompra.setPaymentId("PAY-123");
         ordenCompra.setTotal(BigDecimal.valueOf(7000.0));
         ordenCompra.setFechaCreacion(LocalDateTime.now());
@@ -159,6 +158,7 @@ class UsuarioControllerTest {
     void testObtenerOrdenesPorUsuarioSuccess() {
         // Given
         Long userId = 1L;
+        ordenCompra.setPaymentStatus(OrdenCompra.PaymentStatus.PAID);
         when(ordenCompraService.listarOrdenesPorUsuario(userId)).thenReturn(List.of(ordenCompra));
 
         // When
@@ -173,7 +173,7 @@ class UsuarioControllerTest {
         List<OrdenCompraDTO> ordenesDTO = (List<OrdenCompraDTO>) response.getBody();
         assertEquals(1, ordenesDTO.size());
         assertEquals("ORDER-123456", ordenesDTO.get(0).getExternalReference());
-        assertEquals("PAID", ordenesDTO.get(0).getStatus());
+        assertEquals("PAID", ordenesDTO.get(0).getPaymentStatus());
         verify(ordenCompraService, times(1)).listarOrdenesPorUsuario(userId);
     }
 

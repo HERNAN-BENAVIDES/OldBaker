@@ -27,8 +27,8 @@ public class OrdenCompra {
     private String externalReference;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EstadoOrden status;
+    @Column(name = "payment_status", nullable = false)
+    private PaymentStatus paymentStatus;
 
     @Column(name = "payment_id")
     private String paymentId;
@@ -59,13 +59,29 @@ public class OrdenCompra {
     @Column(name = "fecha_entrega_estimada")
     private LocalDateTime fechaEntregaEstimada;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_status")
+    private DeliveryStatus deliveryStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_direccion")
+    private Direccion direccion;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_repartidor")
+    private Usuario repartidor;
+
+    @Column(name = "fecha_asignacion_repartidor")
+    private LocalDateTime fechaAsignacionRepartidor;
+
     @PrePersist
     protected void onCreate() {
         fechaCreacion = LocalDateTime.now();
         fechaActualizacion = LocalDateTime.now();
-        if (status == null) {
-            status = EstadoOrden.PENDING;
+        if (paymentStatus == null) {
+            paymentStatus = PaymentStatus.PENDING;
         }
+        // deliveryStatus se asignará cuando el pago sea confirmado
     }
 
     @PreUpdate
@@ -78,20 +94,20 @@ public class OrdenCompra {
         item.setOrden(this);
     }
 
-    public void removeItem(ItemOrden item) {
-        items.remove(item);
-        item.setOrden(null);
+
+    public enum PaymentStatus {
+        PENDING,      // Orden creada, esperando pago
+        IN_PROCESS,   // Pago en proceso
+        PAID,         // Pago confirmado
+        FAILED,       // Pago rechazado
+        CANCELLED     // Orden cancelada
     }
 
-    public enum EstadoOrden {
-        PENDING,      // Orden creada, esperando pago
-        PAID,         // Pago confirmado
-        FAILED,             // Pago rechazado
-        CANCELLED,          // Orden cancelada
-        IN_PROCESS,         // Pago en proceso
-        PREPARING,          // Pedido en preparación
-        READY_FOR_PICKUP,   // Listo para ser recogido
-        SHIPPED,            // Enviado al cliente
+    public enum DeliveryStatus {
+        CONFIRMED,          // Pedido confirmado para producción/entrega futura
+        PREPARING,          // En preparación (para el día)
+        READY_FOR_DISPATCH, // Listo para que el repartidor recoja
+        DISPATCHED,         // Enviado (en camino)
         DELIVERED           // Entregado al cliente
     }
 }

@@ -125,7 +125,12 @@ public class MercadoPagoService {
         // notification_url: webhook del backend para recibir notificaciones
         String notificationUrl = explicitNotificationUrl;
         if (notificationUrl == null || notificationUrl.isBlank()) {
-            notificationUrl =  "https://api.oldbaker.shop/api/mercadopago/webhook";
+            if (appBaseUrl != null && !appBaseUrl.isBlank()) {
+                notificationUrl = appBaseUrl.replaceAll("/$", "") + "/api/mercadopago/webhook";
+            } else {
+                // Fallback de producción (mantener compatibilidad si no hay appBaseUrl configurado)
+                notificationUrl =  "https://www.oldbaker.shop";
+            }
         }
         if (notificationUrl != null && !notificationUrl.isBlank()) {
             payload.put("notification_url", notificationUrl);
@@ -488,10 +493,10 @@ public class MercadoPagoService {
                 return false;
             }
 
-            // Disparar procesamiento asíncrono para cada paymentId encontrado
+            // Disparar procesamiento asíncrono para cada paymentId encontrado (con registro y dedupe)
             for (String pid : paymentIds) {
                 logger.info("Desencadenando procesamiento asíncrono para paymentId={}", pid);
-                processPaymentAsync(pid);
+                processPaymentAsync(pid, requestId, rawBody);
             }
 
             return true;

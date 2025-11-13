@@ -24,7 +24,7 @@ public class SeguimientoPedido {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrdenCompra.EstadoOrden estado;
+    private OrdenCompra.DeliveryStatus estado;
 
     @Column(length = 500)
     private String comentario;

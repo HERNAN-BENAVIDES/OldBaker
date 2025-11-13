@@ -1,17 +1,21 @@
 package co.edu.uniquindio.oldbaker.dto.order;
 
 import co.edu.uniquindio.oldbaker.model.OrdenCompra;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderStatusUpdateRequest {
 
-    private OrdenCompra.EstadoOrden estado;
+    private OrdenCompra.DeliveryStatus estado;
     private String comentario;
     private String trackingCode;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime fechaEntregaEstimada;
 }

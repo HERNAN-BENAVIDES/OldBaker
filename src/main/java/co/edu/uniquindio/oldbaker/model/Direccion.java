@@ -20,6 +20,6 @@ public class Direccion {
     private String numero;
     private String numeroTelefono;
     @ManyToOne
-    private Usuario idCliente;
+    private Usuario usuario;
 
 }

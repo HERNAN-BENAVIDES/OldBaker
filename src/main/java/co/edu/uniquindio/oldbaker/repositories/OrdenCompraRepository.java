@@ -3,6 +3,7 @@ package co.edu.uniquindio.oldbaker.repositories;
 import co.edu.uniquindio.oldbaker.model.OrdenCompra;
 import co.edu.uniquindio.oldbaker.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public interface OrdenCompraRepository extends JpaRepository<OrdenCompra, Long> 
 
     List<OrdenCompra> findByUsuario_IdOrderByFechaCreacionDesc(Long usuarioId);
 
-    List<OrdenCompra> findByStatusOrderByFechaCreacionDesc(OrdenCompra.EstadoOrden status);
-}
+    List<OrdenCompra> findByRepartidor_IdOrderByFechaAsignacionRepartidorDesc(Long repartidorId);
 
+    @Query("SELECT o FROM OrdenCompra o WHERE o.repartidor IS NULL AND o.paymentStatus = 'PAID' AND (o.deliveryStatus = 'CONFIRMED' OR o.deliveryStatus = 'PREPARING') ORDER BY o.fechaCreacion ASC")
+    List<OrdenCompra> findOrdenesPendientesDeAsignar();
+}

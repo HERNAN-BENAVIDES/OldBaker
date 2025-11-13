@@ -114,7 +114,7 @@ public class Usuario implements UserDetails {
      * Enum que define los roles de usuario en el sistema.
      */
     public enum Rol {
-        CLIENTE, ADMINISTRADOR, AUXILIAR
+        CLIENTE, ADMINISTRADOR, AUXILIAR, DELIVERY
     }
 
     /**

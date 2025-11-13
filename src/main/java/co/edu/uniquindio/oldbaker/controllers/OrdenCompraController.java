@@ -114,7 +114,8 @@ public class OrdenCompraController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("orderId", orden.getId());
-            response.put("status", orden.getStatus().name());
+            response.put("paymentStatus", orden.getPaymentStatus() != null ? orden.getPaymentStatus().name() : null);
+            response.put("deliveryStatus", orden.getDeliveryStatus() != null ? orden.getDeliveryStatus().name() : null);
             response.put("total", orden.getTotal());
             response.put("paymentId", orden.getPaymentId());
             response.put("fechaCreacion", orden.getFechaCreacion());
@@ -155,7 +156,7 @@ public class OrdenCompraController {
         }
 
         try {
-            List<OrderTrackingDTO> timeline = ordenCompraService.registrarCambioEstadoPostPago(
+            List<OrderTrackingDTO> timeline = ordenCompraService.registrarCambioEstadoEntrega(
                     id,
                     request.getEstado(),
                     request.getComentario(),
@@ -167,7 +168,8 @@ public class OrdenCompraController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("orderId", ordenActualizada.getId());
-            response.put("status", ordenActualizada.getStatus().name());
+            response.put("paymentStatus", ordenActualizada.getPaymentStatus() != null ? ordenActualizada.getPaymentStatus().name() : null);
+            response.put("deliveryStatus", ordenActualizada.getDeliveryStatus() != null ? ordenActualizada.getDeliveryStatus().name() : null);
             response.put("trackingCode", ordenActualizada.getTrackingCode());
             response.put("fechaEntregaEstimada", ordenActualizada.getFechaEntregaEstimada());
             response.put("timeline", timeline);
@@ -205,7 +207,8 @@ public class OrdenCompraController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("orderId", orden.getId());
-            response.put("status", orden.getStatus().name());
+            response.put("paymentStatus", orden.getPaymentStatus() != null ? orden.getPaymentStatus().name() : null);
+            response.put("deliveryStatus", orden.getDeliveryStatus() != null ? orden.getDeliveryStatus().name() : null);
             response.put("trackingCode", orden.getTrackingCode());
             response.put("fechaEntregaEstimada", orden.getFechaEntregaEstimada());
             response.put("timeline", timeline);
