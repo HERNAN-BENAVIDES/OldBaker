@@ -85,4 +85,34 @@ public class UsuarioService {
         }
         return direccionResponseDTO;
     }
+
+    public DireccionResponseDTO agregarDireccionUsuario(Long idUsuario, DireccionResponseDTO direccionDTO) {
+        var usuarioOpt = usuarioRepository.findById(idUsuario);
+
+        if (usuarioOpt.isEmpty()){
+            return null;
+        }
+
+        Direccion direccion = new Direccion();
+        direccion.setCiudad(direccionDTO.getCiudad());
+        direccion.setCalle(direccionDTO.getCalle());
+        direccion.setCarrera(direccionDTO.getCarrera());
+        direccion.setNumero(direccionDTO.getNumero());
+        direccion.setBarrio(direccionDTO.getBarrio());
+        direccion.setNumeroTelefono(direccionDTO.getNumeroTelefono());
+        direccion.setUsuario(usuarioOpt.get());
+
+        Direccion direccionGuardada = direccionRepository.save(direccion);
+
+        DireccionResponseDTO direccionResponseDTO = new DireccionResponseDTO();
+        direccionResponseDTO.setId(direccionGuardada.getId());
+        direccionResponseDTO.setCiudad(direccionGuardada.getCiudad());
+        direccionResponseDTO.setCalle(direccionGuardada.getCalle());
+        direccionResponseDTO.setCarrera(direccionGuardada.getCarrera());
+        direccionResponseDTO.setNumero(direccionGuardada.getNumero());
+        direccionResponseDTO.setBarrio(direccionGuardada.getBarrio());
+        direccionResponseDTO.setNumeroTelefono(direccionGuardada.getNumeroTelefono());
+
+        return direccionResponseDTO;
+    }
 }

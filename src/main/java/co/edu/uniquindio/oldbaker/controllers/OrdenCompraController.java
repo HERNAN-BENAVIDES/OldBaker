@@ -1,5 +1,7 @@
 package co.edu.uniquindio.oldbaker.controllers;
 
+import co.edu.uniquindio.oldbaker.dto.order.OrderStatusUpdateRequest;
+import co.edu.uniquindio.oldbaker.dto.order.OrderTrackingDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutRequestDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutResponseDTO;
 import co.edu.uniquindio.oldbaker.model.OrdenCompra;
@@ -19,7 +21,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -110,10 +114,13 @@ public class OrdenCompraController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("orderId", orden.getId());
-            response.put("status", orden.getStatus().name());
+            response.put("paymentStatus", orden.getPaymentStatus() != null ? orden.getPaymentStatus().name() : null);
+            response.put("deliveryStatus", orden.getDeliveryStatus() != null ? orden.getDeliveryStatus().name() : null);
             response.put("total", orden.getTotal());
             response.put("paymentId", orden.getPaymentId());
             response.put("fechaCreacion", orden.getFechaCreacion());
+            response.put("trackingCode", orden.getTrackingCode());
+            response.put("fechaEntregaEstimada", orden.getFechaEntregaEstimada());
 
             // Lista simplificada de items
             ArrayList<Map<String, Object>> items = new ArrayList<>();
@@ -131,6 +138,84 @@ public class OrdenCompraController {
 
         } catch (RuntimeException e) {
             logger.warn("Orden no encontrada: {}", externalReference);
+            return ResponseEntity.status(404).body(Map.of("error", "Orden no encontrada"));
+        }
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> actualizarEstadoOrden(@PathVariable Long id,
+                                                   @RequestBody OrderStatusUpdateRequest request,
+                                                   @AuthenticationPrincipal Usuario usuario) {
+        if (usuario == null || usuario.getRol() == Usuario.Rol.CLIENTE) {
+            logger.warn("Usuario {} no autorizado para actualizar estado de la orden {}", usuario != null ? usuario.getId() : null, id);
+            return ResponseEntity.status(403).body(Map.of("error", "No autorizado"));
+        }
+
+        if (request == null || request.getEstado() == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "El estado es obligatorio"));
+        }
+
+        try {
+            List<OrderTrackingDTO> timeline = ordenCompraService.registrarCambioEstadoEntrega(
+                    id,
+                    request.getEstado(),
+                    request.getComentario(),
+                    request.getTrackingCode(),
+                    request.getFechaEntregaEstimada()
+            );
+
+            OrdenCompra ordenActualizada = ordenCompraService.obtenerPorId(id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("orderId", ordenActualizada.getId());
+            response.put("paymentStatus", ordenActualizada.getPaymentStatus() != null ? ordenActualizada.getPaymentStatus().name() : null);
+            response.put("deliveryStatus", ordenActualizada.getDeliveryStatus() != null ? ordenActualizada.getDeliveryStatus().name() : null);
+            response.put("trackingCode", ordenActualizada.getTrackingCode());
+            response.put("fechaEntregaEstimada", ordenActualizada.getFechaEntregaEstimada());
+            response.put("timeline", timeline);
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Datos inválidos al actualizar estado de la orden {}: {}", id, e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (IllegalStateException e) {
+            logger.warn("Transición no permitida para la orden {}: {}", id, e.getMessage());
+            return ResponseEntity.status(409).body(Map.of("error", e.getMessage()));
+        } catch (RuntimeException e) {
+            logger.warn("Orden {} no encontrada al intentar actualizar estado", id);
+            return ResponseEntity.status(404).body(Map.of("error", "Orden no encontrada"));
+        }
+    }
+
+    @GetMapping("/{id}/tracking")
+    public ResponseEntity<?> obtenerSeguimientoOrden(@PathVariable Long id,
+                                                     @AuthenticationPrincipal Usuario usuario) {
+        if (usuario == null) {
+            return ResponseEntity.status(401).body(Map.of("error", "Usuario no autenticado"));
+        }
+
+        try {
+            OrdenCompra orden = ordenCompraService.obtenerPorId(id);
+            boolean esStaff = usuario.getRol() == Usuario.Rol.ADMINISTRADOR || usuario.getRol() == Usuario.Rol.AUXILIAR;
+            boolean esPropietario = orden.getUsuario() != null && Objects.equals(orden.getUsuario().getId(), usuario.getId());
+
+            if (!esStaff && !esPropietario) {
+                return ResponseEntity.status(403).body(Map.of("error", "No autorizado"));
+            }
+
+            List<OrderTrackingDTO> timeline = ordenCompraService.obtenerSeguimientoOrden(id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("orderId", orden.getId());
+            response.put("paymentStatus", orden.getPaymentStatus() != null ? orden.getPaymentStatus().name() : null);
+            response.put("deliveryStatus", orden.getDeliveryStatus() != null ? orden.getDeliveryStatus().name() : null);
+            response.put("trackingCode", orden.getTrackingCode());
+            response.put("fechaEntregaEstimada", orden.getFechaEntregaEstimada());
+            response.put("timeline", timeline);
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            logger.warn("Orden {} no encontrada al consultar seguimiento", id);
             return ResponseEntity.status(404).body(Map.of("error", "Orden no encontrada"));
         }
     }

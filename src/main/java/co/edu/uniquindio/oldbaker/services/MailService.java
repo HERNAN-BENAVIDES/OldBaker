@@ -12,6 +12,8 @@ import org.thymeleaf.context.Context;
 
 import java.util.Locale;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -22,7 +24,8 @@ import java.util.Map;
 public class MailService {
 
     private final JavaMailSender mailSender;
-    private  final TemplateEngine templateEngine;
+    private final TemplateEngine templateEngine;
+    private static final Logger logger = LoggerFactory.getLogger(MailService.class);
 
     // Constructor para inyectar las dependencias necesarias
     public MailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
@@ -49,4 +52,20 @@ public class MailService {
         mailSender.send(mimeMessage);
     }
 
+    // Nuevo método para correos de actualización de estado de pedido
+    @Async
+    public void sendOrderStatusUpdateEmail(String to, String subject, Map<String, Object> variables) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+        helper.setTo(to);
+        helper.setSubject(subject);
+        try {
+            String html = templateEngine.process("order-status-template", new Context(Locale.getDefault(), variables));
+            helper.setText(html, true);
+            mailSender.send(mimeMessage);
+        } catch (Exception ex) {
+            logger.error("Error procesando plantilla order-status-template: {}", ex.getMessage());
+            throw ex;
+        }
+    }
 }

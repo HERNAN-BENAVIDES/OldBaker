@@ -25,7 +25,6 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
         FROM Producto p
         LEFT JOIN Categoria c ON p.categoria.idCategoria = c.idCategoria
         LEFT JOIN ImagenesProducto ip ON p.idProducto = ip.idProducto
-        WHERE p.categoria IS NOT NULL
         """)
     List<ProductoHomeResponse> findProductos();
 }

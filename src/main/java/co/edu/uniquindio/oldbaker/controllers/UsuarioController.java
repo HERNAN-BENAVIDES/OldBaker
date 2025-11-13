@@ -11,6 +11,9 @@ import co.edu.uniquindio.oldbaker.dto.order.OrdenCompraDTO;
 import co.edu.uniquindio.oldbaker.dto.order.ItemOrdenDTO;
 import co.edu.uniquindio.oldbaker.dto.cart.CartDTO;
 import co.edu.uniquindio.oldbaker.services.CartService;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,11 +23,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import co.edu.uniquindio.oldbaker.model.Usuario;
 
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"https://old-baker-front.vercel.app", "https://localhost:4200", "http://localhost:4200", "https://www.oldbaker.shop"})
+@CrossOrigin(origins = {"https://localhost:4200", "http://localhost:4200", "https://www.oldbaker.shop"})
 public class UsuarioController {
 
     private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
@@ -98,7 +103,11 @@ public class UsuarioController {
                 OrdenCompraDTO dto = new OrdenCompraDTO();
                 dto.setId(orden.getId());
                 dto.setExternalReference(orden.getExternalReference());
-                dto.setStatus(orden.getStatus() != null ? orden.getStatus().name() : null);
+                // compatibilidad: mantener "status" como paymentStatus
+                dto.setStatus(orden.getPaymentStatus() != null ? orden.getPaymentStatus().name() : null);
+                // nuevos campos explícitos
+                dto.setPaymentStatus(orden.getPaymentStatus() != null ? orden.getPaymentStatus().name() : null);
+                dto.setDeliveryStatus(orden.getDeliveryStatus() != null ? orden.getDeliveryStatus().name() : null);
                 dto.setPaymentId(orden.getPaymentId());
                 dto.setTotal(orden.getTotal());
                 dto.setFechaCreacion(orden.getFechaCreacion());
@@ -136,5 +145,107 @@ public class UsuarioController {
     @GetMapping("direccion")
     public ResponseEntity<List<DireccionResponseDTO>> obtenerDireccionUsuario(@RequestParam Long idUsuario) {
         return ResponseEntity.ok(usuarioService.obtenerDireccionUsuario(idUsuario));
+    }
+
+    @PostMapping("/agregar-direccion")
+    public ResponseEntity<DireccionResponseDTO> agregarDireccionUsuario(@RequestParam Long idUsuario, @RequestBody DireccionResponseDTO direccionDTO) {
+        DireccionResponseDTO direccionAgregada = usuarioService.agregarDireccionUsuario(idUsuario, direccionDTO);
+        return ResponseEntity.ok(direccionAgregada);
+    }
+
+
+    @GetMapping("/deliveries/my-orders")
+    public ResponseEntity<?> listarOrdenesRepartidor(@AuthenticationPrincipal Usuario repartidor) {
+        if (repartidor == null || repartidor.getRol() != Usuario.Rol.DELIVERY) {
+            return ResponseEntity.status(403).body(Map.of("error", "No autorizado"));
+        }
+        List<OrdenCompra> ordenes = ordenCompraService.listarOrdenesDeRepartidor(repartidor.getId());
+
+        // Construye DTO común por orden
+        List<Map<String, Object>> todas = ordenes.stream().map(o -> {
+            Map<String, Object> ordenMap = new HashMap<>();
+            ordenMap.put("orderId", o.getId());
+            ordenMap.put("externalReference", o.getExternalReference());
+            ordenMap.put("paymentStatus", o.getPaymentStatus() != null ? o.getPaymentStatus().name() : null);
+            ordenMap.put("deliveryStatus", o.getDeliveryStatus() != null ? o.getDeliveryStatus().name() : null);
+            ordenMap.put("trackingCode", o.getTrackingCode());
+            ordenMap.put("fechaAsignacion", o.getFechaAsignacionRepartidor());
+            ordenMap.put("fechaEntregaEstimada", o.getFechaEntregaEstimada());
+            ordenMap.put("total", o.getTotal());
+
+            if (o.getDireccion() != null) {
+                Map<String, String> direccionMap = new HashMap<>();
+                direccionMap.put("ciudad", o.getDireccion().getCiudad());
+                direccionMap.put("barrio", o.getDireccion().getBarrio());
+                direccionMap.put("carrera", o.getDireccion().getCarrera());
+                direccionMap.put("calle", o.getDireccion().getCalle());
+                direccionMap.put("numero", o.getDireccion().getNumero());
+                direccionMap.put("numeroTelefono", o.getDireccion().getNumeroTelefono());
+                ordenMap.put("direccion", direccionMap);
+            } else {
+                ordenMap.put("direccion", null);
+            }
+            return ordenMap;
+        }).collect(Collectors.toList());
+
+        // Agrupa por estado
+        List<Map<String, Object>> entregadas = new ArrayList<>();
+        List<Map<String, Object>> futuras = new ArrayList<>();
+        List<Map<String, Object>> delDia = new ArrayList<>();
+
+        for (Map<String, Object> om : todas) {
+            String ds = (String) om.get("deliveryStatus");
+            if (ds == null) continue;
+            switch (ds) {
+                case "DELIVERED" -> entregadas.add(om);
+                case "CONFIRMED" -> futuras.add(om);
+                case "PREPARING", "READY_FOR_DISPATCH" -> delDia.add(om);
+                case "DISPATCHED" -> delDia.add(om); // opcional: considerar como del día
+                default -> {
+                }
+            }
+        }
+
+        // Ordena listas: entregadas y delDia por fechaAsignacion desc; futuras por fechaEntregaEstimada asc
+        Comparator<Map<String, Object>> porAsignacionDesc = Comparator.comparing(
+                (Map<String, Object> m) -> (java.time.LocalDateTime) m.get("fechaAsignacion"),
+                Comparator.nullsLast(Comparator.naturalOrder())
+        ).reversed();
+
+        Comparator<Map<String, Object>> porEntregaEstimadaAsc = Comparator.comparing(
+                (Map<String, Object> m) -> (java.time.LocalDateTime) m.get("fechaEntregaEstimada"),
+                Comparator.nullsLast(Comparator.naturalOrder())
+        );
+
+        entregadas.sort(porAsignacionDesc);
+        delDia.sort(porAsignacionDesc);
+        futuras.sort(porEntregaEstimadaAsc);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("entregadas", entregadas);
+        response.put("futuras", futuras);
+        response.put("delDia", delDia);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/deliveries/{orderId}/pickup")
+    public ResponseEntity<?> pickupOrden(@PathVariable Long orderId, @AuthenticationPrincipal Usuario repartidor) {
+        try {
+            ordenCompraService.marcarRecolectadaPorRepartidor(orderId, repartidor);
+            return ResponseEntity.ok(Map.of("message", "Orden marcada como despachada"));
+        } catch (Exception e) {
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/deliveries/{orderId}/complete")
+    public ResponseEntity<?> completarEntrega(@PathVariable Long orderId, @AuthenticationPrincipal Usuario repartidor) {
+        try {
+            ordenCompraService.marcarEntregadaPorRepartidor(orderId, repartidor);
+            return ResponseEntity.ok(Map.of("message", "Orden marcada como entregada"));
+        } catch (Exception e) {
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
+        }
     }
 }

@@ -1,19 +1,28 @@
 package co.edu.uniquindio.oldbaker.services;
 
+import co.edu.uniquindio.oldbaker.dto.order.OrderTrackingDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutItemDTO;
 import co.edu.uniquindio.oldbaker.dto.payment.CheckoutRequestDTO;
 import co.edu.uniquindio.oldbaker.model.*;
-import co.edu.uniquindio.oldbaker.repositories.*;
+import co.edu.uniquindio.oldbaker.repositories.DireccionRepository;
+import co.edu.uniquindio.oldbaker.repositories.InsumoRepository;
+import co.edu.uniquindio.oldbaker.repositories.OrdenCompraRepository;
+import co.edu.uniquindio.oldbaker.repositories.ProductRepository;
+import co.edu.uniquindio.oldbaker.repositories.RecetaRepository;
+import co.edu.uniquindio.oldbaker.repositories.SeguimientoPedidoRepository;
+import co.edu.uniquindio.oldbaker.repositories.UsuarioRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +35,24 @@ public class OrdenCompraService {
     private final UsuarioRepository usuarioRepository;
     private final InsumoRepository insumoRepository;
     private final RecetaRepository recetaRepository;
+    private final SeguimientoPedidoRepository seguimientoPedidoRepository;
+    private final DireccionRepository direccionRepository;
+    private final MailService mailService;
+
+    private static final Map<OrdenCompra.DeliveryStatus, List<OrdenCompra.DeliveryStatus>> TRANSICIONES_ENTREGA = Map.of(
+            OrdenCompra.DeliveryStatus.CONFIRMED, List.of(
+                    OrdenCompra.DeliveryStatus.PREPARING,
+                    OrdenCompra.DeliveryStatus.DISPATCHED,
+                    OrdenCompra.DeliveryStatus.DELIVERED
+            ),
+            OrdenCompra.DeliveryStatus.PREPARING, List.of(
+                    OrdenCompra.DeliveryStatus.DISPATCHED,
+                    OrdenCompra.DeliveryStatus.DELIVERED
+            ),
+            OrdenCompra.DeliveryStatus.DISPATCHED, List.of(
+                    OrdenCompra.DeliveryStatus.DELIVERED
+            )
+    );
 
     /**
      * Crea una orden en estado PENDING antes de redirigir a MercadoPago.
@@ -36,10 +63,22 @@ public class OrdenCompraService {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + usuarioId));
 
+        Direccion direccion = null;
+        if (request.getDireccionId() != null) {
+            direccion = direccionRepository.findById(request.getDireccionId())
+                    .orElseThrow(() -> new RuntimeException("Dirección no encontrada: " + request.getDireccionId()));
+            // Opcional: verificar que la dirección pertenece al usuario
+            if (!direccion.getUsuario().getId().equals(usuarioId)) {
+                throw new AccessDeniedException("La dirección no pertenece al usuario");
+            }
+        }
+
         OrdenCompra orden = OrdenCompra.builder()
                 .externalReference(UUID.randomUUID().toString())
-                .status(OrdenCompra.EstadoOrden.PENDING)
+                .paymentStatus(OrdenCompra.PaymentStatus.PENDING)
                 .usuario(usuario)
+                .direccion(direccion)
+                .fechaEntregaEstimada(request.getFechadeEntregaEstimada())
                 .payerEmail(request.getPayerEmail())
                 .total(BigDecimal.ZERO)
                 .build();
@@ -90,35 +129,71 @@ public class OrdenCompraService {
                 .orElseThrow(() -> new RuntimeException("Orden no encontrada: " + externalReference));
 
         // Idempotencia: verificar si ya está procesada
-        if (orden.getStatus() == OrdenCompra.EstadoOrden.PAID) {
+        if (orden.getPaymentStatus() == OrdenCompra.PaymentStatus.PAID) {
             if (paymentId.equals(orden.getPaymentId())) {
-                logger.info("Orden {} ya está marcada como PAID con el mismo paymentId={}, ignorando webhook duplicado",
-                        orden.getId(), paymentId);
+                logger.info("Orden {} ya está PAID con paymentId={} (idempotente)", orden.getId(), paymentId);
             } else {
-                logger.warn("Orden {} ya está PAID pero con diferente paymentId. Anterior: {}, Nuevo: {}",
+                logger.warn("Orden {} ya PAID con otro paymentId. Anterior: {}, Nuevo: {}",
                         orden.getId(), orden.getPaymentId(), paymentId);
             }
             return;
         }
 
         // Verificar transiciones de estado válidas
-        if (orden.getStatus() == OrdenCompra.EstadoOrden.CANCELLED) {
-            logger.error("Intento de marcar como PAID una orden CANCELADA: ordenId={} paymentId={}",
-                    orden.getId(), paymentId);
+        if (orden.getPaymentStatus() == OrdenCompra.PaymentStatus.CANCELLED) {
+            logger.error("Intento de marcar como PAID una orden CANCELLED: ordenId={} paymentId={}", orden.getId(), paymentId);
             throw new IllegalStateException("No se puede marcar como PAID una orden cancelada");
         }
 
-        logger.info("Iniciando proceso de pago para orden {}: PENDING/IN_PROCESS -> PAID", orden.getId());
+        logger.info("Pago confirmado para orden {}: {} -> PAID", orden.getId(), orden.getPaymentStatus());
 
-        orden.setStatus(OrdenCompra.EstadoOrden.PAID);
+        orden.setPaymentStatus(OrdenCompra.PaymentStatus.PAID);
         orden.setPaymentId(paymentId);
+
+        // Primera transición de fulfillment al confirmarse pago
+        if (orden.getDeliveryStatus() == null) {
+            orden.setDeliveryStatus(OrdenCompra.DeliveryStatus.CONFIRMED);
+            seguimientoPedidoRepository.save(
+                    SeguimientoPedido.builder()
+                            .orden(orden)
+                            .estado(OrdenCompra.DeliveryStatus.CONFIRMED)
+                            .comentario("Pedido confirmado para producción/entrega futura")
+                            .timestamp(LocalDateTime.now())
+                            .build()
+            );
+        }
+
+        // Asignación automática de repartidor si no existe
+        if (orden.getRepartidor() == null) {
+            List<Usuario> repartidores = usuarioRepository.findByRolAndActivoTrue(Usuario.Rol.DELIVERY);
+            if (!repartidores.isEmpty()) {
+                // Round-robin simple: usar hash de externalReference para distribuir
+                int idx = Math.floorMod(orden.getExternalReference().hashCode(), repartidores.size());
+                Usuario elegido = repartidores.get(idx);
+                orden.setRepartidor(elegido);
+                orden.setFechaAsignacionRepartidor(LocalDateTime.now());
+                // Al asignar, si está en CONFIRMED lo movemos a PREPARING
+                if (orden.getDeliveryStatus() == OrdenCompra.DeliveryStatus.CONFIRMED) {
+                    orden.setDeliveryStatus(OrdenCompra.DeliveryStatus.PREPARING);
+                }
+            } else {
+                logger.warn("No hay repartidores activos para asignar orden {}", orden.getId());
+            }
+        }
+
+        // Generar trackingCode si no existe
+        if (orden.getTrackingCode() == null || orden.getTrackingCode().isBlank()) {
+            String shortRef = orden.getExternalReference().substring(0, Math.min(8, orden.getExternalReference().length())).toUpperCase();
+            String tracking = "OB-" + shortRef + "-" + LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("MMddHHmm"));
+            orden.setTrackingCode(tracking);
+        }
 
         // Descontar stock de insumos (en la misma transacción)
         descontarStock(orden);
 
         ordenCompraRepository.save(orden);
-        logger.info("Orden {} marcada como PAID exitosamente, stock descontado, paymentId={}",
-                orden.getId(), paymentId);
+        logger.info("Orden {} marcada como PAID; asignación={}, tracking={}",
+                orden.getId(), orden.getRepartidor() != null ? orden.getRepartidor().getId() : null, orden.getTrackingCode());
     }
 
     /**
@@ -131,7 +206,7 @@ public class OrdenCompraService {
                 .orElseThrow(() -> new RuntimeException("Orden no encontrada: " + externalReference));
 
         // Idempotencia: si ya está FAILED con el mismo paymentId, ignorar
-        if (orden.getStatus() == OrdenCompra.EstadoOrden.FAILED) {
+        if (orden.getPaymentStatus() == OrdenCompra.PaymentStatus.FAILED) {
             if (paymentId != null && paymentId.equals(orden.getPaymentId())) {
                 logger.info("Orden {} ya está marcada como FAILED con el mismo paymentId={}, ignorando",
                         orden.getId(), paymentId);
@@ -140,17 +215,16 @@ public class OrdenCompraService {
         }
 
         // Si ya está PAID, no permitir cambio a FAILED
-        if (orden.getStatus() == OrdenCompra.EstadoOrden.PAID) {
-            logger.error("Intento de marcar como FAILED una orden ya PAID: ordenId={} paymentId={}",
-                    orden.getId(), paymentId);
+        if (orden.getPaymentStatus() == OrdenCompra.PaymentStatus.PAID) {
+            logger.error("Intento de marcar como FAILED una orden ya pagada: {}", orden.getId());
             throw new IllegalStateException("No se puede marcar como FAILED una orden ya pagada");
         }
 
-        orden.setStatus(OrdenCompra.EstadoOrden.FAILED);
+        orden.setPaymentStatus(OrdenCompra.PaymentStatus.FAILED);
         orden.setPaymentId(paymentId);
         ordenCompraRepository.save(orden);
 
-        logger.info("Orden {} marcada como FAILED, paymentId={}", orden.getId(), paymentId);
+        logger.info("Orden {} marcada como FAILED", orden.getId());
     }
 
     /**
@@ -163,25 +237,75 @@ public class OrdenCompraService {
                 .orElseThrow(() -> new RuntimeException("Orden no encontrada: " + externalReference));
 
         // Si ya está PAID, no cambiar a IN_PROCESS (pago confirmado tiene prioridad)
-        if (orden.getStatus() == OrdenCompra.EstadoOrden.PAID) {
-            logger.info("Orden {} ya está PAID, ignorando actualización a IN_PROCESS", orden.getId());
+        if (orden.getPaymentStatus() == OrdenCompra.PaymentStatus.PAID) {
+            logger.info("Orden {} ya está PAID, ignorando IN_PROCESS", orden.getId());
             return;
         }
 
         // Idempotencia: si ya está IN_PROCESS con el mismo paymentId, ignorar
-        if (orden.getStatus() == OrdenCompra.EstadoOrden.IN_PROCESS) {
-            if (paymentId != null && paymentId.equals(orden.getPaymentId())) {
-                logger.info("Orden {} ya está en IN_PROCESS con el mismo paymentId={}, ignorando",
-                        orden.getId(), paymentId);
-                return;
-            }
+        if (orden.getPaymentStatus() == OrdenCompra.PaymentStatus.IN_PROCESS &&
+                Objects.equals(paymentId, orden.getPaymentId())) {
+            logger.info("Orden {} ya está IN_PROCESS (idempotente)", orden.getId());
+            return;
         }
 
-        orden.setStatus(OrdenCompra.EstadoOrden.IN_PROCESS);
+        orden.setPaymentStatus(OrdenCompra.PaymentStatus.IN_PROCESS);
         orden.setPaymentId(paymentId);
         ordenCompraRepository.save(orden);
+        logger.info("Orden {} marcada como IN_PROCESS", orden.getId());
+    }
 
-        logger.info("Orden {} marcada como IN_PROCESS, paymentId={}", orden.getId(), paymentId);
+    @Transactional
+    public List<OrderTrackingDTO> registrarCambioEstadoEntrega(Long ordenId,
+                                                                OrdenCompra.DeliveryStatus nuevoEstado,
+                                                                String comentario,
+                                                                String trackingCode,
+                                                                LocalDateTime fechaEntregaEstimada) {
+        OrdenCompra orden = obtenerOrdenPorIdInterno(ordenId);
+
+        if (orden.getPaymentStatus() != OrdenCompra.PaymentStatus.PAID) {
+            throw new IllegalStateException("No se puede actualizar entrega si el pago no está confirmado");
+        }
+
+        validarTransicionEntrega(orden, nuevoEstado);
+
+        if (trackingCode != null && !trackingCode.isBlank()) {
+            orden.setTrackingCode(trackingCode.trim());
+        }
+        if (fechaEntregaEstimada != null) {
+            orden.setFechaEntregaEstimada(fechaEntregaEstimada);
+        }
+        if (orden.getDeliveryStatus() != nuevoEstado) {
+            orden.setDeliveryStatus(nuevoEstado);
+        }
+
+        ordenCompraRepository.save(orden);
+
+        seguimientoPedidoRepository.save(
+                SeguimientoPedido.builder()
+                        .orden(orden)
+                        .estado(nuevoEstado)
+                        .comentario(comentario)
+                        .timestamp(LocalDateTime.now())
+                        .build()
+        );
+
+        return construirTimelineSeguimiento(orden);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderTrackingDTO> obtenerSeguimientoOrden(Long ordenId) {
+        OrdenCompra orden = obtenerOrdenPorIdInterno(ordenId);
+        return construirTimelineSeguimiento(orden);
+    }
+
+    @Transactional(readOnly = true)
+    public OrdenCompra obtenerPorId(Long ordenId) {
+        OrdenCompra orden = obtenerOrdenPorIdInterno(ordenId);
+        if (orden.getUsuario() != null) {
+            orden.getUsuario().getId();
+        }
+        return orden;
     }
 
     /**
@@ -238,5 +362,143 @@ public class OrdenCompraService {
      */
     public List<OrdenCompra> listarOrdenesPorUsuario(Long usuarioId) {
         return ordenCompraRepository.findByUsuario_IdOrderByFechaCreacionDesc(usuarioId);
+    }
+
+    private void validarTransicionEntrega(OrdenCompra orden, OrdenCompra.DeliveryStatus nuevoEstado) {
+        OrdenCompra.DeliveryStatus estadoActual = orden.getDeliveryStatus();
+
+        if (orden.getPaymentStatus() != OrdenCompra.PaymentStatus.PAID) {
+            throw new IllegalStateException("Transición de entrega no permitida: pago no confirmado");
+        }
+
+        if (estadoActual == OrdenCompra.DeliveryStatus.DELIVERED) {
+            throw new IllegalStateException("La orden ya fue entregada");
+        }
+
+        if (estadoActual == null) {
+            // Primera transición válida desde CONFIRMED
+            if (nuevoEstado == OrdenCompra.DeliveryStatus.CONFIRMED ||
+                nuevoEstado == OrdenCompra.DeliveryStatus.PREPARING ||
+                nuevoEstado == OrdenCompra.DeliveryStatus.DISPATCHED ||
+                nuevoEstado == OrdenCompra.DeliveryStatus.DELIVERED) {
+                return;
+            }
+        }
+
+        if (estadoActual == nuevoEstado) {
+            return;
+        }
+
+        List<OrdenCompra.DeliveryStatus> permitidos = TRANSICIONES_ENTREGA.getOrDefault(estadoActual, List.of());
+        if (!permitidos.contains(nuevoEstado)) {
+            throw new IllegalStateException("Transición de entrega de " + estadoActual + " a " + nuevoEstado + " no permitida");
+        }
+    }
+
+    private OrdenCompra obtenerOrdenPorIdInterno(Long ordenId) {
+        return ordenCompraRepository.findById(ordenId)
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada: " + ordenId));
+    }
+
+    private List<OrderTrackingDTO> construirTimelineSeguimiento(OrdenCompra orden) {
+        return seguimientoPedidoRepository.findByOrden_IdOrderByTimestampAsc(orden.getId())
+                .stream()
+                .map(evento -> OrderTrackingDTO.builder()
+                        .estado(evento.getEstado())
+                        .comentario(evento.getComentario())
+                        .timestamp(evento.getTimestamp())
+                        .trackingCode(orden.getTrackingCode())
+                        .fechaEntregaEstimada(orden.getFechaEntregaEstimada())
+                        .build())
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Transactional
+    public List<OrdenCompra> asignarOrdenesPendientesARepartidor(Long repartidorId, int maxAsignaciones) {
+        List<OrdenCompra> pendientes = ordenCompraRepository.findOrdenesPendientesDeAsignar();
+        List<OrdenCompra> asignadas = new ArrayList<>();
+        int count = 0;
+        for (OrdenCompra o : pendientes) {
+            if (count >= maxAsignaciones) break;
+            o.setRepartidor(usuarioRepository.findById(repartidorId)
+                    .orElseThrow(() -> new RuntimeException("Repartidor no encontrado: " + repartidorId)));
+            o.setFechaAsignacionRepartidor(LocalDateTime.now());
+            if (o.getDeliveryStatus() == OrdenCompra.DeliveryStatus.CONFIRMED) {
+                o.setDeliveryStatus(OrdenCompra.DeliveryStatus.PREPARING);
+            }
+            ordenCompraRepository.save(o);
+            asignadas.add(o);
+            count++;
+        }
+        return asignadas;
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrdenCompra> listarOrdenesDeRepartidor(Long repartidorId) {
+        return ordenCompraRepository.findByRepartidor_IdOrderByFechaAsignacionRepartidorDesc(repartidorId);
+    }
+
+    @Transactional
+    public void marcarRecolectadaPorRepartidor(Long ordenId, Usuario repartidor) {
+        OrdenCompra orden = obtenerPorId(ordenId);
+        validarPermisoRepartidor(orden, repartidor);
+        if (orden.getDeliveryStatus() == OrdenCompra.DeliveryStatus.READY_FOR_DISPATCH) {
+            orden.setDeliveryStatus(OrdenCompra.DeliveryStatus.DISPATCHED);
+            ordenCompraRepository.save(orden);
+            notificarCambioEntrega(orden, "Tu pedido ya fue despachado y está en camino.");
+        } else {
+            throw new IllegalStateException("La orden no está lista para despacho");
+        }
+    }
+
+    @Transactional
+    public void marcarEntregadaPorRepartidor(Long ordenId, Usuario repartidor) {
+        OrdenCompra orden = obtenerPorId(ordenId);
+        validarPermisoRepartidor(orden, repartidor);
+        if (orden.getDeliveryStatus() == OrdenCompra.DeliveryStatus.DISPATCHED) {
+            orden.setDeliveryStatus(OrdenCompra.DeliveryStatus.DELIVERED);
+            ordenCompraRepository.save(orden);
+            notificarCambioEntrega(orden, "Tu pedido ha sido entregado. ¡Gracias por elegir OldBaker!");
+        } else {
+            throw new IllegalStateException("La orden no está en despacho");
+        }
+    }
+
+    private void notificarCambioEntrega(OrdenCompra orden, String mensaje) {
+        try {
+            if (orden.getUsuario() == null || orden.getUsuario().getEmail() == null) {
+                logger.warn("No se puede enviar correo: usuario o email nulo para orden {}", orden.getId());
+                return;
+            }
+            Map<String,Object> vars = new HashMap<>();
+            vars.put("titulo", "Actualización de tu pedido");
+            vars.put("mensaje", mensaje);
+            vars.put("externalReference", orden.getExternalReference());
+            vars.put("trackingCode", orden.getTrackingCode());
+            vars.put("estadoEntrega", orden.getDeliveryStatus() != null ? orden.getDeliveryStatus().name() : "");
+            vars.put("total", orden.getTotal());
+            if (orden.getDireccion() != null) {
+                vars.put("direccion", String.format("%s %s %s #%s - %s",
+                        Optional.ofNullable(orden.getDireccion().getCiudad()).orElse(""),
+                        Optional.ofNullable(orden.getDireccion().getBarrio()).orElse(""),
+                        Optional.ofNullable(orden.getDireccion().getCalle()).orElse(""),
+                        Optional.ofNullable(orden.getDireccion().getNumero()).orElse(""),
+                        Optional.ofNullable(orden.getDireccion().getNumeroTelefono()).orElse("")));
+            }
+            mailService.sendOrderStatusUpdateEmail(orden.getUsuario().getEmail(), "Actualización de estado de tu pedido", vars);
+        } catch (MessagingException e) {
+            logger.error("Error enviando correo de actualización para orden {}: {}", orden.getId(), e.getMessage());
+        } catch (Exception ex) {
+            logger.error("Error inesperado enviando correo de actualización para orden {}", orden.getId(), ex);
+        }
+    }
+
+    private void validarPermisoRepartidor(OrdenCompra orden, Usuario repartidor) {
+        if (repartidor == null || repartidor.getRol() != Usuario.Rol.DELIVERY) {
+            throw new AccessDeniedException("No autorizado: rol inválido");
+        }
+        if (orden.getRepartidor() == null || !Objects.equals(orden.getRepartidor().getId(), repartidor.getId())) {
+            throw new AccessDeniedException("No autorizado: orden no asignada a este repartidor");
+        }
     }
 }

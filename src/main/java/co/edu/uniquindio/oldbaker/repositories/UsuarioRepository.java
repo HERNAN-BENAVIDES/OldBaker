@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -38,4 +39,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Modifying
     @Query("UPDATE Usuario u SET u.activo = false WHERE u.id = :id")
     int deactivateById(@Param("id") Long id);
+
+    // Listar usuarios por rol y activos
+    List<Usuario> findByRolAndActivoTrue(Usuario.Rol rol);
 }

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Actualización de tu pedido</title>
+    <style>
+        body { font-family: Arial, sans-serif; background:#f7f7f7; margin:0; padding:0; }
+        .container { max-width:600px; margin:20px auto; background:#ffffff; border:1px solid #e2e2e2; border-radius:6px; overflow:hidden; }
+        .header { background:#3e2723; color:#fff; padding:16px 24px; }
+        .header h1 { margin:0; font-size:20px; }
+        .content { padding:24px; color:#333; }
+        .content h2 { margin-top:0; color:#5d4037; }
+        .badge { display:inline-block; padding:4px 10px; border-radius:12px; font-size:12px; font-weight:600; background:#ffe0b2; color:#5d4037; }
+        .data-table { width:100%; border-collapse:collapse; margin-top:16px; }
+        .data-table th, .data-table td { text-align:left; padding:8px; font-size:14px; }
+        .data-table th { background:#efebe9; }
+        .footer { background:#efefef; padding:16px 24px; font-size:12px; color:#666; text-align:center; }
+        a.button { background:#ff7043; color:#fff; text-decoration:none; padding:10px 16px; border-radius:4px; display:inline-block; margin-top:12px; font-weight:bold; }
+        .small { font-size:12px; color:#777; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>OldBaker - Actualización de pedido</h1>
+    </div>
+    <div class="content">
+        <h2 th:text="${titulo}">Actualización de tu pedido</h2>
+        <p th:text="${mensaje}">Tu pedido ha cambiado de estado.</p>
+        <p>Estado actual: <span class="badge" th:text="${estadoEntrega}">PREPARING</span></p>
+
+        <table class="data-table">
+            <tr>
+                <th>Referencia externa</th>
+                <td th:text="${externalReference}">EXT-123</td>
+            </tr>
+            <tr>
+                <th>Tracking</th>
+                <td th:text="${trackingCode}">OB-XXXX</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <td th:text="${total}">$ 00.00</td>
+            </tr>
+            <tr th:if="${direccion}">
+                <th>Dirección</th>
+                <td th:text="${direccion}">Armenia Centro Calle 12 #12 - Tel</td>
+            </tr>
+        </table>
+
+        <p class="small">Si no esperabas este correo, por favor ignóralo. No respondas a este mensaje.</p>
+        <a class="button" th:href="@{'https://www.oldbaker.shop/tracking/' + ${externalReference}}">Ver seguimiento</a>
+    </div>
+    <div class="footer">
+        &copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span> OldBaker. Todos los derechos reservados.
+    </div>
+</div>
+</body>
+</html>
+

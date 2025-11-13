@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface DireccionRepository extends JpaRepository<Direccion, Long> {
     @Query("""
         SELECT d FROM Direccion d
-        WHERE d.idCliente = :idCliente
+        WHERE d.usuario = :idCliente
     """)
     List<Direccion> obtenerDireccionUsuario(Usuario idCliente);
 }

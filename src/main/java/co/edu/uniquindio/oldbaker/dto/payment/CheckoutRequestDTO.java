@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -14,5 +15,7 @@ public class CheckoutRequestDTO {
 
     private List<CheckoutItemDTO> items;
     private String payerEmail;
+    private Long direccionId;
+    private LocalDateTime fechadeEntregaEstimada;
 
 }

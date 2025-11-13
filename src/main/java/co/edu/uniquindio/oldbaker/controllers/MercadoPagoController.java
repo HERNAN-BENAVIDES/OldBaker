@@ -1,28 +1,30 @@
 package co.edu.uniquindio.oldbaker.controllers;
 
 import co.edu.uniquindio.oldbaker.services.MercadoPagoService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/mercadopago")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"https://old-baker-front.vercel.app", "https://localhost:4200", "http://localhost:4200", "https://www.oldbaker.shop"})
 public class MercadoPagoController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MercadoPagoController.class);
 
     private final MercadoPagoService mercadoPagoService;
 
-
-    @PostMapping(value = "/mercadopago/webhook", consumes = MediaType.ALL_VALUE)
+    /**
+     * Webhook oficial para notificaciones de Mercado Pago.
+     * Retorna 200 siempre para evitar reintentos excesivos del proveedor.
+     */
+        @PostMapping(value = "/webhook", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<?> handleWebhook(HttpServletRequest request, @RequestBody(required = false) String rawBody) {
         // Buscar encabezados comunes de firma (case-insensitive por HttpServletRequest)
         String signatureHeader = request.getHeader("X-Hub-Signature");

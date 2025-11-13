@@ -1,170 +1,469 @@
-2025-10-18T14:09:05.523-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /api/user/orders?idUsuario=1
-2025-10-18T14:09:05.525-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] org.hibernate.SQL                        : select u1_0.id,u1_0.activo,u1_0.email,u1_0.fecha_actualizacion,u1_0.fecha_creacion,u1_0.fecha_ultima_sesion,u1_0.nombre,u1_0.password,u1_0.rol,u1_0.tipo_autenticacion,u1_0.verificado from usuarios u1_0 where u1_0.email=? and u1_0.activo=1
-Hibernate: select u1_0.id,u1_0.activo,u1_0.email,u1_0.fecha_actualizacion,u1_0.fecha_creacion,u1_0.fecha_ultima_sesion,u1_0.nombre,u1_0.password,u1_0.rol,u1_0.tipo_autenticacion,u1_0.verificado from usuarios u1_0 where u1_0.email=? and u1_0.activo=1
-2025-10-18T14:09:05.526-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /api/user/orders?idUsuario=1
-2025-10-18T14:09:05.526-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] o.s.web.servlet.DispatcherServlet        : GET "/api/user/orders?idUsuario=1", parameters={masked}
-2025-10-18T14:09:05.526-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to co.edu.uniquindio.oldbaker.controllers.UsuarioController#obtenerOrdenesPorUsuario(Long)
-2025-10-18T14:09:05.531-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] org.hibernate.SQL                        : select oc1_0.id,oc1_0.external_reference,oc1_0.fecha_actualizacion,oc1_0.fecha_creacion,oc1_0.payer_email,oc1_0.payment_id,oc1_0.status,oc1_0.total,oc1_0.id_usuario from orden_compra oc1_0 left join usuarios u1_0 on u1_0.id=oc1_0.id_usuario where u1_0.id=? order by oc1_0.fecha_creacion desc
-Hibernate: select oc1_0.id,oc1_0.external_reference,oc1_0.fecha_actualizacion,oc1_0.fecha_creacion,oc1_0.payer_email,oc1_0.payment_id,oc1_0.status,oc1_0.total,oc1_0.id_usuario from orden_compra oc1_0 left join usuarios u1_0 on u1_0.id=oc1_0.id_usuario where u1_0.id=? order by oc1_0.fecha_creacion desc
-2025-10-18T14:09:05.536-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
-2025-10-18T14:09:05.536-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] org.hibernate.SQL                        : select u1_0.id,u1_0.activo,u1_0.email,u1_0.fecha_actualizacion,u1_0.fecha_creacion,u1_0.fecha_ultima_sesion,u1_0.nombre,u1_0.password,u1_0.rol,u1_0.tipo_autenticacion,u1_0.verificado from usuarios u1_0 where u1_0.id=?
-Hibernate: select u1_0.id,u1_0.activo,u1_0.email,u1_0.fecha_actualizacion,u1_0.fecha_creacion,u1_0.fecha_ultima_sesion,u1_0.nombre,u1_0.password,u1_0.rol,u1_0.tipo_autenticacion,u1_0.verificado from usuarios u1_0 where u1_0.id=?
-2025-10-18T14:09:05.538-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] org.hibernate.SQL                        : select i1_0.id_orden,i1_0.id,i1_0.cantidad,i1_0.precio_unitario,i1_0.id_producto,p1_0.id_producto,c1_0.id_categoria,c1_0.descripcion,c1_0.nombre,p1_0.costo_unitario,p1_0.descripcion,p1_0.nombre,p1_0.pedido_minimo,p1_0.vida_util_dias,i1_0.subtotal from item_orden i1_0 left join productos p1_0 on p1_0.id_producto=i1_0.id_producto left join categorias c1_0 on c1_0.id_categoria=p1_0.categoria where i1_0.id_orden=?
-Hibernate: select i1_0.id_orden,i1_0.id,i1_0.cantidad,i1_0.precio_unitario,i1_0.id_producto,p1_0.id_producto,c1_0.id_categoria,c1_0.descripcion,c1_0.nombre,p1_0.costo_unitario,p1_0.descripcion,p1_0.nombre,p1_0.pedido_minimo,p1_0.vida_util_dias,i1_0.subtotal from item_orden i1_0 left join productos p1_0 on p1_0.id_producto=i1_0.id_producto left join categorias c1_0 on c1_0.id_categoria=p1_0.categoria where i1_0.id_orden=?
-2025-10-18T14:09:05.538-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [java.lang.StackOverflowError]
-2025-10-18T14:09:05.538-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler co.edu.uniquindio.oldbaker.exceptions.GlobalExceptionHandler#handleRuntimeException(RuntimeException, HttpServletRequest)
-2025-10-18T14:09:05.538-05:00 ERROR 20096 --- [OldBaker] [nio-8443-exec-6] c.e.u.o.e.GlobalExceptionHandler         : Error en tiempo de ejecución en /api/user/orders:
+nan-dario@HERNAN-DARIO:~/IdeaProjects/Microservicios/OldBaker$ ssh -i "/home/hernan-dario/Documentos/OldBaker.pem" ubuntu@3.17.214.199
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.14.0-1012-aws x86_64)
 
-org.springframework.http.converter.HttpMessageConversionException: Type definition error: [simple type, class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor]
-	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.writeInternal(AbstractJackson2HttpMessageConverter.java:491) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.http.converter.AbstractGenericHttpMessageConverter.write(AbstractGenericHttpMessageConverter.java:126) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor.writeWithMessageConverters(AbstractMessageConverterMethodProcessor.java:345) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor.handleReturnValue(HttpEntityMethodProcessor.java:263) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.mvc.method.annotation.ResponseEntityReturnValueHandler.handleReturnValue(ResponseEntityReturnValueHandler.java:79) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite.handleReturnValue(HandlerMethodReturnValueHandlerComposite.java:78) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:136) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.43.jar:6.0]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.43.jar:6.0]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.springframework.web.servlet.resource.ResourceUrlEncodingFilter.doFilter(ResourceUrlEncodingFilter.java:66) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter.doFilterInternal(DefaultLogoutPageGeneratingFilter.java:59) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter.doFilter(DefaultLoginPageGeneratingFilter.java:216) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter.doFilter(DefaultLoginPageGeneratingFilter.java:202) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.authentication.ui.DefaultResourcesFilter.doFilter(DefaultResourcesFilter.java:72) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at co.edu.uniquindio.oldbaker.config.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:74) ~[main/:na]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:235) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter.doFilter(AbstractAuthenticationProcessingFilter.java:229) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter.doFilterInternal(OAuth2AuthorizationRequestRedirectFilter.java:198) ~[spring-security-oauth2-client-6.5.2.jar:6.5.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.2.jar:6.5.2]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.2.jar:6.5.2]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.2.jar:6.5.2]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.9.jar:6.2.9]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1769) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.43.jar:10.1.43]
-	at java.base/java.lang.Thread.run(Thread.java:842) ~[na:na]
-Caused by: com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor and no properties discovered to create BeanSerializer (to avoid exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS) (through reference chain: java.util.ArrayList[0]->co.edu.uniquindio.oldbaker.model.OrdenCompra["usuario"]->co.edu.uniquindio.oldbaker.model.Usuario$HibernateProxy["hibernateLazyInitializer"])
-	at com.fasterxml.jackson.databind.exc.InvalidDefinitionException.from(InvalidDefinitionException.java:77) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.SerializerProvider.reportBadDefinition(SerializerProvider.java:1359) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.DatabindContext.reportBadDefinition(DatabindContext.java:415) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.impl.UnknownSerializer.failForEmpty(UnknownSerializer.java:52) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.impl.UnknownSerializer.serialize(UnknownSerializer.java:29) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.BeanPropertyWriter.serializeAsField(BeanPropertyWriter.java:732) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.std.BeanSerializerBase.serializeFields(BeanSerializerBase.java:760) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.BeanSerializer.serialize(BeanSerializer.java:183) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.BeanPropertyWriter.serializeAsField(BeanPropertyWriter.java:732) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.std.BeanSerializerBase.serializeFields(BeanSerializerBase.java:760) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.BeanSerializer.serialize(BeanSerializer.java:183) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.impl.IndexedListSerializer.serializeContents(IndexedListSerializer.java:119) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.impl.IndexedListSerializer.serialize(IndexedListSerializer.java:79) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.impl.IndexedListSerializer.serialize(IndexedListSerializer.java:18) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.DefaultSerializerProvider._serialize(DefaultSerializerProvider.java:503) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ser.DefaultSerializerProvider.serializeValue(DefaultSerializerProvider.java:342) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ObjectWriter$Prefetch.serialize(ObjectWriter.java:1587) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at com.fasterxml.jackson.databind.ObjectWriter.writeValue(ObjectWriter.java:1061) ~[jackson-databind-2.19.2.jar:2.19.2]
-	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.writeInternal(AbstractJackson2HttpMessageConverter.java:485) ~[spring-web-6.2.9.jar:6.2.9]
-	... 125 common frames omitted
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
 
-2025-10-18T14:09:05.538-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Found 'Content-Type:application/json' in response
-2025-10-18T14:09:05.538-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [ErrorResponse(mensaje=Error interno, detalle=Ha ocurrido un error interno en el servidor, timestamp= (truncated)...]
-2025-10-18T14:09:05.538-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageConversionException: Type definition error: [simple type, class org.hibernate.proxy.pojo.bytebuddy.ByteBuddyInterceptor]]
-2025-10-18T14:09:05.538-05:00 DEBUG 20096 --- [OldBaker] [nio-8443-exec-6] o.s.web.servlet.DispatcherServlet        : Completed 500 INTERNAL_SERVER_ERROR
+ System information as of Thu Nov 13 05:05:44 UTC 2025
+
+  System load:  0.0               Processes:             113
+  Usage of /:   79.4% of 6.71GB   Users logged in:       0
+  Memory usage: 63%               IPv4 address for enX0: 172.31.28.218
+  Swap usage:   0%
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+29 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+1 additional security update can be applied with ESM Apps.
+Learn more about enabling ESM Apps service at https://ubuntu.com/esm
+
+
+*** System restart required ***
+Last login: Thu Nov 13 05:06:20 2025 from 181.53.99.23
+ubuntu@ip-172-31-28-218:~$ sudo journalctl -u oldbaker.service -f
+Nov 13 05:06:56 ip-172-31-28-218 systemd[1]: Started oldbaker.service - OldBaker backend (Spring Boot).
+Nov 13 05:06:59 ip-172-31-28-218 java[341078]:   .   ____          _            __ _ _
+Nov 13 05:06:59 ip-172-31-28-218 java[341078]:  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+Nov 13 05:06:59 ip-172-31-28-218 java[341078]: ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+Nov 13 05:06:59 ip-172-31-28-218 java[341078]:  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+Nov 13 05:06:59 ip-172-31-28-218 java[341078]:   '  |____| .__|_| |_|_| |_\__, | / / / /
+Nov 13 05:06:59 ip-172-31-28-218 java[341078]:  =========|_|==============|___/=/_/_/_/
+Nov 13 05:06:59 ip-172-31-28-218 java[341078]:  :: Spring Boot ::                (v3.5.4)
+Nov 13 05:06:59 ip-172-31-28-218 java[341078]: 2025-11-13T05:06:59.437Z  INFO 341078 --- [OldBaker] [           main] c.e.u.oldbaker.OldBakerApplication       : Starting OldBakerApplication v0.0.1-SNAPSHOT using Java 17.0.16 with PID 341078 (/home/ubuntu/OldBaker/app.jar started by ubuntu in /home/ubuntu/OldBaker)
+Nov 13 05:06:59 ip-172-31-28-218 java[341078]: 2025-11-13T05:06:59.447Z  INFO 341078 --- [OldBaker] [           main] c.e.u.oldbaker.OldBakerApplication       : No active profile set, falling back to 1 default profile: "default"
+Nov 13 05:07:02 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:02.743Z  INFO 341078 --- [OldBaker] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Nov 13 05:07:03 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:03.080Z  INFO 341078 --- [OldBaker] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 309 ms. Found 19 JPA repository interfaces.
+Nov 13 05:07:05 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:05.712Z  INFO 341078 --- [OldBaker] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8443 (https)
+Nov 13 05:07:05 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:05.762Z  INFO 341078 --- [OldBaker] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+Nov 13 05:07:05 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:05.763Z  INFO 341078 --- [OldBaker] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.43]
+Nov 13 05:07:06 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:06.040Z  INFO 341078 --- [OldBaker] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+Nov 13 05:07:06 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:06.044Z  INFO 341078 --- [OldBaker] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 6438 ms
+Nov 13 05:07:06 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:06.662Z  INFO 341078 --- [OldBaker] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+Nov 13 05:07:06 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:06.874Z  INFO 341078 --- [OldBaker] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.22.Final
+Nov 13 05:07:06 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:06.983Z  INFO 341078 --- [OldBaker] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+Nov 13 05:07:07 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:07.901Z  INFO 341078 --- [OldBaker] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+Nov 13 05:07:07 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:07.990Z  INFO 341078 --- [OldBaker] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.254Z  WARN 341078 --- [OldBaker] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.254Z ERROR 341078 --- [OldBaker] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.258Z  WARN 341078 --- [OldBaker] [           main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query metadata
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: org.hibernate.exception.JDBCConnectionException: unable to obtain isolated JDBC connection [Communications link failure
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.] [n/a]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:100) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:94) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:116) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:336) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:129) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:81) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:130) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.boot.model.relational.Database.<init>(Database.java:45) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:226) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:194) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:171) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1442) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1513) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:691) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:513) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1725) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1474) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1683) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1628) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1683) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1628) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:230) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:184) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:179) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:164) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:96) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:271) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:245) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4464) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardService.startInternal(StandardService.java:412) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:870) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.apache.catalina.startup.Tomcat.start(Tomcat.java:438) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:517) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:219) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:193) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:167) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at co.edu.uniquindio.oldbaker.OldBakerApplication.main(OldBakerApplication.java:12) ~[!/:0.0.1-SNAPSHOT]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:102) ~[app.jar:0.0.1-SNAPSHOT]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[app.jar:0.0.1-SNAPSHOT]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[app.jar:0.0.1-SNAPSHOT]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:175) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:819) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:440) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:239) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:188) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:576) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:97) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:126) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:483) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:61) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         ... 124 common frames omitted
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:481) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:62) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:150) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:166) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:89) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.NativeSession.connect(NativeSession.java:121) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:939) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:809) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         ... 137 common frames omitted
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: Caused by: java.net.ConnectException: Connection refused
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:63) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         ... 140 common frames omitted
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.332Z  WARN 341078 --- [OldBaker] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.374Z  INFO 341078 --- [OldBaker] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         Database JDBC URL [Connecting through datasource 'HikariDataSource (null)']
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         Database driver: undefined/unknown
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         Database version: 8.0
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         Autocommit mode: undefined/unknown
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         Isolation level: undefined/unknown
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         Minimum pool size: undefined/unknown
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]:         Maximum pool size: undefined/unknown
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.393Z DEBUG 341078 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(12, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@54b2d002) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@1d1c63af)
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.393Z DEBUG 341078 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-9, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@2095c331) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@3909a854)
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.393Z DEBUG 341078 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(-3, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@7b795db7) replaced previous registration(org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@586486c)
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.394Z DEBUG 341078 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4003, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@b849fa6) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@7fbbdd8a)
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.394Z DEBUG 341078 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4001, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@4e9ea32f) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@79ec57b8)
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.394Z DEBUG 341078 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(4002, org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@56ba8e8c) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@774c5e5c)
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.396Z DEBUG 341078 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2004, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@4cf01c41) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@57bac3f0)
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.398Z DEBUG 341078 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2005, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@55f6f965) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@40ddf339)
+Nov 13 05:07:09 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:09.399Z DEBUG 341078 --- [OldBaker] [           main] o.h.t.d.sql.spi.DdlTypeRegistry          : addDescriptor(2011, org.hibernate.type.descriptor.sql.internal.CapacityDependentDdlType@6ff8e744) replaced previous registration(org.hibernate.type.descriptor.sql.internal.DdlTypeImpl@409395b9)
+Nov 13 05:07:14 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:14.086Z  INFO 341078 --- [OldBaker] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Nov 13 05:07:14 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:14.131Z  INFO 341078 --- [OldBaker] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:15.136Z  WARN 341078 --- [OldBaker] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:15.136Z ERROR 341078 --- [OldBaker] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:15.146Z ERROR 341078 --- [OldBaker] [           main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to open JDBC Connection for DDL execution [Communications link failure
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.] [n/a]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:15.148Z ERROR 341078 --- [OldBaker] [           main] o.s.b.web.embedded.tomcat.TomcatStarter  : Error starting Tomcat context. Exception: org.springframework.beans.factory.UnsatisfiedDependencyException. Message: Error creating bean with name 'jwtAuthenticationFilter' defined in URL [jar:nested:/home/ubuntu/OldBaker/app.jar/!BOOT-INF/classes/!/co/edu/uniquindio/oldbaker/config/JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'usuarioService' defined in URL [jar:nested:/home/ubuntu/OldBaker/app.jar/!BOOT-INF/classes/!/co/edu/uniquindio/oldbaker/services/UsuarioService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'usuarioRepository' defined in co.edu.uniquindio.oldbaker.repositories.UsuarioRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:15.217Z  INFO 341078 --- [OldBaker] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:15.232Z  WARN 341078 --- [OldBaker] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:15.261Z  INFO 341078 --- [OldBaker] [           main] .s.b.a.l.ConditionEvaluationReportLogger :
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: 2025-11-13T05:07:15.302Z ERROR 341078 --- [OldBaker] [           main] o.s.boot.SpringApplication               : Application run failed
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: org.springframework.context.ApplicationContextException: Unable to start web server
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:170) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at co.edu.uniquindio.oldbaker.OldBakerApplication.main(OldBakerApplication.java:12) ~[!/:0.0.1-SNAPSHOT]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.lang.reflect.Method.invoke(Method.java:569) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:102) ~[app.jar:0.0.1-SNAPSHOT]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64) ~[app.jar:0.0.1-SNAPSHOT]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40) ~[app.jar:0.0.1-SNAPSHOT]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:147) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:517) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:219) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:193) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:167) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 13 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'jwtAuthenticationFilter' defined in URL [jar:nested:/home/ubuntu/OldBaker/app.jar/!BOOT-INF/classes/!/co/edu/uniquindio/oldbaker/config/JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'usuarioService' defined in URL [jar:nested:/home/ubuntu/OldBaker/app.jar/!BOOT-INF/classes/!/co/edu/uniquindio/oldbaker/services/UsuarioService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'usuarioRepository' defined in co.edu.uniquindio.oldbaker.repositories.UsuarioRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:230) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:184) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:179) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:164) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:96) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:271) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:245) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4464) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:145) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardService.startInternal(StandardService.java:412) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:870) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.apache.catalina.startup.Tomcat.start(Tomcat.java:438) ~[tomcat-embed-core-10.1.43.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128) ~[spring-boot-3.5.4.jar!/:3.5.4]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 18 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'usuarioService' defined in URL [jar:nested:/home/ubuntu/OldBaker/app.jar/!BOOT-INF/classes/!/co/edu/uniquindio/oldbaker/services/UsuarioService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'usuarioRepository' defined in co.edu.uniquindio.oldbaker.repositories.UsuarioRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1395) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1232) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1683) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1628) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 59 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'usuarioRepository' defined in co.edu.uniquindio.oldbaker.repositories.UsuarioRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1725) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1474) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:606) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1683) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1628) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 72 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jpaSharedEM_entityManagerFactory': Cannot resolve reference to bean 'entityManagerFactory' while setting constructor argument
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:691) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:513) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1375) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1205) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:569) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 85 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to open JDBC Connection for DDL execution [Communications link failure
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.] [n/a]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1826) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:607) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:529) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:373) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 97 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: jakarta.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to open JDBC Connection for DDL execution [Communications link failure
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.] [n/a]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:431) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1873) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1822) ~[spring-beans-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 104 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: org.hibernate.exception.JDBCConnectionException: Unable to open JDBC Connection for DDL execution [Communications link failure
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.] [n/a]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:100) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:94) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:74) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:39) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.internal.exec.ImprovedExtractionContextImpl.getJdbcConnection(ImprovedExtractionContextImpl.java:63) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.internal.exec.ImprovedExtractionContextImpl.getJdbcDatabaseMetaData(ImprovedExtractionContextImpl.java:70) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.extract.internal.InformationExtractorJdbcDatabaseMetaDataImpl.processTableResultSet(InformationExtractorJdbcDatabaseMetaDataImpl.java:65) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.extract.internal.AbstractInformationExtractorImpl.getTables(AbstractInformationExtractorImpl.java:570) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.extract.internal.DatabaseInformationImpl.getTablesInformation(DatabaseInformationImpl.java:122) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:72) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:233) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:112) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.util.HashMap.forEach(HashMap.java:1421) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:324) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:463) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1517) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.9.jar!/:6.2.9]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 108 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:175) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:819) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:440) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:239) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:188) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:368) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:205) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:576) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:97) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-6.3.1.jar!/:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:126) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:483) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:46) ~[hibernate-core-6.6.22.Final.jar!/:6.6.22.Final]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 129 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:481) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:62) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:150) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:166) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:89) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.NativeSession.connect(NativeSession.java:121) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:939) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:809) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 142 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]: Caused by: java.net.ConnectException: Connection refused
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:672) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:547) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:602) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at java.base/java.net.Socket.connect(Socket.java:633) ~[na:na]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:153) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:63) ~[mysql-connector-j-8.1.0.jar!/:8.1.0]
+Nov 13 05:07:15 ip-172-31-28-218 java[341078]:         ... 145 common frames omitted
+Nov 13 05:07:15 ip-172-31-28-218 systemd[1]: oldbaker.service: Main process exited, code=exited, status=1/FAILURE
+Nov 13 05:07:15 ip-172-31-28-218 systemd[1]: oldbaker.service: Failed with result 'exit-code'.
