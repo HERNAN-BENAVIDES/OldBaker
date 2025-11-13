@@ -11,6 +11,7 @@ import co.edu.uniquindio.oldbaker.repositories.ProductRepository;
 import co.edu.uniquindio.oldbaker.repositories.RecetaRepository;
 import co.edu.uniquindio.oldbaker.repositories.SeguimientoPedidoRepository;
 import co.edu.uniquindio.oldbaker.repositories.UsuarioRepository;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ public class OrdenCompraService {
     private final RecetaRepository recetaRepository;
     private final SeguimientoPedidoRepository seguimientoPedidoRepository;
     private final DireccionRepository direccionRepository;
+    private final MailService mailService;
 
     private static final Map<OrdenCompra.DeliveryStatus, List<OrdenCompra.DeliveryStatus>> TRANSICIONES_ENTREGA = Map.of(
             OrdenCompra.DeliveryStatus.CONFIRMED, List.of(
@@ -443,6 +445,7 @@ public class OrdenCompraService {
         if (orden.getDeliveryStatus() == OrdenCompra.DeliveryStatus.READY_FOR_DISPATCH) {
             orden.setDeliveryStatus(OrdenCompra.DeliveryStatus.DISPATCHED);
             ordenCompraRepository.save(orden);
+            notificarCambioEntrega(orden, "Tu pedido ya fue despachado y está en camino.");
         } else {
             throw new IllegalStateException("La orden no está lista para despacho");
         }
@@ -455,8 +458,38 @@ public class OrdenCompraService {
         if (orden.getDeliveryStatus() == OrdenCompra.DeliveryStatus.DISPATCHED) {
             orden.setDeliveryStatus(OrdenCompra.DeliveryStatus.DELIVERED);
             ordenCompraRepository.save(orden);
+            notificarCambioEntrega(orden, "Tu pedido ha sido entregado. ¡Gracias por elegir OldBaker!");
         } else {
             throw new IllegalStateException("La orden no está en despacho");
+        }
+    }
+
+    private void notificarCambioEntrega(OrdenCompra orden, String mensaje) {
+        try {
+            if (orden.getUsuario() == null || orden.getUsuario().getEmail() == null) {
+                logger.warn("No se puede enviar correo: usuario o email nulo para orden {}", orden.getId());
+                return;
+            }
+            Map<String,Object> vars = new HashMap<>();
+            vars.put("titulo", "Actualización de tu pedido");
+            vars.put("mensaje", mensaje);
+            vars.put("externalReference", orden.getExternalReference());
+            vars.put("trackingCode", orden.getTrackingCode());
+            vars.put("estadoEntrega", orden.getDeliveryStatus() != null ? orden.getDeliveryStatus().name() : "");
+            vars.put("total", orden.getTotal());
+            if (orden.getDireccion() != null) {
+                vars.put("direccion", String.format("%s %s %s #%s - %s",
+                        Optional.ofNullable(orden.getDireccion().getCiudad()).orElse(""),
+                        Optional.ofNullable(orden.getDireccion().getBarrio()).orElse(""),
+                        Optional.ofNullable(orden.getDireccion().getCalle()).orElse(""),
+                        Optional.ofNullable(orden.getDireccion().getNumero()).orElse(""),
+                        Optional.ofNullable(orden.getDireccion().getNumeroTelefono()).orElse("")));
+            }
+            mailService.sendOrderStatusUpdateEmail(orden.getUsuario().getEmail(), "Actualización de estado de tu pedido", vars);
+        } catch (MessagingException e) {
+            logger.error("Error enviando correo de actualización para orden {}: {}", orden.getId(), e.getMessage());
+        } catch (Exception ex) {
+            logger.error("Error inesperado enviando correo de actualización para orden {}", orden.getId(), ex);
         }
     }
 
